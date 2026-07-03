@@ -1,0 +1,19 @@
+@theme {
+  --text-micro: 0.75rem;
+  --text-micro--line-height: 1rem;
+
+  --text-caption: 0.875rem;
+  --text-caption--line-height: 1.25rem;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.5rem;
+
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 2rem;
+
+  --text-h2: 2rem;
+  --text-h2--line-height: 2.5rem;
+
+  --text-h1: 2.75rem;
+  --text-h1--line-height: 3.25rem;
+}
