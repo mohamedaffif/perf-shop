@@ -25,8 +25,55 @@
   --chart-4: #e8d9b3;
   --chart-5: #3a2a1a;
   --radius: 1rem;
-  --shadow-card: 0 20px 40px -16px rgba(0, 0, 0, 0.55);
-  --shadow-hover: 0 24px 48px -12px rgba(212, 162, 76, 0.25);
+
+/* Shadows */
+
+--shadow-none: 0 0 #0000;
+
+--shadow-xs:
+  0 1px 2px rgb(15 23 42 / 0.04);
+
+--shadow-sm:
+  0 1px 3px rgb(15 23 42 / 0.08),
+  0 1px 2px rgb(15 23 42 / 0.04);
+
+--shadow-md:
+  0 4px 12px rgb(15 23 42 / 0.08),
+  0 2px 4px rgb(15 23 42 / 0.04);
+
+--shadow-lg:
+  0 12px 24px rgb(15 23 42 / 0.10),
+  0 4px 8px rgb(15 23 42 / 0.06);
+
+--shadow-xl:
+  0 20px 40px rgb(15 23 42 / 0.12),
+  0 8px 16px rgb(15 23 42 / 0.08);
+
+--shadow-inset:
+  inset 0 1px 2px rgb(15 23 42 / 0.06);
+
+--shadow-card: var(--shadow-md);
+
+--shadow-card-hover:
+  0 24px 48px rgb(15 23 42 / 0.14),
+  0 8px 16px rgb(212 162 76 / 0.12);
+
+--shadow-button: var(--shadow-sm);
+
+--shadow-navbar:
+  0 1px 2px rgb(15 23 42 / 0.06);
+
+--shadow-dropdown:
+  0 20px 40px rgb(15 23 42 / 0.16);
+
+--shadow-dialog:
+  0 28px 56px rgb(15 23 42 / 0.18);
+
+--shadow-image:
+  0 16px 32px rgb(15 23 42 / 0.10);
+
+--shadow-focus:
+  0 0 0 4px rgb(212 162 76 / 0.20);
   --sidebar: #1a1a1a;
   --sidebar-foreground: #e8d9b3;
   --sidebar-primary: #d4a24c;
@@ -55,7 +102,54 @@
   --border: rgba(78, 167, 122, 0.25);
   --input: rgba(78, 167, 122, 0.25);
   --ring: #4ca77a;
-  --shadow-hover: 0 24px 48px -12px rgba(78, 167, 122, 0.25);
+  /* Shadows */
+
+--shadow-none: 0 0 #0000;
+
+--shadow-xs:
+  0 1px 2px rgb(15 23 42 / 0.04);
+
+--shadow-sm:
+  0 1px 3px rgb(15 23 42 / 0.08),
+  0 1px 2px rgb(15 23 42 / 0.04);
+
+--shadow-md:
+  0 4px 12px rgb(15 23 42 / 0.08),
+  0 2px 4px rgb(15 23 42 / 0.04);
+
+--shadow-lg:
+  0 12px 24px rgb(15 23 42 / 0.10),
+  0 4px 8px rgb(15 23 42 / 0.06);
+
+--shadow-xl:
+  0 20px 40px rgb(15 23 42 / 0.12),
+  0 8px 16px rgb(15 23 42 / 0.08);
+
+--shadow-inset:
+  inset 0 1px 2px rgb(15 23 42 / 0.06);
+
+--shadow-card: var(--shadow-md);
+
+--shadow-card-hover:
+  0 24px 48px rgb(15 23 42 / 0.14),
+  0 8px 16px rgb(78 167 122 / 0.18);
+
+--shadow-button: var(--shadow-sm);
+
+--shadow-navbar:
+  0 1px 2px rgb(15 23 42 / 0.06);
+
+--shadow-dropdown:
+  0 20px 40px rgb(15 23 42 / 0.16);
+
+--shadow-dialog:
+  0 28px 56px rgb(15 23 42 / 0.18);
+
+--shadow-image:
+  0 16px 32px rgb(15 23 42 / 0.10);
+
+--shadow-focus:
+  0 0 0 4px rgb(78 167 122 / 0.25);
   --sidebar: #0f1a15;
   --sidebar-foreground: #d9e8d0;
   --sidebar-primary: #4ca77a;
@@ -90,6 +184,54 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
+  /* Shadows */
+
+--shadow-none: 0 0 #0000;
+
+--shadow-xs:
+  0 1px 2px rgb(0 0 0 / 0.20);
+
+--shadow-sm:
+  0 1px 3px rgb(0 0 0 / 0.30),
+  0 1px 2px rgb(0 0 0 / 0.20);
+
+--shadow-md:
+  0 4px 12px rgb(0 0 0 / 0.32),
+  0 2px 4px rgb(0 0 0 / 0.20);
+
+--shadow-lg:
+  0 12px 24px rgb(0 0 0 / 0.36),
+  0 4px 8px rgb(0 0 0 / 0.24);
+
+--shadow-xl:
+  0 20px 40px rgb(0 0 0 / 0.40),
+  0 8px 16px rgb(0 0 0 / 0.28);
+
+--shadow-inset:
+  inset 0 1px 2px rgb(0 0 0 / 0.24);
+
+--shadow-card: var(--shadow-md);
+
+--shadow-card-hover:
+  0 24px 48px rgb(0 0 0 / 0.50),
+  0 8px 16px rgb(212 162 76 / 0.12);
+
+--shadow-button: var(--shadow-sm);
+
+--shadow-navbar:
+  0 1px 2px rgb(0 0 0 / 0.24);
+
+--shadow-dropdown:
+  0 20px 40px rgb(0 0 0 / 0.42);
+
+--shadow-dialog:
+  0 28px 56px rgb(0 0 0 / 0.50);
+
+--shadow-image:
+  0 16px 32px rgb(0 0 0 / 0.36);
+
+--shadow-focus:
+  0 0 0 4px rgb(212 162 76 / 0.30);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
