@@ -1,0 +1,139 @@
+@theme {
+  /* ==========================================
+     Durations
+     ========================================== */
+
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 600ms;
+
+  /* ==========================================
+     Easings
+     ========================================== */
+
+  --ease-linear: linear;
+
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+
+  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ==========================================
+     Transitions
+     ========================================== */
+
+  --transition-all: all var(--duration-normal) var(--ease-standard);
+
+  --transition-colors:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+
+  --transition-opacity: opacity var(--duration-fast) var(--ease-standard);
+
+  --transition-transform: transform var(--duration-normal) var(--ease-standard);
+
+  --transition-shadow: box-shadow var(--duration-normal) var(--ease-standard);
+
+  /* ==========================================
+     Scale
+     ========================================== */
+
+  --scale-hover: 1.02;
+  --scale-active: 0.98;
+
+  /* ==========================================
+     Rotation
+     ========================================== */
+
+  --rotate-hover: 2deg;
+
+  /* ==========================================
+     Keyframes
+     ========================================== */
+
+  --animate-fade-in: fade-in var(--duration-normal) var(--ease-standard);
+
+  --animate-fade-out: fade-out var(--duration-fast) var(--ease-standard);
+
+  --animate-slide-up: slide-up var(--duration-normal) var(--ease-standard);
+
+  --animate-slide-down: slide-down var(--duration-normal) var(--ease-standard);
+
+  --animate-scale-in: scale-in var(--duration-normal) var(--ease-emphasized);
+
+  --animate-scale-out: scale-out var(--duration-fast) var(--ease-standard);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
