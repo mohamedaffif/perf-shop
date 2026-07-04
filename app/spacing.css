@@ -1,0 +1,46 @@
+@theme {
+  /* Layout */
+  --spacing-container-x: 2rem;        /* 32px */
+  --spacing-page-y: 6rem;             /* 96px */
+
+  /* Sections */
+  --spacing-section-xs: 2rem;         /* 32px */
+  --spacing-section-sm: 3rem;         /* 48px */
+  --spacing-section-md: 4rem;         /* 64px */
+  --spacing-section-lg: 5rem;         /* 80px */
+  --spacing-section-xl: 6rem;         /* 96px */
+
+  /* Navigation */
+  --spacing-navbar-y: 1.5rem;         /* 24px */
+  --spacing-navbar-gap: 2rem;         /* 32px */
+
+  /* Cards */
+  --spacing-card-padding: 1.5rem;     /* 24px */
+  --spacing-card-gap: 1rem;           /* 16px */
+  --spacing-card-content: 1.25rem;    /* 20px */
+
+  /* Forms */
+  --spacing-input-padding-x: 1rem;    /* 16px */
+  --spacing-input-padding-y: 0.75rem; /* 12px */
+  --spacing-form-gap: 1.25rem;        /* 20px */
+
+  /* Buttons */
+  --spacing-button-x: 1.5rem;         /* 24px */
+  --spacing-button-y: 0.75rem;        /* 12px */
+  --spacing-button-gap: 0.5rem;       /* 8px */
+
+  /* Lists & Stacks */
+  --spacing-stack-xs: 0.5rem;         /* 8px */
+  --spacing-stack-sm: 0.75rem;        /* 12px */
+  --spacing-stack-md: 1rem;           /* 16px */
+  --spacing-stack-lg: 1.5rem;         /* 24px */
+  --spacing-stack-xl: 2rem;           /* 32px */
+
+  /* Grid */
+  --spacing-grid-gap-sm: 1rem;        /* 16px */
+  --spacing-grid-gap-md: 1.5rem;      /* 24px */
+  --spacing-grid-gap-lg: 2rem;        /* 32px */
+
+  /* Footer */
+  --spacing-footer-y: 4rem;           /* 64px */
+}
