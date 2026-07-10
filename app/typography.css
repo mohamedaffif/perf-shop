@@ -1,19 +1,97 @@
 @theme {
-  --text-micro: 0.75rem;
-  --text-micro--line-height: 1rem;
+  /* Display — Cormorant Garamond, hero headlines / section openers */
+  --text-display: 2rem;
+  --text-display--line-height: 1.1;
+  --text-display-tablet: 2.75rem;
+  --text-display-tablet--line-height: 1.1;
+  --text-display-desktop: 3.5rem;
+  --text-display-desktop--line-height: 1.1;
 
-  --text-caption: 0.875rem;
-  --text-caption--line-height: 1.25rem;
+  /* H1 — page titles */
+  --text-h1: 1.75rem;
+  --text-h1--line-height: 1.15;
+  --text-h1-tablet: 2.25rem;
+  --text-h1-tablet--line-height: 1.15;
+  --text-h1-desktop: 2.75rem;
+  --text-h1-desktop--line-height: 1.15;
 
-  --text-body: 1rem;
-  --text-body--line-height: 1.5rem;
+  /* H2 — section headings */
+  --text-h2: 1.5rem;
+  --text-h2--line-height: 1.2;
+  --text-h2-tablet: 1.75rem;
+  --text-h2-tablet--line-height: 1.2;
+  --text-h2-desktop: 2.125rem;
+  --text-h2-desktop--line-height: 1.2;
 
-  --text-h3: 1.5rem;
-  --text-h3--line-height: 2rem;
+  /* H3 — card titles, product names */
+  --text-h3: 1.1875rem;
+  --text-h3--line-height: 1.3;
+  --text-h3-tablet: 1.3125rem;
+  --text-h3-tablet--line-height: 1.3;
+  --text-h3-desktop: 1.5rem;
+  --text-h3-desktop--line-height: 1.3;
 
-  --text-h2: 2rem;
-  --text-h2--line-height: 2.5rem;
+  /* H4 — subsection labels */
+  --text-h4: 1.0625rem;
+  --text-h4--line-height: 1.35;
+  --text-h4-tablet: 1.125rem;
+  --text-h4-tablet--line-height: 1.35;
+  --text-h4-desktop: 1.1875rem;
+  --text-h4-desktop--line-height: 1.35;
 
-  --text-h1: 2.75rem;
-  --text-h1--line-height: 3.25rem;
+  /* H5 */
+  --text-h5: 0.9375rem;
+  --text-h5--line-height: 1.4;
+  --text-h5-tablet: 1rem;
+  --text-h5-tablet--line-height: 1.4;
+  --text-h5-desktop: 1.0625rem;
+  --text-h5-desktop--line-height: 1.4;
+
+  /* H6 */
+  --text-h6: 0.875rem;
+  --text-h6--line-height: 1.4;
+  --text-h6-tablet: 0.875rem;
+  --text-h6-tablet--line-height: 1.4;
+  --text-h6-desktop: 0.9375rem;
+  --text-h6-desktop--line-height: 1.4;
+
+  /* Body Large — intro paragraphs */
+  --text-body-large: 1rem;
+  --text-body-large--line-height: 1.6;
+  --text-body-large-tablet: 1.0625rem;
+  --text-body-large-tablet--line-height: 1.6;
+  --text-body-large-desktop: 1.125rem;
+  --text-body-large-desktop--line-height: 1.6;
+
+  /* Body — default copy */
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.6;
+  --text-body-tablet: 0.9375rem;
+  --text-body-tablet--line-height: 1.6;
+  --text-body-desktop: 1rem;
+  --text-body-desktop--line-height: 1.6;
+
+  /* Body Small — secondary info, notes */
+  --text-body-small: 0.8125rem;
+  --text-body-small--line-height: 1.5;
+  --text-body-small-tablet: 0.875rem;
+  --text-body-small-tablet--line-height: 1.5;
+  --text-body-small-desktop: 0.875rem;
+  --text-body-small-desktop--line-height: 1.5;
+
+  /* Caption — meta, timestamps */
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.4;
+
+  /* Overline — eyebrows, badges, all-caps tags */
+  --text-overline: 0.625rem;
+  --text-overline--line-height: 1.3;
+  --text-overline-tablet: 0.6875rem;
+  --text-overline-tablet--line-height: 1.3;
+  --text-overline-desktop: 0.6875rem;
+  --text-overline-desktop--line-height: 1.3;
+
+  /* Label — form labels, UI captions */
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.4;
 }

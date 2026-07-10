@@ -13,3 +13,71 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
+
+// product schema
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum Concentration {
+  EXTRAIT_DE_PARFUM
+  EAU_DE_PARFUM
+  EAU_DE_TOILETTE
+  EAU_DE_COLOGNE
+  EAU_FRAICHE
+}
+
+enum Badge {
+  NEW
+  BEST_SELLER
+  LIMITED_EDITION
+  SALE
+}
+
+enum Size {
+  ML_50
+  ML_75
+  ML_100
+}
+
+model Product {
+  id            String         @id @default(cuid())
+  name          String
+  brand         String
+  concentration Concentration
+  description   String?
+
+  topNotes      String[]
+  heartNotes    String[]
+  baseNotes     String[]
+
+  size          Size
+  price         Decimal        @db.Decimal(10, 2) // KES
+  stockQuantity Int            @default(0)
+
+  status        ProductStatus  @default(DRAFT)
+  badges        Badge[]        @default([])
+
+  images        ProductImage[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("products")
+}
+
+model ProductImage {
+  id         String   @id @default(cuid())
+  url        String
+  altText    String?
+  isPrimary  Boolean  @default(false)
+  order      Int      @default(0)
+
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  String
+
+  @@map("product_images")
+}
