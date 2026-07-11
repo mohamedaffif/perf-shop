@@ -16,6 +16,14 @@
   --accent: #b67e3e;
   --accent-foreground: #1a1a1a;
   --destructive: oklch(0.577 0.245 27.325);
+  --success: #eaf3ee;
+  --success-foreground: #3f5c4e;
+  --info: #eaf0f6;
+  --info-foreground: #4a6fa5;
+  --warning: #faf1e0;
+  --warning-foreground: #b8863e;
+  --danger: #f7e9e9;
+  --danger-foreground: #a13b3b;
   --border: rgba(212, 162, 76, 0.25);
   --input: rgba(212, 162, 76, 0.25);
   --ring: #d4a24c;
