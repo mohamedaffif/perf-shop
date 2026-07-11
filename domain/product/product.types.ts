@@ -1,0 +1,84 @@
+export type ProductStatus = "DRAFT" | "PUBLISHED";
+
+export type Concentration =
+  | "EXTRAIT_DE_PARFUM"
+  | "EAU_DE_PARFUM"
+  | "EAU_DE_TOILETTE"
+  | "EAU_DE_COLOGNE"
+  | "EAU_FRAICHE";
+
+export type Badge = "NEW" | "BEST_SELLER" | "LIMITED_EDITION" | "SALE";
+
+export type Size = "ML_50" | "ML_75" | "ML_100";
+
+export interface ProductImage {
+  id: string;
+  url: string;
+  altText: string | null;
+  isPrimary: boolean;
+  order: number;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  brand: string;
+  concentration: Concentration;
+  description: string | null;
+  topNotes: string[];
+  heartNotes: string[];
+  baseNotes: string[];
+  size: Size;
+  price: number;
+  stockQuantity: number;
+  status: ProductStatus;
+  badges: Badge[];
+  images: ProductImage[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ProductImageInput {
+  url: string;
+  altText?: string;
+  isPrimary?: boolean;
+  order?: number;
+}
+
+export interface CreateProductInput {
+  name: string;
+  brand: string;
+  concentration: Concentration;
+  description?: string;
+  topNotes?: string[];
+  heartNotes?: string[];
+  baseNotes?: string[];
+  size: Size;
+  price: number;
+  stockQuantity?: number;
+  status?: ProductStatus;
+  badges?: Badge[];
+  images?: ProductImageInput[];
+}
+
+export type UpdateProductInput = Partial<CreateProductInput>;
+
+export interface ProductFilters {
+  status?: ProductStatus;
+  brand?: string;
+  concentration?: Concentration;
+  size?: Size;
+  badge?: Badge;
+  minPrice?: number;
+  maxPrice?: number;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface PaginatedProducts {
+  items: Product[];
+  total: number;
+  page: number;
+  pageSize: number;
+}

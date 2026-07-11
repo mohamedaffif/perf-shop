@@ -9,13 +9,13 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
 
 
-// product schema
+// ======================================================
+// ENUMS
+// ======================================================
 
 enum ProductStatus {
   DRAFT
@@ -43,41 +43,101 @@ enum Size {
   ML_100
 }
 
+// ======================================================
+// BRAND
+// ======================================================
+
+model Brand {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+
+  products    Product[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("brands")
+}
+
+// ======================================================
+// CATEGORY
+// ======================================================
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+
+  products    Product[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+// ======================================================
+// PRODUCT
+// ======================================================
+
 model Product {
-  id            String         @id @default(cuid())
-  name          String
-  brand         String
-  concentration Concentration
-  description   String?
+  id              String          @id @default(cuid())
 
-  topNotes      String[]
-  heartNotes    String[]
-  baseNotes     String[]
+  name            String
 
-  size          Size
-  price         Decimal        @db.Decimal(10, 2) // KES
-  stockQuantity Int            @default(0)
+  description     String?
 
-  status        ProductStatus  @default(DRAFT)
-  badges        Badge[]        @default([])
+  concentration   Concentration
 
-  images        ProductImage[]
+  topNotes        String[]
+  heartNotes      String[]
+  baseNotes       String[]
 
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  size            Size
+
+  price           Decimal         @db.Decimal(10, 2)
+
+  stockQuantity   Int             @default(0)
+
+  status          ProductStatus   @default(DRAFT)
+
+  badges          Badge[]         @default([])
+
+  // Relations
+
+  brandId         String
+  brand           Brand           @relation(fields: [brandId], references: [id])
+
+  categoryId      String
+  category        Category        @relation(fields: [categoryId], references: [id])
+
+  images          ProductImage[]
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
   @@map("products")
 }
 
+// ======================================================
+// PRODUCT IMAGE
+// ======================================================
+
 model ProductImage {
-  id         String   @id @default(cuid())
-  url        String
-  altText    String?
-  isPrimary  Boolean  @default(false)
-  order      Int      @default(0)
+  id          String    @id @default(cuid())
 
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId  String
+  url         String
 
+  altText     String?
+
+  isPrimary   Boolean   @default(false)
+
+  order       Int       @default(0)
+
+  productId   String
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   @@map("product_images")
 }
