@@ -14,15 +14,31 @@ export type Size = "ML_50" | "ML_75" | "ML_100";
 export interface ProductImage {
   id: string;
   url: string;
+  publicId: string;
   altText: string | null;
   isPrimary: boolean;
   order: number;
 }
 
+export interface ProductBrand {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface ProductCategory {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 export interface Product {
   id: string;
   name: string;
-  brand: string;
+  brandId: string;
+  brand: ProductBrand;
+  categoryId: string;
+  category: ProductCategory;
   concentration: Concentration;
   description: string | null;
   topNotes: string[];
@@ -40,6 +56,7 @@ export interface Product {
 
 export interface ProductImageInput {
   url: string;
+  publicId: string;
   altText?: string;
   isPrimary?: boolean;
   order?: number;
@@ -47,7 +64,8 @@ export interface ProductImageInput {
 
 export interface CreateProductInput {
   name: string;
-  brand: string;
+  brandId: string;
+  categoryId: string;
   concentration: Concentration;
   description?: string;
   topNotes?: string[];
@@ -65,7 +83,7 @@ export type UpdateProductInput = Partial<CreateProductInput>;
 
 export interface ProductFilters {
   status?: ProductStatus;
-  brand?: string;
+  brandId?: string;
   concentration?: Concentration;
   size?: Size;
   badge?: Badge;

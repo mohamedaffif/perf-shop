@@ -1,18 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
-generator client {
-  provider = "prisma-client"
-  output   = "../lib/generated/prisma"
-}
-
-datasource db {
-  provider = "postgresql"
-}
-
-
 
 // ======================================================
 // ENUMS
@@ -132,8 +117,6 @@ model ProductImage {
 
   url         String
 
-   publicId   String   @unique
-
   altText     String?
 
   isPrimary   Boolean   @default(false)
@@ -144,4 +127,3 @@ model ProductImage {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   @@map("product_images")
 }
-

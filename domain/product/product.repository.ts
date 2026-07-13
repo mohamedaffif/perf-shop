@@ -1,5 +1,5 @@
-import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/lib/generated/prisma/client";
 import type {
   CreateProductInput,
   Product,
@@ -7,7 +7,9 @@ import type {
   UpdateProductInput,
 } from "./product.types";
 
-type ProductRow = Prisma.ProductGetPayload<{ include: { images: true } }>;
+const productInclude = { images: true, brand: true, category: true } satisfies Prisma.ProductInclude;
+
+type ProductRow = Prisma.ProductGetPayload<{ include: typeof productInclude }>;
 
 function toProduct(row: ProductRow): Product {
   return {
@@ -17,11 +19,11 @@ function toProduct(row: ProductRow): Product {
 }
 
 function buildWhere(filters: ProductFilters): Prisma.ProductWhereInput {
-  const { status, brand, concentration, size, badge, minPrice, maxPrice, search } = filters;
+  const { status, brandId, concentration, size, badge, minPrice, maxPrice, search } = filters;
 
   return {
     status,
-    brand: brand ? { equals: brand, mode: "insensitive" } : undefined,
+    brandId,
     concentration,
     size,
     badges: badge ? { has: badge } : undefined,
@@ -34,7 +36,7 @@ function buildWhere(filters: ProductFilters): Prisma.ProductWhereInput {
 }
 
 export async function findMany(
-  filters: ProductFilters,
+  filters: ProductFilters
 ): Promise<{ items: Product[]; total: number }> {
   const where = buildWhere(filters);
   const { page = 1, pageSize = 20 } = filters;
@@ -42,7 +44,7 @@ export async function findMany(
   const [rows, total] = await Promise.all([
     prisma.product.findMany({
       where,
-      include: { images: true },
+      include: productInclude,
       skip: (page - 1) * pageSize,
       take: pageSize,
       orderBy: { createdAt: "desc" },
@@ -56,7 +58,7 @@ export async function findMany(
 export async function findById(id: string): Promise<Product | null> {
   const row = await prisma.product.findUnique({
     where: { id },
-    include: { images: true },
+    include: productInclude,
   });
 
   return row ? toProduct(row) : null;
@@ -70,7 +72,7 @@ export async function create(data: CreateProductInput): Promise<Product> {
       ...product,
       images: images && images.length > 0 ? { create: images } : undefined,
     },
-    include: { images: true },
+    include: productInclude,
   });
 
   return toProduct(row);
@@ -85,7 +87,7 @@ export async function update(id: string, data: UpdateProductInput): Promise<Prod
       ...product,
       images: images ? { deleteMany: {}, create: images } : undefined,
     },
-    include: { images: true },
+    include: productInclude,
   });
 
   return toProduct(row);
