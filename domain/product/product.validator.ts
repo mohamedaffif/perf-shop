@@ -16,6 +16,7 @@ export const sizeSchema = z.enum(["ML_50", "ML_75", "ML_100"]);
 
 export const productImageInputSchema = z.object({
   url: z.url(),
+  publicId: z.string().min(1),
   altText: z.string().optional(),
   isPrimary: z.boolean().default(false),
   order: z.number().int().nonnegative().default(0),
@@ -23,7 +24,8 @@ export const productImageInputSchema = z.object({
 
 export const createProductSchema = z.object({
   name: z.string().min(1),
-  brand: z.string().min(1),
+  brandId: z.string().min(1),
+  categoryId: z.string().min(1),
   concentration: concentrationSchema,
   description: z.string().optional(),
   topNotes: z.array(z.string()).default([]),
@@ -41,7 +43,8 @@ export const updateProductSchema = createProductSchema.partial();
 
 export const productFiltersSchema = z.object({
   status: productStatusSchema.optional(),
-  brand: z.string().optional(),
+  brandId: z.string().optional(),
+  categoryId: z.string().optional(),
   concentration: concentrationSchema.optional(),
   size: sizeSchema.optional(),
   badge: badgeSchema.optional(),

@@ -19,11 +19,13 @@ function toProduct(row: ProductRow): Product {
 }
 
 function buildWhere(filters: ProductFilters): Prisma.ProductWhereInput {
-  const { status, brandId, concentration, size, badge, minPrice, maxPrice, search } = filters;
+  const { status, brandId, categoryId, concentration, size, badge, minPrice, maxPrice, search } =
+    filters;
 
   return {
     status,
     brandId,
+    categoryId,
     concentration,
     size,
     badges: badge ? { has: badge } : undefined,

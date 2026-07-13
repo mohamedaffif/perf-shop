@@ -81,7 +81,38 @@ export const NAV_LINKS: NavLink[] = [
   },
   { label: "Unisex", href: "/shop/unisex" },
   { label: "Gift Sets", href: "/shop/gift-sets" },
-  { label: "Brands", href: "/brands" },
+  {
+    label: "Brands",
+    href: "/brands",
+    megaMenu: {
+      sections: [
+        {
+          heading: "Designer",
+          links: [
+            { label: "Chanel", href: "/brands/chanel" },
+            { label: "Dior", href: "/brands/dior" },
+            { label: "Gucci", href: "/brands/gucci" },
+            { label: "Versace", href: "/brands/versace" },
+          ],
+        },
+        {
+          heading: "Niche",
+          links: [
+            { label: "Tom Ford", href: "/brands/tom-ford" },
+            { label: "Creed", href: "/brands/creed" },
+            { label: "Maison Margiela", href: "/brands/maison-margiela" },
+            { label: "All Brands", href: "/brands" },
+          ],
+        },
+      ],
+      featured: {
+        title: "Featured Brand",
+        description: "Explore the house behind this month's best seller.",
+        href: "/brands",
+        cta: "Shop all brands",
+      },
+    },
+  },
   { label: "Sale", href: "/shop/sale" },
 ]
 

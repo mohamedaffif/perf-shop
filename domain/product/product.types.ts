@@ -84,6 +84,7 @@ export type UpdateProductInput = Partial<CreateProductInput>;
 export interface ProductFilters {
   status?: ProductStatus;
   brandId?: string;
+  categoryId?: string;
   concentration?: Concentration;
   size?: Size;
   badge?: Badge;

@@ -1,14 +1,16 @@
 Project: Perf Shop
 
 Stack:
+
 - Next.js App Router
 - TypeScript
 - Tailwind CSS
 - shadcn/ui
 - Prisma 7
-- PostgreSQL (Supabase)
+- PostgreSQL (neon)
 
 Rules:
+
 - Use TypeScript everywhere.
 - Prefer Server Components unless client interactivity is needed.
 - Keep components reusable.
