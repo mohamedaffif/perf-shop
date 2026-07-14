@@ -1,25 +1,19 @@
-import * as React from "react"
-import { Select as SelectPrimitive } from "radix-ui"
-import { Check, ChevronDown, ChevronUp } from "lucide-react"
+import { Check, ChevronDown, ChevronUp } from "lucide-react";
+import { Select as SelectPrimitive } from "radix-ui";
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-function Select({
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Root>) {
-  return <SelectPrimitive.Root data-slot="select" {...props} />
+function Select({ ...props }: React.ComponentProps<typeof SelectPrimitive.Root>) {
+  return <SelectPrimitive.Root data-slot="select" {...props} />;
 }
 
-function SelectGroup({
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Group>) {
-  return <SelectPrimitive.Group data-slot="select-group" {...props} />
+function SelectGroup({ ...props }: React.ComponentProps<typeof SelectPrimitive.Group>) {
+  return <SelectPrimitive.Group data-slot="select-group" {...props} />;
 }
 
-function SelectValue({
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Value>) {
-  return <SelectPrimitive.Value data-slot="select-value" {...props} />
+function SelectValue({ ...props }: React.ComponentProps<typeof SelectPrimitive.Value>) {
+  return <SelectPrimitive.Value data-slot="select-value" {...props} />;
 }
 
 function SelectTrigger({
@@ -31,17 +25,17 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       className={cn(
-        "flex w-full items-center justify-between gap-2 rounded-input border border-input bg-transparent px-input-padding-x py-input-padding-y text-sm text-foreground outline-none transition-[color,box-shadow] data-[placeholder]:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-danger-foreground aria-invalid:ring-danger-foreground/20 [&>span]:line-clamp-1",
+        "rounded-input border-input px-input-padding-x py-input-padding-y text-foreground data-placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-danger-foreground aria-invalid:ring-danger-foreground/20 flex w-full items-center justify-between gap-2 border bg-transparent text-sm transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
         className
       )}
       {...props}
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
+        <ChevronDown className="text-muted-foreground size-4 shrink-0" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
-  )
+  );
 }
 
 function SelectContent({
@@ -56,7 +50,7 @@ function SelectContent({
         data-slot="select-content"
         position={position}
         className={cn(
-          "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-input border border-border bg-popover text-popover-foreground shadow-md",
+          "rounded-input border-border bg-popover text-popover-foreground relative z-50 max-h-96 min-w-32 overflow-hidden border shadow-md",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1",
           className
@@ -69,8 +63,7 @@ function SelectContent({
         <SelectPrimitive.Viewport
           className={cn(
             "p-1",
-            position === "popper" &&
-              "w-full min-w-[var(--radix-select-trigger-width)]"
+            position === "popper" && "w-full min-w-(--radix-select-trigger-width)"
           )}
         >
           {children}
@@ -80,20 +73,17 @@ function SelectContent({
         </SelectPrimitive.ScrollDownButton>
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
-  )
+  );
 }
 
-function SelectLabel({
-  className,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Label>) {
+function SelectLabel({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Label>) {
   return (
     <SelectPrimitive.Label
       data-slot="select-label"
-      className={cn("px-2 py-1.5 text-xs text-muted-foreground", className)}
+      className={cn("text-muted-foreground px-2 py-1.5 text-xs", className)}
       {...props}
     />
-  )
+  );
 }
 
 function SelectItem({
@@ -105,7 +95,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-pointer items-center gap-2 rounded-xs py-1.5 pr-8 pl-2 text-sm text-foreground outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-accent focus:text-accent-foreground",
+        "text-foreground focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-pointer items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50",
         className
       )}
       {...props}
@@ -115,7 +105,7 @@ function SelectItem({
         <Check className="size-4" />
       </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
-  )
+  );
 }
 
 function SelectSeparator({
@@ -125,19 +115,19 @@ function SelectSeparator({
   return (
     <SelectPrimitive.Separator
       data-slot="select-separator"
-      className={cn("-mx-1 my-1 h-px bg-border", className)}
+      className={cn("bg-border -mx-1 my-1 h-px", className)}
       {...props}
     />
-  )
+  );
 }
 
 export {
   Select,
-  SelectGroup,
-  SelectValue,
-  SelectTrigger,
   SelectContent,
-  SelectLabel,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectSeparator,
-}
+  SelectTrigger,
+  SelectValue,
+};

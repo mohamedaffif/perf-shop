@@ -1,18 +1,18 @@
-import Link from "next/link"
-import { Search, ShoppingBag, User } from "lucide-react"
+import { Search, ShoppingBag, User } from "lucide-react";
+import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge"
-import { MegaMenu } from "./MegaMenu"
-import { MobileMenu } from "./MobileMenu"
+import { Badge } from "@/components/ui/badge";
+import { MegaMenu } from "./MegaMenu";
+import { MobileMenu } from "./MobileMenu";
 
 export type NavLink = {
-  label: string
-  href: string
+  label: string;
+  href: string;
   megaMenu?: {
-    sections: { heading: string; links: { label: string; href: string }[] }[]
-    featured?: { title: string; description: string; href: string; cta: string }
-  }
-}
+    sections: { heading: string; links: { label: string; href: string }[] }[];
+    featured?: { title: string; description: string; href: string; cta: string };
+  };
+};
 
 export const NAV_LINKS: NavLink[] = [
   {
@@ -114,17 +114,17 @@ export const NAV_LINKS: NavLink[] = [
     },
   },
   { label: "Sale", href: "/shop/sale" },
-]
+];
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header className="border-border bg-background/95 supports-backdrop-filter:bg-background/80 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <MobileMenu links={NAV_LINKS} />
           <Link
             href="/"
-            className="font-heading text-xl font-semibold tracking-wide text-foreground"
+            className="font-heading text-foreground text-xl font-semibold tracking-wide"
           >
             PERF SHOP
           </Link>
@@ -140,29 +140,29 @@ export function Navbar() {
           <button
             type="button"
             aria-label="Search"
-            className="inline-flex size-9 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+            className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
           >
             <Search className="size-4" />
           </button>
           <Link
             href="/account"
             aria-label="Account"
-            className="inline-flex size-9 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+            className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
           >
             <User className="size-4" />
           </Link>
           <Link
             href="/cart"
             aria-label="Cart"
-            className="relative inline-flex size-9 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+            className="text-foreground/80 hover:bg-muted hover:text-foreground relative inline-flex size-9 items-center justify-center rounded-full transition-colors"
           >
             <ShoppingBag className="size-4" />
-            <Badge className="absolute -right-1 -top-1 size-4 justify-center rounded-full p-0 text-[10px]">
+            <Badge className="text-overline absolute -top-1 -right-1 size-4 justify-center rounded-full p-0">
               0
             </Badge>
           </Link>
         </div>
       </div>
     </header>
-  )
+  );
 }

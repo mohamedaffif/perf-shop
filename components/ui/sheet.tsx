@@ -74,7 +74,7 @@ function SheetContent({
         {children}
         <SheetPrimitive.Close
           data-slot="sheet-close"
-          className="absolute top-4 right-4 rounded-xs outline-none transition-colors hover:text-muted-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none"
+          className="absolute top-4 right-4 rounded-sm outline-none transition-colors hover:text-muted-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none"
         >
           <X className="size-4" />
           <span className="sr-only">Close</span>

@@ -26,7 +26,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
 
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        <Dialog.Content className="fixed inset-y-0 left-0 z-50 flex h-full w-[85vw] max-w-sm flex-col overflow-y-auto border-r border-border bg-background p-6 shadow-[var(--shadow-card)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left">
+        <Dialog.Content className="fixed inset-y-0 left-0 z-50 flex h-full w-[85vw] max-w-sm flex-col overflow-y-auto border-r border-border bg-background p-6 shadow-(--shadow-card) data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left">
           <div className="flex items-center justify-between">
             <Dialog.Title className="font-heading text-lg font-semibold text-foreground">
               Menu
@@ -53,7 +53,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
                     key={link.href}
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className="rounded-xl px-3 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                    className="rounded-md px-3 py-3 text-sm font-medium uppercase tracking-[0.2em] text-foreground transition-colors hover:bg-muted"
                   >
                     {link.label}
                   </Link>
@@ -66,7 +66,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
                     type="button"
                     aria-expanded={isOpen}
                     onClick={() => setExpanded(isOpen ? null : link.href)}
-                    className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                    className="flex w-full items-center justify-between rounded-md px-3 py-3 text-sm font-medium uppercase tracking-[0.2em] text-foreground transition-colors hover:bg-muted"
                   >
                     {link.label}
                     <ChevronDown
@@ -78,7 +78,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
                     <div className="grid grid-cols-2 gap-4 px-3 pb-4">
                       {link.megaMenu?.sections.map((section) => (
                         <div key={section.heading}>
-                          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                             {section.heading}
                           </p>
                           <ul className="space-y-2">
@@ -107,7 +107,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
             <Link
               href="/account"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
               <User className="size-4" />
               Account

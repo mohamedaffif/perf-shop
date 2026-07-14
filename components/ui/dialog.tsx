@@ -47,7 +47,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-300 w-full max-w-160 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-border bg-popover p-card-padding text-popover-foreground shadow-lg outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-top-3 data-[state=open]:duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-top-3 data-[state=closed]:duration-300",
+          "fixed top-1/2 left-1/2 z-300 w-full max-w-160 -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border bg-popover p-card-padding text-popover-foreground shadow-lg outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-top-3 data-[state=open]:duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-top-3 data-[state=closed]:duration-300",
           className
         )}
         {...props}
@@ -55,7 +55,7 @@ function DialogContent({
         {children}
         <DialogPrimitive.Close
           data-slot="dialog-close"
-          className="absolute top-4 right-4 rounded-xs outline-none transition-colors hover:text-muted-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none"
+          className="absolute top-4 right-4 rounded-sm outline-none transition-colors hover:text-muted-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none"
         >
           <X className="size-4" />
           <span className="sr-only">Close</span>

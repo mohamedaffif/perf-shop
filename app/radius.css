@@ -1,21 +1,17 @@
 @theme {
-  /* Base radius scale */
-  --radius-none: 0rem;       /* 0px */
-  --radius-xs: 0.25rem;      /* 4px */
-  --radius-sm: 0.375rem;     /* 6px */
-  --radius-md: 0.5rem;       /* 8px */
-  --radius-lg: 0.75rem;      /* 12px */
-  --radius-xl: 1rem;         /* 16px */
-  --radius-2xl: 1.5rem;      /* 24px */
-  --radius-3xl: 2rem;        /* 32px */
-  --radius-full: 9999px;
+  /* Border radius scale — Foundations > Border Radius */
+  --radius-sm: 0.25rem; /* 4px — inputs, tags, tooltips */
+  --radius-md: 0.5rem; /* 8px — cards, buttons */
+  --radius-lg: 1rem; /* 16px — modals, feature panels */
+  --radius-xl: 1.5rem; /* 24px — hero panels, large imagery */
+  --radius-full: 9999px; /* pill — badges, chips, switches */
 
   /* Semantic radius */
-  --radius-button: var(--radius-lg);
-  --radius-input: var(--radius-md);
-  --radius-card: var(--radius-xl);
-  --radius-dialog: var(--radius-2xl);
-  --radius-sheet: var(--radius-2xl);
+  --radius-button: var(--radius-md);
+  --radius-input: var(--radius-sm);
+  --radius-card: var(--radius-md);
+  --radius-dialog: var(--radius-lg);
+  --radius-sheet: var(--radius-lg);
   --radius-image: var(--radius-xl);
   --radius-badge: var(--radius-full);
   --radius-avatar: var(--radius-full);
