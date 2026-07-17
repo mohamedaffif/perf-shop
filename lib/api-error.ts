@@ -13,5 +13,9 @@ export function handleApiError(error: unknown): NextResponse {
     return NextResponse.json({ error: error.message }, { status: 404 });
   }
 
+  if (error instanceof Error && error.name.endsWith("AlreadyRegisteredError")) {
+    return NextResponse.json({ error: error.message }, { status: 409 });
+  }
+
   throw error;
 }

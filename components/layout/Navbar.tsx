@@ -1,6 +1,7 @@
-import { Search, ShoppingBag, User } from "lucide-react";
+import { Search, ShieldCheck, ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
 
+import { auth } from "@/auth";
 import { Badge } from "@/components/ui/badge";
 import { MegaMenu } from "./MegaMenu";
 import { MobileMenu } from "./MobileMenu";
@@ -116,7 +117,10 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Sale", href: "/shop/sale" },
 ];
 
-export function Navbar() {
+export async function Navbar() {
+  const session = await auth();
+  const role = session?.user?.role;
+
   return (
     <header className="border-border bg-background/95 supports-backdrop-filter:bg-background/80 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -144,8 +148,17 @@ export function Navbar() {
           >
             <Search className="size-4" />
           </button>
+          {(role === "STAFF" || role === "ADMIN") && (
+            <Link
+              href="/admin"
+              aria-label="Admin dashboard"
+              className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
+            >
+              <ShieldCheck className="size-4" />
+            </Link>
+          )}
           <Link
-            href="/account"
+            href={session ? "/account" : "/login"}
             aria-label="Account"
             className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
           >

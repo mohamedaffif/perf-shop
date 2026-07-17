@@ -22,24 +22,37 @@ export const productImageInputSchema = z.object({
   order: z.number().int().nonnegative().default(0),
 });
 
-export const createProductSchema = z.object({
+const productFields = {
   name: z.string().min(1),
   brandId: z.string().min(1),
   categoryId: z.string().min(1),
   concentration: concentrationSchema,
   description: z.string().optional(),
+  topNotes: z.array(z.string()).optional(),
+  heartNotes: z.array(z.string()).optional(),
+  baseNotes: z.array(z.string()).optional(),
+  size: sizeSchema,
+  price: z.number().positive(),
+  stockQuantity: z.number().int().nonnegative().optional(),
+  status: productStatusSchema.optional(),
+  badges: z.array(badgeSchema).optional(),
+  images: z.array(productImageInputSchema).optional(),
+};
+
+export const createProductSchema = z.object(productFields).extend({
   topNotes: z.array(z.string()).default([]),
   heartNotes: z.array(z.string()).default([]),
   baseNotes: z.array(z.string()).default([]),
-  size: sizeSchema,
-  price: z.number().positive(),
   stockQuantity: z.number().int().nonnegative().default(0),
   status: productStatusSchema.default("DRAFT"),
   badges: z.array(badgeSchema).default([]),
   images: z.array(productImageInputSchema).default([]),
 });
 
-export const updateProductSchema = createProductSchema.partial();
+// Built from the raw (default-free) fields — .partial() on a schema with
+// .default() would still backfill omitted fields instead of leaving them
+// undefined, silently wiping data on partial updates.
+export const updateProductSchema = z.object(productFields).partial();
 
 export const productFiltersSchema = z.object({
   status: productStatusSchema.optional(),
