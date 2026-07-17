@@ -1,8 +1,8 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { Slot } from "radix-ui"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { Slot } from "radix-ui";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const typographyVariants = cva("text-foreground", {
   variants: {
@@ -41,9 +41,9 @@ const typographyVariants = cva("text-foreground", {
   defaultVariants: {
     variant: "body",
   },
-})
+});
 
-type TypographyVariant = NonNullable<VariantProps<typeof typographyVariants>["variant"]>
+type TypographyVariant = NonNullable<VariantProps<typeof typographyVariants>["variant"]>;
 
 const defaultElement: Record<TypographyVariant, React.ElementType> = {
   display: "h1",
@@ -59,7 +59,7 @@ const defaultElement: Record<TypographyVariant, React.ElementType> = {
   caption: "span",
   overline: "span",
   label: "label",
-}
+};
 
 function Typography({
   className,
@@ -71,10 +71,10 @@ function Typography({
   ...props
 }: React.ComponentProps<"p"> &
   VariantProps<typeof typographyVariants> & {
-    asChild?: boolean
-    as?: React.ElementType
+    asChild?: boolean;
+    as?: React.ElementType;
   }) {
-  const Comp = asChild ? Slot.Root : as ?? defaultElement[variant ?? "body"]
+  const Comp = asChild ? Slot.Root : (as ?? defaultElement[variant ?? "body"]);
 
   return (
     <Comp
@@ -83,7 +83,7 @@ function Typography({
       className={cn(typographyVariants({ variant, align, weight, className }))}
       {...props}
     />
-  )
+  );
 }
 
-export { Typography, typographyVariants }
+export { Typography, typographyVariants };

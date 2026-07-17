@@ -10,9 +10,7 @@ function buildWhere(filters: BrandFilters): Prisma.BrandWhereInput {
   };
 }
 
-export async function findMany(
-  filters: BrandFilters
-): Promise<{ items: Brand[]; total: number }> {
+export async function findMany(filters: BrandFilters): Promise<{ items: Brand[]; total: number }> {
   const where = buildWhere(filters);
   const { page = 1, pageSize = 20 } = filters;
 

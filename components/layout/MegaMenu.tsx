@@ -60,7 +60,7 @@ export function MegaMenu({ link }: { link: NavLink }) {
           onMouseEnter={show}
           onMouseLeave={hide}
         >
-          <div className="border-border bg-card shadow-(--shadow-card) grid grid-cols-[2fr_1fr] gap-6 rounded-xl border p-6">
+          <div className="border-border bg-card grid grid-cols-[2fr_1fr] gap-6 rounded-xl border p-6 shadow-(--shadow-card)">
             <div className="grid grid-cols-2 gap-6">
               {sections.map((section) => (
                 <div key={section.heading}>

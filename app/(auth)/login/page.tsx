@@ -40,22 +40,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
-      <h1 className="font-heading text-xl font-semibold text-card-foreground mb-6">Sign in</h1>
+    <div className="border-border bg-card rounded-lg border p-6">
+      <h1 className="font-heading text-card-foreground mb-6 text-xl font-semibold">Sign in</h1>
 
       <Button
         type="button"
         variant="outline"
-        className="w-full mb-4"
+        className="mb-4 w-full"
         onClick={() => signIn("google", { callbackUrl })}
       >
         Continue with Google
       </Button>
 
-      <div className="flex items-center gap-3 mb-4">
-        <div className="h-px flex-1 bg-border" />
-        <span className="text-xs text-muted-foreground">or</span>
-        <div className="h-px flex-1 bg-border" />
+      <div className="mb-4 flex items-center gap-3">
+        <div className="bg-border h-px flex-1" />
+        <span className="text-muted-foreground text-xs">or</span>
+        <div className="bg-border h-px flex-1" />
       </div>
 
       <form onSubmit={handleCredentialsSubmit} className="space-y-4">
@@ -81,14 +81,14 @@ export default function LoginPage() {
           />
         </div>
 
-        {error && <p className="text-sm text-danger-foreground">{error}</p>}
+        {error && <p className="text-danger-foreground text-sm">{error}</p>}
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Signing in…" : "Sign in"}
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-muted-foreground">
+      <p className="text-muted-foreground mt-6 text-center text-sm">
         Don&apos;t have an account?{" "}
         <Link href="/register" className="text-primary hover:underline">
           Register

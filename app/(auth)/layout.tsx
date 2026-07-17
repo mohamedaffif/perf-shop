@@ -29,11 +29,17 @@ export default function AuthLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", cormorantGaramond.variable, montserrat.variable, "font-sans")}
+      className={cn(
+        "h-full",
+        "antialiased",
+        cormorantGaramond.variable,
+        montserrat.variable,
+        "font-sans"
+      )}
     >
-      <body className="min-h-full bg-background text-foreground flex items-center justify-center p-6">
+      <body className="bg-background text-foreground flex min-h-full items-center justify-center p-6">
         <div className="w-full max-w-sm">
-          <p className="font-heading text-center text-2xl font-semibold tracking-wide text-foreground mb-8">
+          <p className="font-heading text-foreground mb-8 text-center text-2xl font-semibold tracking-wide">
             PERF SHOP
           </p>
           {children}

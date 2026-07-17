@@ -1,7 +1,7 @@
-import * as React from "react"
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
+import * as React from "react";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -12,7 +12,7 @@ function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
       className={cn("mx-auto flex w-full justify-center", className)}
       {...props}
     />
-  )
+  );
 }
 
 function PaginationContent({ className, ...props }: React.ComponentProps<"ul">) {
@@ -22,68 +22,51 @@ function PaginationContent({ className, ...props }: React.ComponentProps<"ul">) 
       className={cn("flex flex-row items-center gap-1", className)}
       {...props}
     />
-  )
+  );
 }
 
 function PaginationItem({ ...props }: React.ComponentProps<"li">) {
-  return <li data-slot="pagination-item" {...props} />
+  return <li data-slot="pagination-item" {...props} />;
 }
 
 type PaginationLinkProps = {
-  isActive?: boolean
-} & React.ComponentProps<"a">
+  isActive?: boolean;
+} & React.ComponentProps<"a">;
 
-function PaginationLink({
-  className,
-  isActive,
-  ...props
-}: PaginationLinkProps) {
+function PaginationLink({ className, isActive, ...props }: PaginationLinkProps) {
   return (
     <a
       aria-current={isActive ? "page" : undefined}
       data-slot="pagination-link"
       data-active={isActive}
       className={cn(
-        "flex size-11 items-center justify-center rounded-full border-b-2 border-transparent text-sm text-muted-foreground transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 hover:text-foreground data-[active=true]:border-primary data-[active=true]:font-semibold data-[active=true]:text-foreground",
+        "text-muted-foreground focus-visible:ring-ring/50 hover:text-foreground data-[active=true]:border-primary data-[active=true]:text-foreground flex size-11 items-center justify-center rounded-full border-b-2 border-transparent text-sm transition-colors outline-none focus-visible:ring-[3px] data-[active=true]:font-semibold",
         className
       )}
       {...props}
     />
-  )
+  );
 }
 
-function PaginationPrevious({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) {
+function PaginationPrevious({ className, ...props }: React.ComponentProps<typeof PaginationLink>) {
   return (
-    <PaginationLink
-      aria-label="Go to previous page"
-      className={className}
-      {...props}
-    >
+    <PaginationLink aria-label="Go to previous page" className={className} {...props}>
       <ChevronLeft className="size-4" />
       <span className="sr-only">Previous</span>
     </PaginationLink>
-  )
+  );
 }
 
-function PaginationNext({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) {
+function PaginationNext({ className, ...props }: React.ComponentProps<typeof PaginationLink>) {
   return (
     <PaginationLink aria-label="Go to next page" className={className} {...props}>
       <span className="sr-only">Next</span>
       <ChevronRight className="size-4" />
     </PaginationLink>
-  )
+  );
 }
 
-function PaginationEllipsis({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
+function PaginationEllipsis({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
       aria-hidden
@@ -94,7 +77,7 @@ function PaginationEllipsis({
       <MoreHorizontal className="size-4" />
       <span className="sr-only">More pages</span>
     </span>
-  )
+  );
 }
 
 export {
@@ -105,4 +88,4 @@ export {
   PaginationPrevious,
   PaginationNext,
   PaginationEllipsis,
-}
+};

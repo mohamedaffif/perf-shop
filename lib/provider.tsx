@@ -10,18 +10,14 @@ type ProvidersProps = {
   children: React.ReactNode;
 };
 
-export default function Providers({
-  children,
-}: ProvidersProps) {
+export default function Providers({ children }: ProvidersProps) {
   useEffect(() => {
     return setupListeners(store.dispatch);
   }, []);
 
   return (
     <SessionProvider>
-      <Provider store={store}>
-        {children}
-      </Provider>
+      <Provider store={store}>{children}</Provider>
     </SessionProvider>
   );
 }

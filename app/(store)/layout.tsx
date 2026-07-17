@@ -46,12 +46,10 @@ export default function RootLayout({
         "font-sans"
       )}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         <Navbar />
         <main className="flex-1">
-          <Providers>
-            {children}
-          </Providers>
+          <Providers>{children}</Providers>
         </main>
         <Footer />
       </body>

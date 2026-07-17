@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/prettierrc",
-  "plugins": ["prettier-plugin-tailwindcss"],
+  "plugins": ["prettier-plugin-prisma", "prettier-plugin-tailwindcss"],
   "printWidth": 100,
   "tabWidth": 2,
   "useTabs": false,

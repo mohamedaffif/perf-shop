@@ -1,11 +1,7 @@
 export type ProductStatus = "DRAFT" | "PUBLISHED";
 
 export type Concentration =
-  | "EXTRAIT_DE_PARFUM"
-  | "EAU_DE_PARFUM"
-  | "EAU_DE_TOILETTE"
-  | "EAU_DE_COLOGNE"
-  | "EAU_FRAICHE";
+  "EXTRAIT_DE_PARFUM" | "EAU_DE_PARFUM" | "EAU_DE_TOILETTE" | "EAU_DE_COLOGNE" | "EAU_FRAICHE";
 
 export type Badge = "NEW" | "BEST_SELLER" | "LIMITED_EDITION" | "SALE";
 

@@ -7,7 +7,11 @@ import type {
   UpdateProductInput,
 } from "./product.types";
 
-const productInclude = { images: true, brand: true, category: true } satisfies Prisma.ProductInclude;
+const productInclude = {
+  images: true,
+  brand: true,
+  category: true,
+} satisfies Prisma.ProductInclude;
 
 type ProductRow = Prisma.ProductGetPayload<{ include: typeof productInclude }>;
 
