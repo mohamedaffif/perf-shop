@@ -5,6 +5,15 @@ export type Concentration =
 
 export type Badge = "NEW" | "BEST_SELLER" | "LIMITED_EDITION" | "SALE";
 
+export type ScentFamily =
+  | "FLORAL"
+  | "ORIENTAL"
+  | "FRESH"
+  | "WOODY"
+  | "AROMATIC"
+  | "CITRUS"
+  | "SPICY";
+
 export type Size = "ML_50" | "ML_75" | "ML_100";
 
 export interface ProductImage {
@@ -36,6 +45,7 @@ export interface Product {
   categoryId: string;
   category: ProductCategory;
   concentration: Concentration;
+  scentFamily: ScentFamily;
   description: string | null;
   topNotes: string[];
   heartNotes: string[];
@@ -63,6 +73,7 @@ export interface CreateProductInput {
   brandId: string;
   categoryId: string;
   concentration: Concentration;
+  scentFamily: ScentFamily;
   description?: string;
   topNotes?: string[];
   heartNotes?: string[];
@@ -82,6 +93,7 @@ export interface ProductFilters {
   brandId?: string;
   categoryId?: string;
   concentration?: Concentration;
+  scentFamily?: ScentFamily;
   size?: Size;
   badge?: Badge;
   minPrice?: number;

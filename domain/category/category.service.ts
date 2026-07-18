@@ -30,6 +30,10 @@ export async function getCategory(id: string): Promise<Category> {
   return category;
 }
 
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  return categoryRepository.findBySlug(slug);
+}
+
 export async function createCategory(rawInput: unknown): Promise<Category> {
   const input = createCategorySchema.parse(rawInput);
   return categoryRepository.create(input);

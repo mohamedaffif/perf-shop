@@ -29,6 +29,16 @@ enum Concentration {
   EAU_FRAICHE
 }
 
+enum ScentFamily {
+  FLORAL
+  ORIENTAL
+  FRESH
+  WOODY
+  AROMATIC
+  CITRUS
+  SPICY
+}
+
 enum Badge {
   NEW
   BEST_SELLER
@@ -160,6 +170,8 @@ model Product {
   description String?
 
   concentration Concentration
+
+  scentFamily ScentFamily
 
   topNotes   String[]
   heartNotes String[]

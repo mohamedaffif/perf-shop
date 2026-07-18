@@ -24,17 +24,17 @@ export const NAV_LINKS: NavLink[] = [
         {
           heading: "Shop by Family",
           links: [
-            { label: "Floral", href: "/shop/for-her/floral" },
-            { label: "Oriental", href: "/shop/for-her/oriental" },
-            { label: "Fresh", href: "/shop/for-her/fresh" },
-            { label: "Woody", href: "/shop/for-her/woody" },
+            { label: "Floral", href: "/shop/for-her?scentFamily=FLORAL" },
+            { label: "Oriental", href: "/shop/for-her?scentFamily=ORIENTAL" },
+            { label: "Fresh", href: "/shop/for-her?scentFamily=FRESH" },
+            { label: "Woody", href: "/shop/for-her?scentFamily=WOODY" },
           ],
         },
         {
           heading: "Collections",
           links: [
-            { label: "New Arrivals", href: "/shop/for-her/new" },
-            { label: "Best Sellers", href: "/shop/for-her/best-sellers" },
+            { label: "New Arrivals", href: "/shop/for-her?badge=NEW" },
+            { label: "Best Sellers", href: "/shop/for-her?badge=BEST_SELLER" },
             { label: "Gift Sets", href: "/shop/for-her/gift-sets" },
             { label: "Travel Size", href: "/shop/for-her/travel-size" },
           ],
@@ -43,7 +43,7 @@ export const NAV_LINKS: NavLink[] = [
       featured: {
         title: "New In",
         description: "Discover this season's signature scent.",
-        href: "/shop/for-her/new",
+        href: "/shop/for-her?badge=NEW",
         cta: "Shop the edit",
       },
     },
@@ -56,17 +56,17 @@ export const NAV_LINKS: NavLink[] = [
         {
           heading: "Shop by Family",
           links: [
-            { label: "Woody", href: "/shop/for-him/woody" },
-            { label: "Aromatic", href: "/shop/for-him/aromatic" },
-            { label: "Citrus", href: "/shop/for-him/citrus" },
-            { label: "Spicy", href: "/shop/for-him/spicy" },
+            { label: "Woody", href: "/shop/for-him?scentFamily=WOODY" },
+            { label: "Aromatic", href: "/shop/for-him?scentFamily=AROMATIC" },
+            { label: "Citrus", href: "/shop/for-him?scentFamily=CITRUS" },
+            { label: "Spicy", href: "/shop/for-him?scentFamily=SPICY" },
           ],
         },
         {
           heading: "Collections",
           links: [
-            { label: "New Arrivals", href: "/shop/for-him/new" },
-            { label: "Best Sellers", href: "/shop/for-him/best-sellers" },
+            { label: "New Arrivals", href: "/shop/for-him?badge=NEW" },
+            { label: "Best Sellers", href: "/shop/for-him?badge=BEST_SELLER" },
             { label: "Gift Sets", href: "/shop/for-him/gift-sets" },
             { label: "Travel Size", href: "/shop/for-him/travel-size" },
           ],
@@ -75,7 +75,7 @@ export const NAV_LINKS: NavLink[] = [
       featured: {
         title: "Best Seller",
         description: "The fragrance everyone's asking about.",
-        href: "/shop/for-him/best-sellers",
+        href: "/shop/for-him?badge=BEST_SELLER",
         cta: "Shop the edit",
       },
     },

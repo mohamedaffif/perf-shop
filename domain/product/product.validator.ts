@@ -12,6 +12,16 @@ export const concentrationSchema = z.enum([
 
 export const badgeSchema = z.enum(["NEW", "BEST_SELLER", "LIMITED_EDITION", "SALE"]);
 
+export const scentFamilySchema = z.enum([
+  "FLORAL",
+  "ORIENTAL",
+  "FRESH",
+  "WOODY",
+  "AROMATIC",
+  "CITRUS",
+  "SPICY",
+]);
+
 export const sizeSchema = z.enum(["ML_50", "ML_75", "ML_100"]);
 
 export const productImageInputSchema = z.object({
@@ -27,6 +37,7 @@ const productFields = {
   brandId: z.string().min(1),
   categoryId: z.string().min(1),
   concentration: concentrationSchema,
+  scentFamily: scentFamilySchema,
   description: z.string().optional(),
   topNotes: z.array(z.string()).optional(),
   heartNotes: z.array(z.string()).optional(),
@@ -59,6 +70,7 @@ export const productFiltersSchema = z.object({
   brandId: z.string().optional(),
   categoryId: z.string().optional(),
   concentration: concentrationSchema.optional(),
+  scentFamily: scentFamilySchema.optional(),
   size: sizeSchema.optional(),
   badge: badgeSchema.optional(),
   minPrice: z.coerce.number().nonnegative().optional(),
