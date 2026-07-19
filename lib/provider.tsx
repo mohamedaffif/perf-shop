@@ -2,9 +2,10 @@
 
 import { useEffect } from "react";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { SessionProvider } from "next-auth/react";
-import { store } from "./store";
+import { store, persistor } from "./store";
 
 type ProvidersProps = {
   children: React.ReactNode;
@@ -17,7 +18,11 @@ export default function Providers({ children }: ProvidersProps) {
 
   return (
     <SessionProvider>
-      <Provider store={store}>{children}</Provider>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          {children}
+        </PersistGate>
+      </Provider>
     </SessionProvider>
   );
 }

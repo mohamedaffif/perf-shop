@@ -26,6 +26,7 @@ import type {
   Product,
   Size,
 } from "@/domain/product/product.types";
+import { useCart } from "@/hooks/useCart";
 
 interface ProductCardProps {
   product: Product;
@@ -57,6 +58,7 @@ const BADGE_META: Record<ProductBadge, { icon: LucideIcon; label: string }> = {
 export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductCardProps) {
   const [fav, setFav] = useState(false);
   const [added, setAdded] = useState(false);
+  const { addToCart } = useCart();
 
   const image = product.images.find((img) => img.isPrimary) ?? product.images[0];
   const notes = [...product.topNotes, ...product.heartNotes, ...product.baseNotes]
@@ -73,7 +75,11 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
 
   function handleAddToCart() {
     setAdded(true);
-    onAddToCart?.(product);
+    if (onAddToCart) {
+      onAddToCart(product);
+    } else {
+      addToCart(product);
+    }
     window.setTimeout(() => setAdded(false), 1600);
   }
 

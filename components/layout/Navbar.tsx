@@ -2,7 +2,7 @@ import { Search, ShieldCheck, ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
 
 import { auth } from "@/auth";
-import { Badge } from "@/components/ui/badge";
+import { CartBadge } from "@/components/cart/CartBadge";
 import { MegaMenu } from "./MegaMenu";
 import { MobileMenu } from "./MobileMenu";
 
@@ -170,9 +170,7 @@ export async function Navbar() {
             className="text-foreground/80 hover:bg-muted hover:text-foreground relative inline-flex size-9 items-center justify-center rounded-full transition-colors"
           >
             <ShoppingBag className="size-4" />
-            <Badge className="text-overline absolute -top-1 -right-1 size-4 justify-center rounded-full p-0">
-              0
-            </Badge>
+            <CartBadge />
           </Link>
         </div>
       </div>

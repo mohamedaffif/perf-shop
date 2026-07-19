@@ -47,11 +47,11 @@ export default function RootLayout({
       )}
     >
       <body className="flex min-h-full flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <Providers>{children}</Providers>
-        </main>
-        <Footer />
+        <Providers>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
