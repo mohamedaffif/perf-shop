@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { Reveal } from "@/components/motion/Reveal";
+
 const CATEGORY_TILES = [
   { label: "For Her", href: "/shop/for-her" },
   { label: "For Him", href: "/shop/for-him" },
@@ -10,7 +12,7 @@ const CATEGORY_TILES = [
 export function CategoryTiles() {
   return (
     <section className="px-4 py-16 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <Reveal stagger className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {CATEGORY_TILES.map((tile) => (
           <Link
             key={tile.href}
@@ -20,7 +22,7 @@ export function CategoryTiles() {
             {tile.label}
           </Link>
         ))}
-      </div>
+      </Reveal>
     </section>
   );
 }

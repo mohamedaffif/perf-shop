@@ -1,5 +1,6 @@
 import { ProductCard } from "@/components/product/ProductCard";
 import { Typography } from "@/components/ui/typography";
+import { Reveal } from "@/components/motion/Reveal";
 import { listProducts } from "@/domain/product/product.service";
 
 export async function FeaturedProducts() {
@@ -10,11 +11,11 @@ export async function FeaturedProducts() {
       <Typography variant="h2" align="center" className="mb-8">
         Featured
       </Typography>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <Reveal stagger className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {items.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
-      </div>
+      </Reveal>
     </section>
   );
 }

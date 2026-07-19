@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product/ProductCard";
 import { FilterSidebar } from "@/components/shop/FilterSidebar";
 import { Typography } from "@/components/ui/typography";
+import { Reveal } from "@/components/motion/Reveal";
 import { listBrands } from "@/domain/brand";
 import { getCategoryBySlug } from "@/domain/category";
 import { listProducts } from "@/domain/product";
@@ -57,11 +58,11 @@ export default async function ShopCategoryPage({ params, searchParams }: ShopCat
 
         <div className="flex-1">
           {items.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <Reveal stagger className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
-            </div>
+            </Reveal>
           ) : (
             <Typography variant="body" className="text-muted-foreground">
               No fragrances match these filters.

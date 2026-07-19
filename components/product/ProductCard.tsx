@@ -27,6 +27,7 @@ import type {
   Size,
 } from "@/domain/product/product.types";
 import { useCart } from "@/hooks/useCart";
+import { usePulse } from "@/hooks/usePulse";
 
 interface ProductCardProps {
   product: Product;
@@ -59,6 +60,10 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
   const [fav, setFav] = useState(false);
   const [added, setAdded] = useState(false);
   const { addToCart } = useCart();
+  const addButtonRef = usePulse<HTMLButtonElement>([added], {
+    from: 0.94,
+    shouldPulse: () => added,
+  });
 
   const image = product.images.find((img) => img.isPrimary) ?? product.images[0];
   const notes = [...product.topNotes, ...product.heartNotes, ...product.baseNotes]
@@ -175,7 +180,13 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
         </span>
 
         <div className="flex flex-col gap-2.5 pt-0.5">
-          <Button type="button" variant="secondary" onClick={handleAddToCart} className="w-full gap-1.5">
+          <Button
+            ref={addButtonRef}
+            type="button"
+            variant="secondary"
+            onClick={handleAddToCart}
+            className="w-full gap-1.5"
+          >
             {added ? (
               <>
                 <Check className="size-3.5" />
