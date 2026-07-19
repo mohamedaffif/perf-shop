@@ -6,6 +6,7 @@ import { Typography } from "@/components/ui/typography";
 import { listBrands } from "@/domain/brand";
 import { getCategoryBySlug } from "@/domain/category";
 import { listProducts } from "@/domain/product";
+import { parseShopFilters } from "@/lib/shop-filters";
 
 const CATEGORY_LABELS: Record<string, string> = {
   "for-her": "For Her",
@@ -26,10 +27,6 @@ type ShopCategoryPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-function first(value: string | string[] | undefined): string | undefined {
-  return Array.isArray(value) ? value[0] : value;
-}
-
 export default async function ShopCategoryPage({ params, searchParams }: ShopCategoryPageProps) {
   const { category } = await params;
 
@@ -44,14 +41,7 @@ export default async function ShopCategoryPage({ params, searchParams }: ShopCat
   const { items } = await listProducts({
     status: "PUBLISHED",
     categoryId: categoryRecord?.id,
-    brandId: first(sp.brandId),
-    concentration: first(sp.concentration),
-    scentFamily: first(sp.scentFamily),
-    size: first(sp.size),
-    badge: first(sp.badge),
-    minPrice: first(sp.minPrice),
-    maxPrice: first(sp.maxPrice),
-    page: first(sp.page),
+    ...parseShopFilters(sp),
   });
 
   const { items: brands } = await listBrands({ pageSize: 100 });

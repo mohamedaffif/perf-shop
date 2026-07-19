@@ -1,18 +1,16 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Typography } from "@/components/ui/typography";
 import type { Brand } from "@/domain/brand/brand.types";
 import type { Badge, Concentration, ScentFamily, Size } from "@/domain/product/product.types";
+import { useQueryParamFilter } from "@/hooks/useQueryParamFilter";
+import { ALL_VALUE, PRICE_BUCKETS, currentPriceBucketId } from "@/lib/shop-filters";
 
 interface FilterSidebarProps {
   brands: Brand[];
 }
-
-const ALL_VALUE = "all";
 
 const CONCENTRATION_OPTIONS: { value: Concentration; label: string }[] = [
   { value: "EXTRAIT_DE_PARFUM", label: "Extrait de Parfum" },
@@ -45,49 +43,12 @@ const BADGE_OPTIONS: { value: Badge; label: string }[] = [
   { value: "SALE", label: "Sale" },
 ];
 
-const PRICE_BUCKETS = [
-  { id: "under-40000", label: "Under KES 40,000", min: undefined, max: "40000" },
-  { id: "40000-55000", label: "KES 40,000 – 55,000", min: "40000", max: "55000" },
-  { id: "55000-65000", label: "KES 55,000 – 65,000", min: "55000", max: "65000" },
-  { id: "over-65000", label: "Over KES 65,000", min: "65000", max: undefined },
-] as const;
-
-function currentPriceBucketId(minPrice: string | null, maxPrice: string | null): string {
-  const match = PRICE_BUCKETS.find(
-    (bucket) => (bucket.min ?? null) === minPrice && (bucket.max ?? null) === maxPrice
-  );
-  return match?.id ?? ALL_VALUE;
-}
-
 export function FilterSidebar({ brands }: FilterSidebarProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  function setParam(key: string, value: string) {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (value === ALL_VALUE) {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-    params.delete("page");
-
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  }
+  const { searchParams, setParam, setParams } = useQueryParamFilter();
 
   function setPriceBucket(bucketId: string) {
-    const params = new URLSearchParams(searchParams.toString());
     const bucket = PRICE_BUCKETS.find((b) => b.id === bucketId);
-
-    params.delete("minPrice");
-    params.delete("maxPrice");
-    if (bucket?.min) params.set("minPrice", bucket.min);
-    if (bucket?.max) params.set("maxPrice", bucket.max);
-    params.delete("page");
-
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    setParams({ minPrice: bucket?.min, maxPrice: bucket?.max });
   }
 
   return (
