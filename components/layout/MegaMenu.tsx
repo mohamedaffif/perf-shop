@@ -2,32 +2,16 @@
 
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import * as React from "react";
 
+import { useDisclosure } from "@/hooks/useDisclosure";
 import { cn } from "@/lib/utils";
 import type { NavLink } from "./Navbar";
 
 export function MegaMenu({ link }: { link: NavLink }) {
-  const [open, setOpen] = React.useState(false);
-  const closeTimeout = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const show = () => {
-    if (closeTimeout.current) clearTimeout(closeTimeout.current);
-    setOpen(true);
-  };
-
-  const hide = () => {
-    closeTimeout.current = setTimeout(() => setOpen(false), 120);
-  };
-
-  React.useEffect(() => {
-    if (!open) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
+  const { isOpen: open, open: show, close: hide, toggle } = useDisclosure({
+    closeDelay: 120,
+    closeOnEscape: true,
+  });
 
   if (!link.megaMenu) {
     return (
@@ -47,7 +31,7 @@ export function MegaMenu({ link }: { link: NavLink }) {
       <button
         type="button"
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggle}
         className="text-foreground/80 hover:text-foreground flex items-center gap-1 text-sm font-medium tracking-[0.2em] uppercase transition-colors"
       >
         {link.label}
@@ -72,7 +56,7 @@ export function MegaMenu({ link }: { link: NavLink }) {
                       <li key={item.href}>
                         <Link
                           href={item.href}
-                          onClick={() => setOpen(false)}
+                          onClick={hide}
                           className="text-card-foreground/80 hover:text-primary text-sm transition-colors"
                         >
                           {item.label}
@@ -87,7 +71,7 @@ export function MegaMenu({ link }: { link: NavLink }) {
             {featured && (
               <Link
                 href={featured.href}
-                onClick={() => setOpen(false)}
+                onClick={hide}
                 className="border-border bg-muted hover:border-primary/40 flex flex-col justify-end rounded-lg border p-4 transition-colors"
               >
                 <p className="text-primary text-xs font-semibold tracking-[0.15em] uppercase">

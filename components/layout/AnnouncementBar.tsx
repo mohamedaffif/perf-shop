@@ -3,6 +3,9 @@
 import * as React from "react";
 import { X } from "lucide-react";
 
+import { useDisclosure } from "@/hooks/useDisclosure";
+import { useInterval } from "@/hooks/useInterval";
+
 const MESSAGES = [
   "Free shipping on all orders over $75",
   "New arrivals just dropped — shop the latest scents",
@@ -10,16 +13,13 @@ const MESSAGES = [
 ];
 
 export function AnnouncementBar() {
-  const [visible, setVisible] = React.useState(true);
+  const { isOpen: visible, close } = useDisclosure({ defaultOpen: true });
   const [index, setIndex] = React.useState(0);
 
-  React.useEffect(() => {
-    if (!visible) return;
-    const interval = setInterval(() => {
-      setIndex((i) => (i + 1) % MESSAGES.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [visible]);
+  useInterval(
+    () => setIndex((i) => (i + 1) % MESSAGES.length),
+    visible ? 4000 : null
+  );
 
   if (!visible) return null;
 
@@ -29,7 +29,7 @@ export function AnnouncementBar() {
       <button
         type="button"
         aria-label="Dismiss announcement"
-        onClick={() => setVisible(false)}
+        onClick={close}
         className="hover:bg-primary-foreground/10 absolute right-3 inline-flex size-6 items-center justify-center rounded-full transition-colors"
       >
         <X className="size-3.5" />

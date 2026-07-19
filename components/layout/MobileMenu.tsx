@@ -5,15 +5,16 @@ import Link from "next/link";
 import { Dialog } from "radix-ui";
 import { ChevronDown, Menu, User, X } from "lucide-react";
 
+import { useDisclosure } from "@/hooks/useDisclosure";
 import { cn } from "@/lib/utils";
 import type { NavLink } from "./Navbar";
 
 export function MobileMenu({ links }: { links: NavLink[] }) {
-  const [open, setOpen] = React.useState(false);
+  const { isOpen: open, close, setIsOpen } = useDisclosure();
   const [expanded, setExpanded] = React.useState<string | null>(null);
 
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
+    <Dialog.Root open={open} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>
         <button
           type="button"
@@ -52,7 +53,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
                   <Link
                     key={link.href}
                     href={link.href}
-                    onClick={() => setOpen(false)}
+                    onClick={close}
                     className="text-foreground hover:bg-muted rounded-md px-3 py-3 text-sm font-medium tracking-[0.2em] uppercase transition-colors"
                   >
                     {link.label}
@@ -86,7 +87,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
                               <li key={item.href}>
                                 <Link
                                   href={item.href}
-                                  onClick={() => setOpen(false)}
+                                  onClick={close}
                                   className="text-foreground/80 hover:text-primary text-sm transition-colors"
                                 >
                                   {item.label}
@@ -106,7 +107,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
           <div className="border-border mt-auto flex items-center gap-2 border-t pt-4">
             <Link
               href="/account"
-              onClick={() => setOpen(false)}
+              onClick={close}
               className="text-foreground hover:bg-muted flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
               <User className="size-4" />
