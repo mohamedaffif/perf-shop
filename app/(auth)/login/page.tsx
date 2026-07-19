@@ -8,6 +8,7 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAsyncForm } from "@/hooks/useAsyncForm";
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
@@ -15,29 +16,20 @@ export default function LoginPage() {
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  async function handleCredentialsSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setIsSubmitting(true);
-
+  const { error, isSubmitting, handleSubmit } = useAsyncForm(async () => {
     const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
 
-    setIsSubmitting(false);
-
     if (result?.error) {
-      setError("Invalid email or password.");
-      return;
+      return { error: "Invalid email or password." };
     }
 
     window.location.href = callbackUrl;
-  }
+  });
 
   return (
     <div className="border-border bg-card rounded-lg border p-6">
@@ -58,7 +50,7 @@ export default function LoginPage() {
         <div className="bg-border h-px flex-1" />
       </div>
 
-      <form onSubmit={handleCredentialsSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
           <Input

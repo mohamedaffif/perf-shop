@@ -7,19 +7,14 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAsyncForm } from "@/hooks/useAsyncForm";
 
 export default function RegisterPage() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setIsSubmitting(true);
-
+  const { error, isSubmitting, handleSubmit } = useAsyncForm(async () => {
     const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -28,22 +23,17 @@ export default function RegisterPage() {
 
     if (!response.ok) {
       const body = await response.json().catch(() => null);
-      setError(body?.error ?? "Something went wrong. Please try again.");
-      setIsSubmitting(false);
-      return;
+      return { error: body?.error ?? "Something went wrong. Please try again." };
     }
 
     const result = await signIn("credentials", { email, password, redirect: false });
 
-    setIsSubmitting(false);
-
     if (result?.error) {
-      setError("Account created, but sign-in failed. Please sign in manually.");
-      return;
+      return { error: "Account created, but sign-in failed. Please sign in manually." };
     }
 
     window.location.href = "/";
-  }
+  });
 
   return (
     <div className="border-border bg-card rounded-lg border p-6">
