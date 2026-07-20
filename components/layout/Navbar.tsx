@@ -1,8 +1,8 @@
-import { Search, ShieldCheck, ShoppingBag, User } from "lucide-react";
+import { Search, ShieldCheck, User } from "lucide-react";
 import Link from "next/link";
 
 import { auth } from "@/auth";
-import { CartBadge } from "@/components/cart/CartBadge";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { MegaMenu } from "./MegaMenu";
 import { MobileMenu } from "./MobileMenu";
 
@@ -164,14 +164,7 @@ export async function Navbar() {
           >
             <User className="size-4" />
           </Link>
-          <Link
-            href="/cart"
-            aria-label="Cart"
-            className="text-foreground/80 hover:bg-muted hover:text-foreground relative inline-flex size-9 items-center justify-center rounded-full transition-colors"
-          >
-            <ShoppingBag className="size-4" />
-            <CartBadge />
-          </Link>
+          <CartDrawer />
         </div>
       </div>
     </header>
