@@ -2,32 +2,16 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import {
-  Check,
-  Crown,
-  Droplet,
-  FlaskConical,
-  Gem,
-  Heart,
-  Leaf,
-  Sparkles,
-  ShoppingCart,
-  Tag as TagIcon,
-  type LucideIcon,
-} from "lucide-react";
+import { Heart } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn, formatPrice } from "@/lib/utils";
-import type {
-  Badge as ProductBadge,
-  Concentration,
-  Product,
-  Size,
-} from "@/domain/product/product.types";
-import { useCart } from "@/hooks/useCart";
-import { usePulse } from "@/hooks/usePulse";
+import type { Product } from "@/domain/product/product.types";
+import { AddToCartButton } from "@/components/product/AddToCartButton";
+import { ProductDetailsDialog } from "@/components/product/ProductDetailsDialog";
+import { BADGE_META } from "@/components/product/product-meta";
 
 interface ProductCardProps {
   product: Product;
@@ -35,57 +19,16 @@ interface ProductCardProps {
   onToggleWishlist?: (product: Product, active: boolean) => void;
 }
 
-const SIZE_LABELS: Record<Size, string> = {
-  ML_50: "50ML",
-  ML_75: "75ML",
-  ML_100: "100ML",
-};
-
-const CONCENTRATION_LABELS: Record<Concentration, { oil: string; longevity: string }> = {
-  EXTRAIT_DE_PARFUM: { oil: "20-30% Oil", longevity: "Long Lasting" },
-  EAU_DE_PARFUM: { oil: "15-20% Oil", longevity: "Long Lasting" },
-  EAU_DE_TOILETTE: { oil: "5-15% Oil", longevity: "Moderate" },
-  EAU_DE_COLOGNE: { oil: "2-4% Oil", longevity: "Light" },
-  EAU_FRAICHE: { oil: "1-3% Oil", longevity: "Light" },
-};
-
-const BADGE_META: Record<ProductBadge, { icon: LucideIcon; label: string }> = {
-  NEW: { icon: Sparkles, label: "New" },
-  BEST_SELLER: { icon: Crown, label: "Best Seller" },
-  LIMITED_EDITION: { icon: Gem, label: "Limited Edition" },
-  SALE: { icon: TagIcon, label: "Sale" },
-};
-
 export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductCardProps) {
   const [fav, setFav] = useState(false);
-  const [added, setAdded] = useState(false);
-  const { addToCart } = useCart();
-  const addButtonRef = usePulse<HTMLButtonElement>([added], {
-    from: 0.94,
-    shouldPulse: () => added,
-  });
 
   const image = product.images.find((img) => img.isPrimary) ?? product.images[0];
-  const notes = [...product.topNotes, ...product.heartNotes, ...product.baseNotes]
-    .slice(0, 4)
-    .join(", ");
-  const { oil, longevity } = CONCENTRATION_LABELS[product.concentration];
   const primaryBadge = product.badges[0];
 
   function handleToggleFav() {
     const next = !fav;
     setFav(next);
     onToggleWishlist?.(product, next);
-  }
-
-  function handleAddToCart() {
-    setAdded(true);
-    if (onAddToCart) {
-      onAddToCart(product);
-    } else {
-      addToCart(product);
-    }
-    window.setTimeout(() => setAdded(false), 1600);
   }
 
   return (
@@ -148,84 +91,14 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
           <h3 className="font-heading text-2xl text-foreground">{product.name}</h3>
         </div>
 
-        {notes ? <p className="text-sm leading-relaxed text-muted-foreground">{notes}</p> : null}
-
-        <div className="border-t border-border" />
-
-        <div className="grid grid-cols-3">
-          <div className="flex flex-col items-center gap-2 border-r border-border px-1.5">
-            <FlaskConical className="size-4.5 text-primary" />
-            <span className="text-center text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
-              {SIZE_LABELS[product.size]}
-            </span>
-          </div>
-          <div className="flex flex-col items-center gap-2 border-r border-border px-1.5">
-            <Leaf className="size-4.5 text-primary" />
-            <span className="text-center text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
-              {longevity}
-            </span>
-          </div>
-          <div className="flex flex-col items-center gap-2 px-1.5">
-            <Droplet className="size-4.5 text-primary" />
-            <span className="text-center text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
-              {oil}
-            </span>
-          </div>
-        </div>
-
-        <div className="border-t border-border" />
-
         <span className="font-heading text-xl font-semibold text-foreground">
           {formatPrice(product.price)}
         </span>
 
-        <div className="flex flex-col gap-2.5 pt-0.5">
-          <Button
-            ref={addButtonRef}
-            type="button"
-            variant="secondary"
-            onClick={handleAddToCart}
-            className="w-full gap-1.5"
-          >
-            {added ? (
-              <>
-                <Check className="size-3.5" />
-                Added
-              </>
-            ) : (
-              <>
-                <ShoppingCart className="size-3.5" />
-                Add to Cart
-              </>
-            )}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full border-primary/60 text-primary hover:bg-primary/10"
-          >
-            View Details
-          </Button>
+        <div className="mt-auto flex flex-col gap-2.5 pt-0.5">
+          <AddToCartButton product={product} onAddToCart={onAddToCart} className="w-full" />
+          <ProductDetailsDialog product={product} onAddToCart={onAddToCart} />
         </div>
-
-        {product.badges.length > 0 ? (
-          <div className="mt-auto flex flex-wrap gap-2.5 pt-1">
-            {product.badges.map((badge) => {
-              const { icon: Icon, label } = BADGE_META[badge];
-              return (
-                <div
-                  key={badge}
-                  className="flex items-center gap-1.5 rounded-lg border border-primary/40 px-3 py-2"
-                >
-                  <Icon className="size-3.5 text-primary" />
-                  <span className="text-[10px] font-semibold tracking-wide text-foreground uppercase">
-                    {label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        ) : null}
       </div>
     </Card>
   );
