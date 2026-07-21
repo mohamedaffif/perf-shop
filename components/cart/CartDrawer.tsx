@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Minus, Plus, ShoppingBag, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetFooter,
   SheetHeader,
@@ -115,6 +117,11 @@ export function CartDrawer() {
               <span className="font-semibold">Subtotal</span>
               <span className="font-heading text-lg font-semibold">{formatPrice(subtotal)}</span>
             </div>
+            <SheetClose asChild>
+              <Button asChild className="w-full">
+                <Link href="/checkout">Checkout</Link>
+              </Button>
+            </SheetClose>
           </SheetFooter>
         ) : null}
       </SheetContent>
