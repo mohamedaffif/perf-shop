@@ -1,8 +1,9 @@
-import { Search, ShieldCheck, User } from "lucide-react";
+import { ShieldCheck, User } from "lucide-react";
 import Link from "next/link";
 
 import { auth } from "@/auth";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { SearchDialog } from "@/components/search/SearchDialog";
 import { MegaMenu } from "./MegaMenu";
 import { MobileMenu } from "./MobileMenu";
 
@@ -141,13 +142,7 @@ export async function Navbar() {
         </nav>
 
         <div className="flex items-center gap-1">
-          <button
-            type="button"
-            aria-label="Search"
-            className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
-          >
-            <Search className="size-4" />
-          </button>
+          <SearchDialog />
           {(role === "STAFF" || role === "ADMIN") && (
             <Link
               href="/admin"

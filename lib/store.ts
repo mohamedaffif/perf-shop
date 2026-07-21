@@ -14,6 +14,7 @@ import { uploadApi } from "./api/uploadApi";
 import { productsApi } from "./api/productsApi";
 import { brandsApi } from "./api/brandsApi";
 import { categoriesApi } from "./api/categoriesApi";
+import { searchApi } from "./api/searchApi";
 import cartReducer from "@/redux/slices/cartSlice";
 
 const persistedCartReducer = persistReducer({ key: "cart", storage }, cartReducer);
@@ -25,6 +26,7 @@ export const store = configureStore({
     [productsApi.reducerPath]: productsApi.reducer,
     [brandsApi.reducerPath]: brandsApi.reducer,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
+    [searchApi.reducerPath]: searchApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -35,7 +37,8 @@ export const store = configureStore({
       uploadApi.middleware,
       productsApi.middleware,
       brandsApi.middleware,
-      categoriesApi.middleware
+      categoriesApi.middleware,
+      searchApi.middleware
     ),
 });
 

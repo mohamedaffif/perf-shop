@@ -72,6 +72,24 @@ export async function findMany(
   return { items: rows.map(toProduct), total };
 }
 
+export async function searchPublished(query: string, limit: number): Promise<Product[]> {
+  const rows = await prisma.product.findMany({
+    where: {
+      status: "PUBLISHED",
+      OR: [
+        { name: { contains: query, mode: "insensitive" } },
+        { description: { contains: query, mode: "insensitive" } },
+        { brand: { name: { contains: query, mode: "insensitive" } } },
+      ],
+    },
+    include: productInclude,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return rows.map(toProduct);
+}
+
 export async function findById(id: string): Promise<Product | null> {
   const row = await prisma.product.findUnique({
     where: { id },

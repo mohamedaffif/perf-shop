@@ -20,6 +20,10 @@ export async function listProducts(rawFilters: unknown): Promise<PaginatedProduc
   return { items, total, page: filters.page, pageSize: filters.pageSize };
 }
 
+export async function searchProducts(query: string, limit = 8): Promise<Product[]> {
+  return productRepository.searchPublished(query, limit);
+}
+
 export async function getProduct(id: string): Promise<Product> {
   const product = await productRepository.findById(id);
 
