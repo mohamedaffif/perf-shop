@@ -21,6 +21,7 @@ export interface PlaceOrderInput {
   shippingState: string;
   shippingPostalCode: string;
   shippingCountry: string;
+  couponCode?: string;
   items: OrderLineItemInput[];
 }
 
@@ -35,6 +36,20 @@ export interface OrderItem {
   unitPrice: number;
   quantity: number;
   lineTotal: number;
+}
+
+export interface OrderFilters {
+  userId?: string;
+  status?: OrderStatus;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface PaginatedOrders {
+  items: Order[];
+  total: number;
+  page: number;
+  pageSize: number;
 }
 
 export interface Order {

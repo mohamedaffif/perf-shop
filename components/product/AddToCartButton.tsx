@@ -24,6 +24,8 @@ export function AddToCartButton({ product, onAddToCart, size, className }: AddTo
     shouldPulse: () => added,
   });
 
+  const outOfStock = product.stockQuantity <= 0;
+
   function handleAddToCart() {
     setAdded(true);
     if (onAddToCart) {
@@ -41,9 +43,12 @@ export function AddToCartButton({ product, onAddToCart, size, className }: AddTo
       variant="secondary"
       size={size}
       onClick={handleAddToCart}
+      disabled={outOfStock}
       className={className}
     >
-      {added ? (
+      {outOfStock ? (
+        "Out of Stock"
+      ) : added ? (
         <>
           <Check className="size-3.5" />
           Added

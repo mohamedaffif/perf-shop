@@ -36,8 +36,8 @@ export const NAV_LINKS: NavLink[] = [
           links: [
             { label: "New Arrivals", href: "/shop/for-her?badge=NEW" },
             { label: "Best Sellers", href: "/shop/for-her?badge=BEST_SELLER" },
-            { label: "Gift Sets", href: "/shop/for-her/gift-sets" },
-            { label: "Travel Size", href: "/shop/for-her/travel-size" },
+            { label: "Gift Sets", href: "/shop/gift-sets" },
+            { label: "Travel Size", href: "/shop/for-her?size=ML_50" },
           ],
         },
       ],
@@ -68,8 +68,8 @@ export const NAV_LINKS: NavLink[] = [
           links: [
             { label: "New Arrivals", href: "/shop/for-him?badge=NEW" },
             { label: "Best Sellers", href: "/shop/for-him?badge=BEST_SELLER" },
-            { label: "Gift Sets", href: "/shop/for-him/gift-sets" },
-            { label: "Travel Size", href: "/shop/for-him/travel-size" },
+            { label: "Gift Sets", href: "/shop/gift-sets" },
+            { label: "Travel Size", href: "/shop/for-him?size=ML_50" },
           ],
         },
       ],
@@ -115,7 +115,7 @@ export const NAV_LINKS: NavLink[] = [
       },
     },
   },
-  { label: "Sale", href: "/shop/sale" },
+  { label: "Sale", href: "/shop?badge=SALE" },
 ];
 
 export async function Navbar() {

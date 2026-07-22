@@ -3,10 +3,9 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
-import { SIZE_LABELS } from "@/components/product/product-meta";
+import { OrderSummaryCard } from "@/components/order/OrderSummaryCard";
 import { getOrderByOrderNumber, OrderNotFoundError } from "@/domain/order";
 import { buildOrderWhatsAppUrl } from "@/lib/whatsapp";
-import { formatPrice } from "@/lib/utils";
 
 type OrderConfirmationPageProps = {
   params: Promise<{ orderNumber: string }>;
@@ -32,22 +31,8 @@ export default async function OrderConfirmationPage({ params }: OrderConfirmatio
         received and is <span className="font-semibold">pending payment confirmation</span>.
       </p>
 
-      <div className="border-border mt-8 divide-y rounded-lg border">
-        {order.items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between gap-4 p-4">
-            <div>
-              <p className="text-sm font-medium">{item.productName}</p>
-              <p className="text-muted-foreground text-xs">
-                {SIZE_LABELS[item.productSize]} · Qty {item.quantity}
-              </p>
-            </div>
-            <span className="text-sm font-semibold">{formatPrice(item.lineTotal)}</span>
-          </div>
-        ))}
-        <div className="flex items-center justify-between p-4">
-          <span className="font-semibold">Total</span>
-          <span className="font-heading text-lg font-semibold">{formatPrice(order.total)}</span>
-        </div>
+      <div className="mt-8">
+        <OrderSummaryCard order={order} />
       </div>
 
       {whatsappUrl ? (

@@ -3,12 +3,30 @@
 import Image from "next/image";
 
 import { formatPrice } from "@/lib/utils";
+import { calculateShipping, calculateTax } from "@/lib/pricing";
 import type { Size } from "@/domain/product/product.types";
 import { SIZE_LABELS } from "@/components/product/product-meta";
+import { CouponInput } from "@/components/checkout/CouponInput";
 import { useCart } from "@/hooks/useCart";
 
-export function CheckoutSummary() {
+interface CheckoutSummaryProps {
+  couponCode: string | null;
+  discountAmount: number;
+  onApplyCoupon: (code: string, discountAmount: number) => void;
+  onRemoveCoupon: () => void;
+}
+
+export function CheckoutSummary({
+  couponCode,
+  discountAmount,
+  onApplyCoupon,
+  onRemoveCoupon,
+}: CheckoutSummaryProps) {
   const { items, subtotal } = useCart();
+
+  const shippingCost = calculateShipping(subtotal);
+  const taxAmount = calculateTax(subtotal - discountAmount);
+  const total = Number((subtotal + shippingCost + taxAmount - discountAmount).toFixed(2));
 
   return (
     <div className="border-border h-fit rounded-lg border p-4">
@@ -45,10 +63,40 @@ export function CheckoutSummary() {
         ))}
       </div>
 
+      <div className="border-border mt-4 border-t pt-4">
+        <CouponInput
+          subtotal={subtotal}
+          appliedCode={couponCode}
+          onApply={onApplyCoupon}
+          onRemove={onRemoveCoupon}
+        />
+      </div>
+
+      <div className="mt-4 flex flex-col gap-2 text-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Subtotal</span>
+          <span>{formatPrice(subtotal)}</span>
+        </div>
+        {discountAmount > 0 ? (
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">Discount</span>
+            <span>-{formatPrice(discountAmount)}</span>
+          </div>
+        ) : null}
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Shipping</span>
+          <span>{shippingCost > 0 ? formatPrice(shippingCost) : "Free"}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Tax</span>
+          <span>{formatPrice(taxAmount)}</span>
+        </div>
+      </div>
+
       <div className="border-border mt-4 flex items-center justify-between border-t pt-4">
         <span className="text-foreground font-semibold">Total</span>
         <span className="font-heading text-foreground text-lg font-semibold">
-          {formatPrice(subtotal)}
+          {formatPrice(total)}
         </span>
       </div>
     </div>

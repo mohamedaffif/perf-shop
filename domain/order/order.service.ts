@@ -1,9 +1,11 @@
 import { randomBytes } from "crypto";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { getProduct } from "@/domain/product";
+import { validateCouponForOrder } from "@/domain/coupon";
+import { calculateShipping, calculateTax } from "@/lib/pricing";
 import * as orderRepository from "./order.repository";
-import { placeOrderSchema } from "./order.validator";
-import type { Order } from "./order.types";
+import { orderFiltersSchema, placeOrderSchema, updateOrderStatusSchema } from "./order.validator";
+import type { Order, PaginatedOrders } from "./order.types";
 
 export class OutOfStockError extends Error {
   constructor(productName: string) {
@@ -16,6 +18,13 @@ export class OrderNotFoundError extends Error {
   constructor(identifier: string) {
     super(`Order ${identifier} not found`);
     this.name = "OrderNotFoundError";
+  }
+}
+
+export class InvalidCouponError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InvalidCouponError";
   }
 }
 
@@ -57,9 +66,25 @@ export async function placeOrder(rawInput: unknown, userId?: string | null): Pro
   );
 
   const subtotal = Number(orderItems.reduce((sum, i) => sum + i.lineTotal, 0).toFixed(2));
-  const shippingCost = 0;
-  const taxAmount = 0;
-  const discountAmount = 0;
+
+  let discountAmount = 0;
+  let couponId: string | null = null;
+  let couponCode: string | null = null;
+
+  if (input.couponCode) {
+    const result = await validateCouponForOrder(input.couponCode, subtotal, userId);
+
+    if (!result.valid || !result.coupon) {
+      throw new InvalidCouponError(result.error ?? "Invalid coupon code");
+    }
+
+    discountAmount = result.discountAmount;
+    couponId = result.coupon.id;
+    couponCode = result.coupon.code;
+  }
+
+  const shippingCost = calculateShipping(subtotal);
+  const taxAmount = calculateTax(subtotal - discountAmount);
   const total = Number((subtotal + shippingCost + taxAmount - discountAmount).toFixed(2));
 
   const orderData = {
@@ -79,6 +104,8 @@ export async function placeOrder(rawInput: unknown, userId?: string | null): Pro
     taxAmount,
     discountAmount,
     total,
+    couponId,
+    couponCode,
     items: orderItems,
   };
 
@@ -114,4 +141,27 @@ export async function getOrderByOrderNumber(orderNumber: string): Promise<Order>
   }
 
   return order;
+}
+
+export async function getOrder(id: string): Promise<Order> {
+  const order = await orderRepository.findById(id);
+
+  if (!order) {
+    throw new OrderNotFoundError(id);
+  }
+
+  return order;
+}
+
+export async function listOrders(rawFilters: unknown): Promise<PaginatedOrders> {
+  const filters = orderFiltersSchema.parse(rawFilters);
+  const { items, total } = await orderRepository.findMany(filters);
+
+  return { items, total, page: filters.page, pageSize: filters.pageSize };
+}
+
+export async function updateOrderStatus(id: string, rawInput: unknown): Promise<Order> {
+  const { status } = updateOrderStatusSchema.parse(rawInput);
+  await getOrder(id);
+  return orderRepository.updateStatus(id, status);
 }

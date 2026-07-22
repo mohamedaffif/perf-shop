@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Typography } from "@/components/ui/typography";
@@ -11,6 +11,9 @@ import { CheckoutSummary } from "@/components/checkout/CheckoutSummary";
 export default function CheckoutPage() {
   const { items } = useCart();
   const router = useRouter();
+
+  const [couponCode, setCouponCode] = useState<string | null>(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
 
   useEffect(() => {
     if (items.length === 0) router.replace("/shop");
@@ -24,8 +27,19 @@ export default function CheckoutPage() {
         Checkout
       </Typography>
       <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
-        <CheckoutForm />
-        <CheckoutSummary />
+        <CheckoutForm couponCode={couponCode} />
+        <CheckoutSummary
+          couponCode={couponCode}
+          discountAmount={discountAmount}
+          onApplyCoupon={(code, discount) => {
+            setCouponCode(code);
+            setDiscountAmount(discount);
+          }}
+          onRemoveCoupon={() => {
+            setCouponCode(null);
+            setDiscountAmount(0);
+          }}
+        />
       </div>
     </div>
   );

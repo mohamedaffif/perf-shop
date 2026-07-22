@@ -23,7 +23,11 @@ const initialForm = {
 
 type FormField = keyof typeof initialForm;
 
-export function CheckoutForm() {
+interface CheckoutFormProps {
+  couponCode: string | null;
+}
+
+export function CheckoutForm({ couponCode }: CheckoutFormProps) {
   const [form, setForm] = useState(initialForm);
   const { items, clear } = useCart();
   const router = useRouter();
@@ -46,6 +50,7 @@ export function CheckoutForm() {
         shippingState: form.shippingState,
         shippingPostalCode: form.shippingPostalCode,
         shippingCountry: form.shippingCountry,
+        couponCode: couponCode || undefined,
         items: items.map((item) => ({ productId: item.productId, quantity: item.quantity })),
       }),
     });

@@ -86,7 +86,7 @@ export function SearchDialog() {
                 >
                   <DialogClose asChild>
                     <Link
-                      href={`/shop/gift-sets?brandId=${product.brandId}`}
+                      href={`/product/${product.id}`}
                       className="flex min-w-0 flex-1 items-center gap-3"
                     >
                       <div className="bg-muted relative size-12 shrink-0 overflow-hidden rounded-lg">
@@ -121,6 +121,17 @@ export function SearchDialog() {
             })
           )}
         </div>
+
+        {term.length >= MIN_QUERY_LENGTH ? (
+          <DialogClose asChild>
+            <Link
+              href={`/search?q=${encodeURIComponent(term)}`}
+              className="border-border text-primary hover:bg-muted/60 block border-t p-4 text-center text-sm font-medium transition-colors"
+            >
+              See all results for &ldquo;{term}&rdquo;
+            </Link>
+          </DialogClose>
+        ) : null}
       </DialogContent>
     </Dialog>
   );

@@ -1,7 +1,17 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { ProductCard } from "@/components/product/ProductCard";
 import { FilterSidebar } from "@/components/shop/FilterSidebar";
+import { ShopPagination } from "@/components/shop/ShopPagination";
 import { Typography } from "@/components/ui/typography";
 import { Reveal } from "@/components/motion/Reveal";
 import { listBrands } from "@/domain/brand";
@@ -39,7 +49,7 @@ export default async function ShopCategoryPage({ params, searchParams }: ShopCat
   const categoryRecord = categorySlug ? await getCategoryBySlug(categorySlug) : null;
 
   const sp = await searchParams;
-  const { items } = await listProducts({
+  const { items, total, page, pageSize } = await listProducts({
     status: "PUBLISHED",
     categoryId: categoryRecord?.id,
     ...parseShopFilters(sp),
@@ -49,6 +59,26 @@ export default async function ShopCategoryPage({ params, searchParams }: ShopCat
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <Breadcrumb className="mb-6">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/shop">Shop</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{CATEGORY_LABELS[category]}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <Typography variant="h1" className="mb-8">
         {CATEGORY_LABELS[category]}
       </Typography>
@@ -58,11 +88,20 @@ export default async function ShopCategoryPage({ params, searchParams }: ShopCat
 
         <div className="flex-1">
           {items.length > 0 ? (
-            <Reveal stagger className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {items.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </Reveal>
+            <>
+              <Reveal stagger className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {items.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </Reveal>
+              <ShopPagination
+                page={page}
+                pageSize={pageSize}
+                total={total}
+                searchParams={sp}
+                basePath={`/shop/${category}`}
+              />
+            </>
           ) : (
             <Typography variant="body" className="text-muted-foreground">
               No fragrances match these filters.

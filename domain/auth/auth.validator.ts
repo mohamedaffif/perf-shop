@@ -10,3 +10,7 @@ export const registerSchema = z.object({
   email: z.email(),
   password: z.string().min(8),
 });
+
+export const updateProfileSchema = z.object({
+  name: z.string().min(1),
+});

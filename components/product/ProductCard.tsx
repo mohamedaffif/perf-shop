@@ -24,6 +24,8 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
 
   const image = product.images.find((img) => img.isPrimary) ?? product.images[0];
   const primaryBadge = product.badges[0];
+  const lowStock = product.stockQuantity > 0 && product.stockQuantity <= 5;
+  const outOfStock = product.stockQuantity <= 0;
 
   function handleToggleFav() {
     const next = !fav;
@@ -60,11 +62,18 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
           </div>
         )}
 
-        {primaryBadge ? (
-          <Badge className="absolute top-3 left-3 rounded-full">
-            {BADGE_META[primaryBadge].label}
-          </Badge>
-        ) : null}
+        <div className="absolute top-3 left-3 flex flex-col items-start gap-1.5">
+          {primaryBadge ? <Badge className="rounded-full">{BADGE_META[primaryBadge].label}</Badge> : null}
+          {outOfStock ? (
+            <Badge variant="destructive" className="rounded-full">
+              Out of Stock
+            </Badge>
+          ) : lowStock ? (
+            <Badge variant="warning" className="rounded-full">
+              Only {product.stockQuantity} left
+            </Badge>
+          ) : null}
+        </div>
 
         <Button
           type="button"

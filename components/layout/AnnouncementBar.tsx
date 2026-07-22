@@ -7,9 +7,9 @@ import { useDisclosure } from "@/hooks/useDisclosure";
 import { useInterval } from "@/hooks/useInterval";
 
 const MESSAGES = [
-  "Free shipping on all orders over $75",
+  "Free shipping on all orders over KES 50,000",
   "New arrivals just dropped — shop the latest scents",
-  "Buy 2 fragrances, get 15% off with code PERF15",
+  "Have a coupon code? Apply it at checkout",
 ];
 
 export function AnnouncementBar() {

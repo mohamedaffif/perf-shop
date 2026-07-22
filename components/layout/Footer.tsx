@@ -4,6 +4,7 @@ import { Facebook01Icon, InstagramIcon, NewTwitterIcon } from "@hugeicons/core-f
 
 import { Separator } from "@/components/ui/separator";
 import { CookiePreferencesLink } from "@/components/consent/CookiePreferencesLink";
+import { NewsletterForm } from "@/components/layout/NewsletterForm";
 
 const FOOTER_COLUMNS = [
   {
@@ -13,25 +14,8 @@ const FOOTER_COLUMNS = [
       { label: "For Him", href: "/shop/for-him" },
       { label: "Unisex", href: "/shop/unisex" },
       { label: "Gift Sets", href: "/shop/gift-sets" },
-      { label: "Sale", href: "/shop/sale" },
-    ],
-  },
-  {
-    heading: "Help",
-    links: [
-      { label: "Contact Us", href: "/contact" },
-      { label: "Shipping & Returns", href: "/shipping-returns" },
-      { label: "FAQs", href: "/faqs" },
-      { label: "Track Order", href: "/track-order" },
-    ],
-  },
-  {
-    heading: "Company",
-    links: [
-      { label: "About Us", href: "/about" },
+      { label: "Sale", href: "/shop?badge=SALE" },
       { label: "Our Brands", href: "/brands" },
-      { label: "Careers", href: "/careers" },
-      { label: "Privacy Policy", href: "/privacy-policy" },
     ],
   },
 ];
@@ -70,7 +54,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8">
             {FOOTER_COLUMNS.map((column) => (
               <div key={column.heading}>
                 <p className="text-card-foreground text-sm font-semibold">{column.heading}</p>
@@ -95,20 +79,7 @@ export function Footer() {
             <p className="text-muted-foreground mt-2 text-sm">
               Get early access to new arrivals and exclusive offers.
             </p>
-            <form className="mt-4 flex items-center gap-2">
-              <input
-                type="email"
-                required
-                placeholder="Your email"
-                className="border-border bg-input/30 text-card-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 flex-1 rounded-full border px-4 text-sm outline-none focus-visible:ring-[3px]"
-              />
-              <button
-                type="submit"
-                className="bg-primary text-primary-foreground hover:bg-primary/80 inline-flex h-10 shrink-0 items-center justify-center rounded-full px-4 text-sm font-medium transition-colors"
-              >
-                Subscribe
-              </button>
-            </form>
+            <NewsletterForm />
           </div>
         </div>
 
@@ -117,12 +88,6 @@ export function Footer() {
         <div className="text-muted-foreground flex flex-col items-center justify-between gap-4 text-xs sm:flex-row">
           <p>© {new Date().getFullYear()} Perf Shop. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <Link href="/terms" className="hover:text-primary">
-              Terms of Service
-            </Link>
-            <Link href="/privacy-policy" className="hover:text-primary">
-              Privacy Policy
-            </Link>
             <CookiePreferencesLink />
           </div>
         </div>

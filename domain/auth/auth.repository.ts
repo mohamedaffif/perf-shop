@@ -14,3 +14,11 @@ export function createUser(data: {
     data: { ...data, role: "CUSTOMER" },
   });
 }
+
+export function findById(id: string): Promise<User | null> {
+  return prisma.user.findUnique({ where: { id } });
+}
+
+export function updateUser(id: string, data: { name?: string }): Promise<User> {
+  return prisma.user.update({ where: { id }, data });
+}

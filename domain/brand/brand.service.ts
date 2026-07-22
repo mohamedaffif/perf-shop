@@ -26,6 +26,10 @@ export async function getBrand(id: string): Promise<Brand> {
   return brand;
 }
 
+export async function getBrandBySlug(slug: string): Promise<Brand | null> {
+  return brandRepository.findBySlug(slug);
+}
+
 export async function createBrand(rawInput: unknown): Promise<Brand> {
   const input = createBrandSchema.parse(rawInput);
   return brandRepository.create(input);

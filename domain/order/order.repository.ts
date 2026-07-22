@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/lib/generated/prisma/client";
-import type { Order, OrderItem } from "./order.types";
+import type { Order, OrderFilters, OrderItem, OrderStatus } from "./order.types";
 
 const orderInclude = {
   items: true,
@@ -61,11 +61,13 @@ export interface CreateOrderData {
   taxAmount: number;
   discountAmount: number;
   total: number;
+  couponId?: string | null;
+  couponCode?: string | null;
   items: OrderItemCreateData[];
 }
 
 export async function createOrderWithStockDecrement(data: CreateOrderData): Promise<Order> {
-  const { items, ...orderFields } = data;
+  const { items, couponId, ...orderFields } = data;
 
   const row = await prisma.$transaction(async (tx) => {
     for (const item of items) {
@@ -81,8 +83,12 @@ export async function createOrderWithStockDecrement(data: CreateOrderData): Prom
       }
     }
 
+    if (couponId) {
+      await tx.coupon.update({ where: { id: couponId }, data: { usedCount: { increment: 1 } } });
+    }
+
     return tx.order.create({
-      data: { ...orderFields, items: { create: items } },
+      data: { ...orderFields, couponId, items: { create: items } },
       include: orderInclude,
     });
   });
@@ -106,4 +112,38 @@ export async function findById(id: string): Promise<Order | null> {
   });
 
   return row ? toOrder(row) : null;
+}
+
+function buildWhere(filters: OrderFilters): Prisma.OrderWhereInput {
+  const { userId, status } = filters;
+
+  return { userId, status };
+}
+
+export async function findMany(filters: OrderFilters): Promise<{ items: Order[]; total: number }> {
+  const where = buildWhere(filters);
+  const { page = 1, pageSize = 20 } = filters;
+
+  const [rows, total] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      include: orderInclude,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.order.count({ where }),
+  ]);
+
+  return { items: rows.map(toOrder), total };
+}
+
+export async function updateStatus(id: string, status: OrderStatus): Promise<Order> {
+  const row = await prisma.order.update({
+    where: { id },
+    data: { status },
+    include: orderInclude,
+  });
+
+  return toOrder(row);
 }
