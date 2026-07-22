@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Facebook01Icon, InstagramIcon, NewTwitterIcon } from "@hugeicons/core-free-icons";
 
 import { Separator } from "@/components/ui/separator";
+import { CookiePreferencesLink } from "@/components/consent/CookiePreferencesLink";
 
 const FOOTER_COLUMNS = [
   {
@@ -122,6 +123,7 @@ export function Footer() {
             <Link href="/privacy-policy" className="hover:text-primary">
               Privacy Policy
             </Link>
+            <CookiePreferencesLink />
           </div>
         </div>
       </div>

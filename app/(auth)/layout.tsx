@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "../globals.css";
 import { cn } from "@/lib/utils";
+import { CookieConsentBanner } from "@/components/consent/CookieConsentBanner";
+import { readConsentCookieServer } from "@/lib/consent.server";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
@@ -21,11 +23,13 @@ export const metadata: Metadata = {
   description: "Sign in to your Perf Shop account",
 };
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialConsent = await readConsentCookieServer();
+
   return (
     <html
       lang="en"
@@ -44,6 +48,7 @@ export default function AuthLayout({
           </p>
           {children}
         </div>
+        <CookieConsentBanner initialConsent={initialConsent} />
       </body>
     </html>
   );
