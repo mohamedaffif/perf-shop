@@ -16,10 +16,7 @@ export function AnnouncementBar() {
   const { isOpen: visible, close } = useDisclosure({ defaultOpen: true });
   const [index, setIndex] = React.useState(0);
 
-  useInterval(
-    () => setIndex((i) => (i + 1) % MESSAGES.length),
-    visible ? 4000 : null
-  );
+  useInterval(() => setIndex((i) => (i + 1) % MESSAGES.length), visible ? 4000 : null);
 
   if (!visible) return null;
 

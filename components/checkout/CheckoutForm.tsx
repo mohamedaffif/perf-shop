@@ -64,13 +64,7 @@ export function CheckoutForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          required
-          value={form.email}
-          onChange={set("email")}
-        />
+        <Input id="email" type="email" required value={form.email} onChange={set("email")} />
       </div>
 
       <div className="space-y-1.5">
@@ -106,7 +100,12 @@ export function CheckoutForm() {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <Label htmlFor="shippingCity">City</Label>
-          <Input id="shippingCity" required value={form.shippingCity} onChange={set("shippingCity")} />
+          <Input
+            id="shippingCity"
+            required
+            value={form.shippingCity}
+            onChange={set("shippingCity")}
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="shippingState">State / Region</Label>

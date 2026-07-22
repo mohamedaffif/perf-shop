@@ -16,13 +16,11 @@ function toOrder(row: OrderRow): Order {
     shippingCost: Number(row.shippingCost),
     taxAmount: Number(row.taxAmount),
     total: Number(row.total),
-    items: row.items.map(
-      (item): OrderItem => ({
-        ...item,
-        unitPrice: Number(item.unitPrice),
-        lineTotal: Number(item.lineTotal),
-      })
-    ),
+    items: row.items.map((item): OrderItem => ({
+      ...item,
+      unitPrice: Number(item.unitPrice),
+      lineTotal: Number(item.lineTotal),
+    })),
   };
 }
 

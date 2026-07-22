@@ -5,7 +5,12 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 import { useInView } from "@/hooks/useInView";
-import { DURATION_NORMAL, DURATION_SLOW, EASE_EMPHASIZED, prefersReducedMotion } from "@/lib/motion";
+import {
+  DURATION_NORMAL,
+  DURATION_SLOW,
+  EASE_EMPHASIZED,
+  prefersReducedMotion,
+} from "@/lib/motion";
 
 interface RevealProps {
   children: React.ReactNode;

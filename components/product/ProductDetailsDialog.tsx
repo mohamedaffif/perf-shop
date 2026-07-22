@@ -38,23 +38,21 @@ export function ProductDetailsDialog({ product, onAddToCart }: ProductDetailsDia
         <Button
           type="button"
           variant="outline"
-          className="w-full border-primary/60 text-primary hover:bg-primary/10"
+          className="border-primary/60 text-primary hover:bg-primary/10 w-full"
         >
           View Details
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+          <p className="text-primary text-xs font-semibold tracking-wider uppercase">
             {product.brand.name}
           </p>
           <DialogTitle>{product.name}</DialogTitle>
-          <DialogDescription>
-            {product.description ?? `${longevity} · ${oil}`}
-          </DialogDescription>
+          <DialogDescription>{product.description ?? `${longevity} · ${oil}`}</DialogDescription>
         </DialogHeader>
 
-        <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-muted">
+        <div className="bg-muted relative aspect-4/3 overflow-hidden rounded-lg">
           {image ? (
             <Image
               src={image.url}
@@ -64,7 +62,7 @@ export function ProductDetailsDialog({ product, onAddToCart }: ProductDetailsDia
               className="object-cover"
             />
           ) : (
-            <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground/60">
+            <div className="text-muted-foreground/60 flex h-full w-full flex-col items-center justify-center gap-2">
               <svg
                 width="40"
                 height="70"
@@ -83,46 +81,46 @@ export function ProductDetailsDialog({ product, onAddToCart }: ProductDetailsDia
         </div>
 
         {product.description ? (
-          <p className="text-sm leading-relaxed text-muted-foreground">{product.description}</p>
+          <p className="text-muted-foreground text-sm leading-relaxed">{product.description}</p>
         ) : null}
 
         {noteGroups.length > 0 ? (
           <div className="flex flex-col gap-2">
             {noteGroups.map(({ label, notes }) => (
-              <p key={label} className="text-sm leading-relaxed text-muted-foreground">
-                <span className="font-semibold text-foreground">{label}: </span>
+              <p key={label} className="text-muted-foreground text-sm leading-relaxed">
+                <span className="text-foreground font-semibold">{label}: </span>
                 {notes.join(", ")}
               </p>
             ))}
           </div>
         ) : null}
 
-        <div className="border-t border-border" />
+        <div className="border-border border-t" />
 
         <div className="grid grid-cols-3">
-          <div className="flex flex-col items-center gap-2 border-r border-border px-1.5">
-            <FlaskConical className="size-4.5 text-primary" />
-            <span className="text-center text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+          <div className="border-border flex flex-col items-center gap-2 border-r px-1.5">
+            <FlaskConical className="text-primary size-4.5" />
+            <span className="text-muted-foreground text-center text-[10px] font-semibold tracking-wide uppercase">
               {SIZE_LABELS[product.size]}
             </span>
           </div>
-          <div className="flex flex-col items-center gap-2 border-r border-border px-1.5">
-            <Leaf className="size-4.5 text-primary" />
-            <span className="text-center text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+          <div className="border-border flex flex-col items-center gap-2 border-r px-1.5">
+            <Leaf className="text-primary size-4.5" />
+            <span className="text-muted-foreground text-center text-[10px] font-semibold tracking-wide uppercase">
               {longevity}
             </span>
           </div>
           <div className="flex flex-col items-center gap-2 px-1.5">
-            <Droplet className="size-4.5 text-primary" />
-            <span className="text-center text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+            <Droplet className="text-primary size-4.5" />
+            <span className="text-muted-foreground text-center text-[10px] font-semibold tracking-wide uppercase">
               {oil}
             </span>
           </div>
         </div>
 
-        <div className="border-t border-border" />
+        <div className="border-border border-t" />
 
-        <span className="font-heading text-xl font-semibold text-foreground">
+        <span className="font-heading text-foreground text-xl font-semibold">
           {formatPrice(product.price)}
         </span>
 
@@ -133,10 +131,10 @@ export function ProductDetailsDialog({ product, onAddToCart }: ProductDetailsDia
               return (
                 <div
                   key={badge}
-                  className="flex items-center gap-1.5 rounded-lg border border-primary/40 px-3 py-2"
+                  className="border-primary/40 flex items-center gap-1.5 rounded-lg border px-3 py-2"
                 >
-                  <Icon className="size-3.5 text-primary" />
-                  <span className="text-[10px] font-semibold tracking-wide text-foreground uppercase">
+                  <Icon className="text-primary size-3.5" />
+                  <span className="text-foreground text-[10px] font-semibold tracking-wide uppercase">
                     {label}
                   </span>
                 </div>

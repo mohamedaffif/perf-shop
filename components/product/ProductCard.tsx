@@ -32,8 +32,8 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
   }
 
   return (
-    <Card className="flex flex-col gap-0 overflow-hidden rounded-2xl bg-background py-0 ring-1 ring-primary/40 transition-shadow duration-200 hover:shadow-card-hover">
-      <div className="relative aspect-4/3 bg-muted">
+    <Card className="bg-background ring-primary/40 hover:shadow-card-hover flex flex-col gap-0 overflow-hidden rounded-2xl py-0 ring-1 transition-shadow duration-200">
+      <div className="bg-muted relative aspect-4/3">
         {image ? (
           <Image
             src={image.url}
@@ -43,7 +43,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
             className="object-cover"
           />
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground/60">
+          <div className="text-muted-foreground/60 flex h-full w-full flex-col items-center justify-center gap-2">
             <svg
               width="40"
               height="70"
@@ -72,7 +72,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
           variant="ghost"
           onClick={handleToggleFav}
           aria-label="Toggle wishlist"
-          className="absolute top-2.5 right-2.5 rounded-full bg-background/70 backdrop-blur-sm hover:bg-background/90"
+          className="bg-background/70 hover:bg-background/90 absolute top-2.5 right-2.5 rounded-full backdrop-blur-sm"
         >
           <Heart
             className={cn(
@@ -85,13 +85,13 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
 
       <div className="flex flex-1 flex-col gap-3.5 p-6">
         <div>
-          <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+          <p className="text-primary text-xs font-semibold tracking-wider uppercase">
             {product.brand.name}
           </p>
-          <h3 className="font-heading text-2xl text-foreground">{product.name}</h3>
+          <h3 className="font-heading text-foreground text-2xl">{product.name}</h3>
         </div>
 
-        <span className="font-heading text-xl font-semibold text-foreground">
+        <span className="font-heading text-foreground text-xl font-semibold">
           {formatPrice(product.price)}
         </span>
 

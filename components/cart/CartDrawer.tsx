@@ -46,7 +46,7 @@ export function CartDrawer() {
           <div className="flex flex-1 flex-col gap-4 overflow-y-auto">
             {items.map((item) => (
               <div key={item.productId} className="flex gap-3">
-                <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
+                <div className="bg-muted relative size-16 shrink-0 overflow-hidden rounded-lg">
                   {item.imageUrl ? (
                     <Image
                       src={item.imageUrl}
@@ -61,11 +61,11 @@ export function CartDrawer() {
                 <div className="flex flex-1 flex-col gap-1">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+                      <p className="text-primary text-xs font-semibold tracking-wider uppercase">
                         {item.brandName}
                       </p>
-                      <p className="text-sm font-medium text-foreground">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-foreground text-sm font-medium">{item.name}</p>
+                      <p className="text-muted-foreground text-xs">
                         {SIZE_LABELS[item.size as Size] ?? item.size}
                       </p>
                     </div>
@@ -101,7 +101,7 @@ export function CartDrawer() {
                         <Plus className="size-3.5" />
                       </Button>
                     </div>
-                    <span className="text-sm font-semibold text-foreground">
+                    <span className="text-foreground text-sm font-semibold">
                       {formatPrice(item.price * item.quantity)}
                     </span>
                   </div>
@@ -113,7 +113,7 @@ export function CartDrawer() {
 
         {items.length > 0 ? (
           <SheetFooter>
-            <div className="flex items-center justify-between text-foreground">
+            <div className="text-foreground flex items-center justify-between">
               <span className="font-semibold">Subtotal</span>
               <span className="font-heading text-lg font-semibold">{formatPrice(subtotal)}</span>
             </div>

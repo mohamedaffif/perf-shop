@@ -6,15 +6,15 @@ import { Reveal } from "@/components/motion/Reveal";
 
 export function Hero() {
   return (
-    <section className="flex flex-col items-center gap-6 bg-background px-4 py-16 text-center sm:px-6 lg:px-8">
+    <section className="bg-background flex flex-col items-center gap-6 px-4 py-16 text-center sm:px-6 lg:px-8">
       <Reveal className="flex flex-col items-center gap-6">
-        <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+        <p className="text-primary text-xs font-semibold tracking-wider uppercase">
           Extrait de Parfum
         </p>
         <Typography variant="display" className="max-w-3xl">
           A Scent as Rare as the Moment You Wear It
         </Typography>
-        <p className="max-w-xl text-muted-foreground">
+        <p className="text-muted-foreground max-w-xl">
           Small-batch fragrances crafted with rare ingredients — for those who prefer to be
           remembered, not just noticed.
         </p>

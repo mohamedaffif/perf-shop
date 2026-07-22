@@ -8,7 +8,12 @@ import { cn } from "@/lib/utils";
 import type { NavLink } from "./Navbar";
 
 export function MegaMenu({ link }: { link: NavLink }) {
-  const { isOpen: open, open: show, close: hide, toggle } = useDisclosure({
+  const {
+    isOpen: open,
+    open: show,
+    close: hide,
+    toggle,
+  } = useDisclosure({
     closeDelay: 120,
     closeOnEscape: true,
   });

@@ -17,7 +17,7 @@ export function CategoryTiles() {
           <Link
             key={tile.href}
             href={tile.href}
-            className="rounded-2xl border border-primary/40 bg-background p-6 text-center font-heading text-foreground"
+            className="border-primary/40 bg-background font-heading text-foreground rounded-2xl border p-6 text-center"
           >
             {tile.label}
           </Link>

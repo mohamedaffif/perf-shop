@@ -30,14 +30,14 @@ export function CheckoutSummary() {
             </div>
 
             <div className="flex flex-1 flex-col gap-1">
-              <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+              <p className="text-primary text-xs font-semibold tracking-wider uppercase">
                 {item.brandName}
               </p>
-              <p className="text-sm font-medium text-foreground">{item.name}</p>
+              <p className="text-foreground text-sm font-medium">{item.name}</p>
               <p className="text-muted-foreground text-xs">
                 {SIZE_LABELS[item.size as Size] ?? item.size} · Qty {item.quantity}
               </p>
-              <span className="mt-auto text-sm font-semibold text-foreground">
+              <span className="text-foreground mt-auto text-sm font-semibold">
                 {formatPrice(item.price * item.quantity)}
               </span>
             </div>
@@ -46,8 +46,8 @@ export function CheckoutSummary() {
       </div>
 
       <div className="border-border mt-4 flex items-center justify-between border-t pt-4">
-        <span className="font-semibold text-foreground">Total</span>
-        <span className="font-heading text-lg font-semibold text-foreground">
+        <span className="text-foreground font-semibold">Total</span>
+        <span className="font-heading text-foreground text-lg font-semibold">
           {formatPrice(subtotal)}
         </span>
       </div>

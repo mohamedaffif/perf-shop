@@ -6,13 +6,7 @@ export type Concentration =
 export type Badge = "NEW" | "BEST_SELLER" | "LIMITED_EDITION" | "SALE";
 
 export type ScentFamily =
-  | "FLORAL"
-  | "ORIENTAL"
-  | "FRESH"
-  | "WOODY"
-  | "AROMATIC"
-  | "CITRUS"
-  | "SPICY";
+  "FLORAL" | "ORIENTAL" | "FRESH" | "WOODY" | "AROMATIC" | "CITRUS" | "SPICY";
 
 export type Size = "ML_50" | "ML_75" | "ML_100";
 
