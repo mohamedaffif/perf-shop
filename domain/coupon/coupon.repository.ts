@@ -11,7 +11,9 @@ function toCoupon(row: CouponRow): Coupon {
   };
 }
 
-export async function findMany(filters: CouponFilters): Promise<{ items: Coupon[]; total: number }> {
+export async function findMany(
+  filters: CouponFilters
+): Promise<{ items: Coupon[]; total: number }> {
   const { page = 1, pageSize = 20 } = filters;
 
   const [rows, total] = await Promise.all([

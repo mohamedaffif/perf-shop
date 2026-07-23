@@ -39,7 +39,11 @@ export function CouponInput({ subtotal, appliedCode, onApply, onRemove }: Coupon
         <span>
           Coupon <span className="font-semibold">{appliedCode}</span> applied
         </span>
-        <button type="button" onClick={onRemove} className="text-muted-foreground hover:text-foreground">
+        <button
+          type="button"
+          onClick={onRemove}
+          className="text-muted-foreground hover:text-foreground"
+        >
           Remove
         </button>
       </div>

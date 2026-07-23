@@ -27,7 +27,12 @@ export default async function AccountOrdersPage({ searchParams }: AccountOrdersP
   const sp = await searchParams;
   const page = Array.isArray(sp.page) ? sp.page[0] : sp.page;
 
-  const { items, total, page: currentPage, pageSize } = await listOrders({
+  const {
+    items,
+    total,
+    page: currentPage,
+    pageSize,
+  } = await listOrders({
     userId: session!.user.id,
     page,
   });

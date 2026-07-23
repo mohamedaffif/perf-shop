@@ -33,7 +33,10 @@ export function ProfileForm({ profile }: ProfileFormProps) {
   });
 
   return (
-    <form onSubmit={handleSubmit} className="border-border max-w-md space-y-4 rounded-lg border p-6">
+    <form
+      onSubmit={handleSubmit}
+      className="border-border max-w-md space-y-4 rounded-lg border p-6"
+    >
       <div className="space-y-1.5">
         <Label htmlFor="name">Name</Label>
         <Input id="name" required value={name} onChange={(e) => setName(e.target.value)} />

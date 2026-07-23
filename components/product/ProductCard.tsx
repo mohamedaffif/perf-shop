@@ -63,7 +63,9 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
         )}
 
         <div className="absolute top-3 left-3 flex flex-col items-start gap-1.5">
-          {primaryBadge ? <Badge className="rounded-full">{BADGE_META[primaryBadge].label}</Badge> : null}
+          {primaryBadge ? (
+            <Badge className="rounded-full">{BADGE_META[primaryBadge].label}</Badge>
+          ) : null}
           {outOfStock ? (
             <Badge variant="destructive" className="rounded-full">
               Out of Stock

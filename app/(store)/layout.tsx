@@ -29,7 +29,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Perf Shop — Signature Fragrances",
-  description: "Signature fragrances, curated for every occasion. Discover scents that stay with you.",
+  description:
+    "Signature fragrances, curated for every occasion. Discover scents that stay with you.",
 };
 
 export default async function RootLayout({

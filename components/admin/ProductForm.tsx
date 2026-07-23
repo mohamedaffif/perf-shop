@@ -78,9 +78,7 @@ export function ProductForm({ product }: ProductFormProps) {
   const [heartNotes, setHeartNotes] = useState(product?.heartNotes.join(", ") ?? "");
   const [baseNotes, setBaseNotes] = useState(product?.baseNotes.join(", ") ?? "");
   const [price, setPrice] = useState(product ? String(product.price) : "");
-  const [stockQuantity, setStockQuantity] = useState(
-    product ? String(product.stockQuantity) : "0"
-  );
+  const [stockQuantity, setStockQuantity] = useState(product ? String(product.stockQuantity) : "0");
   const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">(product?.status ?? "DRAFT");
   const [badges, setBadges] = useState<Badge[]>(product?.badges ?? []);
   const [images, setImages] = useState<ProductImageInput[]>(
@@ -94,7 +92,9 @@ export function ProductForm({ product }: ProductFormProps) {
   );
 
   function toggleBadge(badge: Badge) {
-    setBadges((prev) => (prev.includes(badge) ? prev.filter((b) => b !== badge) : [...prev, badge]));
+    setBadges((prev) =>
+      prev.includes(badge) ? prev.filter((b) => b !== badge) : [...prev, badge]
+    );
   }
 
   async function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
@@ -105,7 +105,12 @@ export function ProductForm({ product }: ProductFormProps) {
     const uploaded = await uploadImage(file).unwrap();
     setImages((prev) => [
       ...prev,
-      { url: uploaded.url, publicId: uploaded.publicId, isPrimary: prev.length === 0, order: prev.length },
+      {
+        url: uploaded.url,
+        publicId: uploaded.publicId,
+        isPrimary: prev.length === 0,
+        order: prev.length,
+      },
     ]);
   }
 
@@ -125,9 +130,24 @@ export function ProductForm({ product }: ProductFormProps) {
       concentration,
       scentFamily,
       description: description || undefined,
-      topNotes: topNotes ? topNotes.split(",").map((n) => n.trim()).filter(Boolean) : [],
-      heartNotes: heartNotes ? heartNotes.split(",").map((n) => n.trim()).filter(Boolean) : [],
-      baseNotes: baseNotes ? baseNotes.split(",").map((n) => n.trim()).filter(Boolean) : [],
+      topNotes: topNotes
+        ? topNotes
+            .split(",")
+            .map((n) => n.trim())
+            .filter(Boolean)
+        : [],
+      heartNotes: heartNotes
+        ? heartNotes
+            .split(",")
+            .map((n) => n.trim())
+            .filter(Boolean)
+        : [],
+      baseNotes: baseNotes
+        ? baseNotes
+            .split(",")
+            .map((n) => n.trim())
+            .filter(Boolean)
+        : [],
       size,
       price: Number(price),
       stockQuantity: Number(stockQuantity),

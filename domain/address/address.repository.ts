@@ -12,10 +12,7 @@ export function findById(id: string): Promise<Address | null> {
   return prisma.address.findUnique({ where: { id } });
 }
 
-export function createWithDefaultFlip(
-  userId: string,
-  data: CreateAddressInput
-): Promise<Address> {
+export function createWithDefaultFlip(userId: string, data: CreateAddressInput): Promise<Address> {
   return prisma.$transaction(async (tx) => {
     if (data.isDefault) {
       await tx.address.updateMany({

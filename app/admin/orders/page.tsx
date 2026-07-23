@@ -36,7 +36,12 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
   const status = Array.isArray(sp.status) ? sp.status[0] : sp.status;
   const page = Array.isArray(sp.page) ? sp.page[0] : sp.page;
 
-  const { items, total, page: currentPage, pageSize } = await listOrders({
+  const {
+    items,
+    total,
+    page: currentPage,
+    pageSize,
+  } = await listOrders({
     status: status as OrderStatus | undefined,
     page,
   });
@@ -87,7 +92,9 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
           </Link>
         ))}
 
-        {items.length === 0 ? <p className="text-muted-foreground p-4 text-sm">No orders found.</p> : null}
+        {items.length === 0 ? (
+          <p className="text-muted-foreground p-4 text-sm">No orders found.</p>
+        ) : null}
       </div>
 
       <ShopPagination

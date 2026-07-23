@@ -43,7 +43,10 @@ export function AddressesManager() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {addresses.map((address) => (
-            <div key={address.id} className="border-border flex flex-col gap-2 rounded-lg border p-4">
+            <div
+              key={address.id}
+              className="border-border flex flex-col gap-2 rounded-lg border p-4"
+            >
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <p className="text-sm font-semibold">{address.label || address.fullName}</p>

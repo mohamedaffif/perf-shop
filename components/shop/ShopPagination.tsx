@@ -54,7 +54,13 @@ function getPageItems(current: number, total: number): (number | "ellipsis")[] {
   return items;
 }
 
-export function ShopPagination({ page, pageSize, total, searchParams, basePath }: ShopPaginationProps) {
+export function ShopPagination({
+  page,
+  pageSize,
+  total,
+  searchParams,
+  basePath,
+}: ShopPaginationProps) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   if (totalPages <= 1) return null;
 
@@ -75,7 +81,10 @@ export function ShopPagination({ page, pageSize, total, searchParams, basePath }
             </PaginationItem>
           ) : (
             <PaginationItem key={item}>
-              <PaginationLink href={buildHref(basePath, searchParams, item)} isActive={item === page}>
+              <PaginationLink
+                href={buildHref(basePath, searchParams, item)}
+                isActive={item === page}
+              >
                 {item}
               </PaginationLink>
             </PaginationItem>

@@ -39,7 +39,11 @@ const emptyForm = {
 
 export function AddressFormDialog({ address, trigger }: AddressFormDialogProps) {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState(address ? { ...emptyForm, ...address, label: address.label ?? "", line2: address.line2 ?? "" } : emptyForm);
+  const [form, setForm] = useState(
+    address
+      ? { ...emptyForm, ...address, label: address.label ?? "", line2: address.line2 ?? "" }
+      : emptyForm
+  );
 
   const [createAddress] = useCreateAddressMutation();
   const [updateAddress] = useUpdateAddressMutation();
@@ -84,7 +88,12 @@ export function AddressFormDialog({ address, trigger }: AddressFormDialogProps) 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="label">Label (optional)</Label>
-            <Input id="label" placeholder="Home, Office…" value={form.label} onChange={set("label")} />
+            <Input
+              id="label"
+              placeholder="Home, Office…"
+              value={form.label}
+              onChange={set("label")}
+            />
           </div>
 
           <div className="space-y-1.5">
@@ -121,7 +130,12 @@ export function AddressFormDialog({ address, trigger }: AddressFormDialogProps) 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="postalCode">Postal code</Label>
-              <Input id="postalCode" required value={form.postalCode} onChange={set("postalCode")} />
+              <Input
+                id="postalCode"
+                required
+                value={form.postalCode}
+                onChange={set("postalCode")}
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="country">Country</Label>

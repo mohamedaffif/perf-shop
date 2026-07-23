@@ -48,7 +48,8 @@ export default function AdminProductsPage() {
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium">{product.name}</p>
                 <p className="text-muted-foreground text-xs">
-                  {product.brand.name} · {formatPrice(product.price)} · Stock {product.stockQuantity}
+                  {product.brand.name} · {formatPrice(product.price)} · Stock{" "}
+                  {product.stockQuantity}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-3">
