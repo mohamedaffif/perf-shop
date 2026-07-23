@@ -2,7 +2,7 @@ import { randomBytes } from "crypto";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { getProduct } from "@/domain/product";
 import { validateCouponForOrder } from "@/domain/coupon";
-import { calculateShipping, calculateTax } from "@/lib/pricing";
+import { calculateShipping } from "@/lib/pricing";
 import * as orderRepository from "./order.repository";
 import { orderFiltersSchema, placeOrderSchema, updateOrderStatusSchema } from "./order.validator";
 import type { Order, PaginatedOrders } from "./order.types";
@@ -83,9 +83,9 @@ export async function placeOrder(rawInput: unknown, userId?: string | null): Pro
     couponCode = result.coupon.code;
   }
 
-  const shippingCost = calculateShipping(subtotal);
-  const taxAmount = calculateTax(subtotal - discountAmount);
-  const total = Number((subtotal + shippingCost + taxAmount - discountAmount).toFixed(2));
+  const shippingCost = calculateShipping(subtotal, input.shippingCity);
+  const taxAmount = 0;
+  const total = Number((subtotal + shippingCost - discountAmount).toFixed(2));
 
   const orderData = {
     email: input.email,

@@ -14,6 +14,7 @@ export default function CheckoutPage() {
 
   const [couponCode, setCouponCode] = useState<string | null>(null);
   const [discountAmount, setDiscountAmount] = useState(0);
+  const [shippingCity, setShippingCity] = useState("");
 
   useEffect(() => {
     if (items.length === 0) router.replace("/shop");
@@ -27,7 +28,7 @@ export default function CheckoutPage() {
         Checkout
       </Typography>
       <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
-        <CheckoutForm couponCode={couponCode} />
+        <CheckoutForm couponCode={couponCode} onCityChange={setShippingCity} />
         <CheckoutSummary
           couponCode={couponCode}
           discountAmount={discountAmount}
@@ -39,6 +40,7 @@ export default function CheckoutPage() {
             setCouponCode(null);
             setDiscountAmount(0);
           }}
+          shippingCity={shippingCity}
         />
       </div>
     </div>

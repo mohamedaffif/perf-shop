@@ -25,9 +25,10 @@ type FormField = keyof typeof initialForm;
 
 interface CheckoutFormProps {
   couponCode: string | null;
+  onCityChange: (city: string) => void;
 }
 
-export function CheckoutForm({ couponCode }: CheckoutFormProps) {
+export function CheckoutForm({ couponCode, onCityChange }: CheckoutFormProps) {
   const [form, setForm] = useState(initialForm);
   const { items, clear } = useCart();
   const router = useRouter();
@@ -109,7 +110,10 @@ export function CheckoutForm({ couponCode }: CheckoutFormProps) {
             id="shippingCity"
             required
             value={form.shippingCity}
-            onChange={set("shippingCity")}
+            onChange={(e) => {
+              setForm((f) => ({ ...f, shippingCity: e.target.value }));
+              onCityChange(e.target.value);
+            }}
           />
         </div>
         <div className="space-y-1.5">
