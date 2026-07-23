@@ -11,7 +11,10 @@ export async function FeaturedProducts() {
       <Typography variant="h2" align="center" className="mb-8">
         Featured
       </Typography>
-      <Reveal stagger className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <Reveal
+        stagger
+        className="grid grid-cols-2 items-stretch gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4"
+      >
         {items.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

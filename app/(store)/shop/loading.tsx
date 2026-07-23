@@ -16,7 +16,7 @@ export default function ShopLoading() {
           ))}
         </div>
 
-        <div className="grid flex-1 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid flex-1 grid-cols-2 items-stretch gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="space-y-3">
               <Skeleton className="aspect-4/3 w-full rounded-2xl" />
