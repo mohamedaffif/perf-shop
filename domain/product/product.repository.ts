@@ -72,22 +72,60 @@ export async function findMany(
   return { items: rows.map(toProduct), total };
 }
 
+interface SearchHit {
+  id: string;
+}
+
+// Trigram similarity (pg_trgm) gives typo tolerance and a relevance score in
+// one primitive; the ILIKE fallback is OR'd in so exact/short substring
+// matches never regress. Uses word_similarity rather than plain similarity:
+// plain similarity compares the two full strings, which dilutes badly when
+// a short query is matched against a longer multi-word field (e.g.
+// "vaniila" vs "Smoked Vanilla" scores ~0.28) — word_similarity instead
+// finds the best-matching substring within the longer field (~0.5 for the
+// same pair). An explicit 0.3 threshold is used rather than the `<%`
+// operator's default GUC (0.6, too strict for realistic typos, and a
+// session-level override would be unreliable under Neon's pooled
+// connections). Ranking can't be expressed via the query builder, so this
+// drops to a parameterized raw query, then hydrates full rows through the
+// normal include/mapper and reapplies the rank order in JS (findMany's
+// `id: { in }` does not preserve list order).
+const WORD_SIMILARITY_THRESHOLD = 0.3;
+
 export async function searchPublished(query: string, limit: number): Promise<Product[]> {
+  const hits = await prisma.$queryRaw<SearchHit[]>`
+    SELECT p.id
+    FROM "products" p
+    JOIN "brands" b ON b.id = p."brandId"
+    WHERE p.status = 'PUBLISHED'::"ProductStatus"
+      AND (
+        word_similarity(lower(${query}), lower(p.name)) > ${WORD_SIMILARITY_THRESHOLD}
+        OR word_similarity(lower(${query}), lower(coalesce(p.description, ''))) > ${WORD_SIMILARITY_THRESHOLD}
+        OR word_similarity(lower(${query}), lower(b.name)) > ${WORD_SIMILARITY_THRESHOLD}
+        OR p.name ILIKE ${"%" + query + "%"}
+        OR p.description ILIKE ${"%" + query + "%"}
+        OR b.name ILIKE ${"%" + query + "%"}
+      )
+    ORDER BY GREATEST(
+      word_similarity(lower(${query}), lower(p.name)),
+      word_similarity(lower(${query}), lower(coalesce(p.description, ''))),
+      word_similarity(lower(${query}), lower(b.name))
+    ) DESC
+    LIMIT ${limit}
+  `;
+
+  if (hits.length === 0) return [];
+
   const rows = await prisma.product.findMany({
-    where: {
-      status: "PUBLISHED",
-      OR: [
-        { name: { contains: query, mode: "insensitive" } },
-        { description: { contains: query, mode: "insensitive" } },
-        { brand: { name: { contains: query, mode: "insensitive" } } },
-      ],
-    },
+    where: { id: { in: hits.map((hit) => hit.id) } },
     include: productInclude,
-    take: limit,
-    orderBy: { createdAt: "desc" },
   });
 
-  return rows.map(toProduct);
+  const rowsById = new Map(rows.map((row) => [row.id, row]));
+  return hits
+    .map((hit) => rowsById.get(hit.id))
+    .filter((row): row is ProductRow => row !== undefined)
+    .map(toProduct);
 }
 
 export async function findById(id: string): Promise<Product | null> {
