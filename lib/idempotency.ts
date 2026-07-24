@@ -29,7 +29,7 @@ export async function withIdempotency<T>(
 ): Promise<T> {
   if (!key) return handler();
 
-  const redisKey = `perf-shop:idempotency:${key}`;
+  const redisKey = `de-perfume-shop:idempotency:${key}`;
 
   let existing: string | null;
   try {

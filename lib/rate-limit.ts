@@ -35,7 +35,7 @@ export async function enforceRateLimit({
   limit,
   windowSeconds,
 }: RateLimitOptions): Promise<void> {
-  const redisKey = `perf-shop:ratelimit:${key}`;
+  const redisKey = `de-perfume-shop:ratelimit:${key}`;
 
   const count = await withRedisFallback(
     async () => Number(await redis.eval(INCR_WITH_TTL_SCRIPT, 1, redisKey, windowSeconds)),

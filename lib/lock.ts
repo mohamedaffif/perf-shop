@@ -19,7 +19,7 @@ end
  * checkout should not fail just because the lock is unavailable.
  */
 async function withInventoryLock<T>(productId: string, fn: () => Promise<T>): Promise<T> {
-  const key = `perf-shop:lock:product:${productId}`;
+  const key = `de-perfume-shop:lock:product:${productId}`;
   const token = randomUUID();
 
   const acquired = await withRedisFallback(

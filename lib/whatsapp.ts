@@ -7,7 +7,7 @@ export function buildOrderWhatsAppUrl(order: Order): string | null {
   if (!number) return null;
 
   const lines = [
-    `Hi! I'd like to confirm my Perf Shop order *${order.orderNumber}*.`,
+    `Hi! I'd like to confirm my DE PERFUME SHOP order *${order.orderNumber}*.`,
     "",
     ...order.items.map(
       (item) =>

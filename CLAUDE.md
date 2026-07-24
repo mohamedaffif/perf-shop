@@ -1,4 +1,4 @@
-Project: Perf Shop
+Project: DE PERFUME SHOP
 
 Stack:
 

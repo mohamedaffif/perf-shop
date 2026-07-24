@@ -1,7 +1,7 @@
 import amqp, { type ChannelModel, type Channel, type ConsumeMessage } from "amqplib";
 import { getEnv } from "@/lib/env";
 
-export const EXCHANGE = "perf-shop.events";
+export const EXCHANGE = "de-perfume-shop.events";
 
 export const QUEUES = [
   "order.confirmed",

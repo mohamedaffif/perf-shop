@@ -19,8 +19,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Sign in — Perf Shop",
-  description: "Sign in to your Perf Shop account",
+  title: "Sign in — DE PERFUME SHOP",
+  description: "Sign in to your DE PERFUME SHOP account",
 };
 
 export default async function AuthLayout({
@@ -44,7 +44,7 @@ export default async function AuthLayout({
       <body className="bg-background text-foreground flex min-h-full items-center justify-center p-6">
         <div className="w-full max-w-sm">
           <p className="font-heading text-foreground mb-8 text-center text-2xl font-semibold tracking-wide">
-            PERF SHOP
+            DE PERFUME SHOP
           </p>
           {children}
         </div>

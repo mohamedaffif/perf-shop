@@ -131,7 +131,7 @@ export async function Navbar() {
             href="/"
             className="font-heading text-foreground text-xl font-semibold tracking-wide"
           >
-            PERF SHOP
+            DE PERFUME SHOP
           </Link>
         </div>
 

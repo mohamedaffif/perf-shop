@@ -36,7 +36,7 @@ function generateOrderNumber(): string {
     now.getDate()
   ).padStart(2, "0")}`;
   const random = randomBytes(4).toString("hex").toUpperCase();
-  return `PS-${date}-${random}`;
+  return `DPS-${date}-${random}`;
 }
 
 export async function placeOrder(rawInput: unknown, userId?: string | null): Promise<Order> {

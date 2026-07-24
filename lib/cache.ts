@@ -11,7 +11,7 @@ function stableStringify(value: unknown): string {
 }
 
 export function cacheKey(namespace: string, params: unknown): string {
-  return `perf-shop:cache:${namespace}:${stableStringify(params)}`;
+  return `de-perfume-shop:cache:${namespace}:${stableStringify(params)}`;
 }
 
 /**
@@ -47,7 +47,7 @@ export async function cached<T>(
 export async function invalidateNamespace(namespace: string): Promise<void> {
   await withRedisFallback(
     async () => {
-      const pattern = `perf-shop:cache:${namespace}:*`;
+      const pattern = `de-perfume-shop:cache:${namespace}:*`;
       const keysToDelete: string[] = [];
 
       for await (const keys of redis.scanStream({ match: pattern, count: 100 })) {

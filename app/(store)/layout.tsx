@@ -28,7 +28,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Perf Shop — Signature Fragrances",
+  title: "DE PERFUME SHOP — Signature Fragrances",
   description:
     "Signature fragrances, curated for every occasion. Discover scents that stay with you.",
 };

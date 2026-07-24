@@ -32,8 +32,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "My Account — Perf Shop",
-  description: "Manage your Perf Shop profile, orders, and addresses",
+  title: "My Account — DE PERFUME SHOP",
+  description: "Manage your DE PERFUME SHOP profile, orders, and addresses",
 };
 
 const ACCOUNT_NAV = [
@@ -71,7 +71,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
                 href="/"
                 className="font-heading text-foreground text-xl font-semibold tracking-wide"
               >
-                PERF SHOP
+                DE PERFUME SHOP
               </Link>
               <div className="flex items-center gap-1">
                 <SearchDialog />

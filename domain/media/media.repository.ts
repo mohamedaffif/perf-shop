@@ -1,7 +1,7 @@
 import { cloudinary } from "@/lib/cloudinary";
 import type { UploadedImage } from "./media.types";
 
-const PRODUCT_IMAGE_FOLDER = "perf-shop/products";
+const PRODUCT_IMAGE_FOLDER = "de-perfume-shop/products";
 
 export function upload(buffer: Buffer): Promise<UploadedImage> {
   return new Promise((resolve, reject) => {

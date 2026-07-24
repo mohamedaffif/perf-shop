@@ -27,8 +27,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Admin — Perf Shop",
-  description: "Perf Shop admin dashboard",
+  title: "Admin — DE PERFUME SHOP",
+  description: "DE PERFUME SHOP admin dashboard",
 };
 
 const ADMIN_NAV = [
@@ -70,7 +70,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 href="/admin"
                 className="font-heading text-foreground text-xl font-semibold tracking-wide"
               >
-                PERF SHOP ADMIN
+                DE PERFUME SHOP ADMIN
               </Link>
               <Link href="/" className="text-muted-foreground hover:text-foreground text-sm">
                 Back to store

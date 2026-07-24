@@ -8,7 +8,7 @@ import { redis } from "@/lib/redis";
  */
 
 function tokenKey(purpose: string, token: string): string {
-  return `perf-shop:token:${purpose}:${token}`;
+  return `de-perfume-shop:token:${purpose}:${token}`;
 }
 
 export async function createTemporaryToken(

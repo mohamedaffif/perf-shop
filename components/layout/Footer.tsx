@@ -33,7 +33,7 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[1.5fr_2fr_1.5fr]">
           <div className="max-w-sm">
             <Link href="/" className="font-heading text-card-foreground text-xl font-semibold">
-              PERF SHOP
+              DE PERFUME SHOP
             </Link>
             <p className="text-muted-foreground mt-3 text-sm">
               Signature fragrances, curated for every occasion. Discover scents that stay with you.
@@ -86,7 +86,7 @@ export function Footer() {
         <Separator className="my-8" />
 
         <div className="text-muted-foreground flex flex-col items-center justify-between gap-4 text-xs sm:flex-row">
-          <p>© {new Date().getFullYear()} Perf Shop. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} DE PERFUME SHOP. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <CookiePreferencesLink />
           </div>
