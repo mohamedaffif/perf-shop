@@ -1,11 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/lib/generated/prisma/client";
+import { cached, cacheKey, invalidateKey, invalidateNamespace } from "@/lib/cache";
 import type {
   CreateProductInput,
   Product,
   ProductFilters,
   UpdateProductInput,
 } from "./product.types";
+
+const LIST_NAMESPACE = "product:list";
+const DETAIL_NAMESPACE = "product:detail";
+const SEARCH_NAMESPACE = "product:search";
 
 const productInclude = {
   images: true,
@@ -55,21 +60,23 @@ function buildWhere(filters: ProductFilters): Prisma.ProductWhereInput {
 export async function findMany(
   filters: ProductFilters
 ): Promise<{ items: Product[]; total: number }> {
-  const where = buildWhere(filters);
-  const { page = 1, pageSize = 20 } = filters;
+  return cached(cacheKey(LIST_NAMESPACE, filters), 60, async () => {
+    const where = buildWhere(filters);
+    const { page = 1, pageSize = 20 } = filters;
 
-  const [rows, total] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      include: productInclude,
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.product.count({ where }),
-  ]);
+    const [rows, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        include: productInclude,
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.product.count({ where }),
+    ]);
 
-  return { items: rows.map(toProduct), total };
+    return { items: rows.map(toProduct), total };
+  });
 }
 
 interface SearchHit {
@@ -93,6 +100,12 @@ interface SearchHit {
 const WORD_SIMILARITY_THRESHOLD = 0.3;
 
 export async function searchPublished(query: string, limit: number): Promise<Product[]> {
+  return cached(cacheKey(SEARCH_NAMESPACE, { query: query.trim().toLowerCase(), limit }), 60, () =>
+    searchPublishedUncached(query, limit)
+  );
+}
+
+async function searchPublishedUncached(query: string, limit: number): Promise<Product[]> {
   const hits = await prisma.$queryRaw<SearchHit[]>`
     SELECT p.id
     FROM "products" p
@@ -129,12 +142,22 @@ export async function searchPublished(query: string, limit: number): Promise<Pro
 }
 
 export async function findById(id: string): Promise<Product | null> {
-  const row = await prisma.product.findUnique({
-    where: { id },
-    include: productInclude,
-  });
+  return cached(cacheKey(DETAIL_NAMESPACE, id), 300, async () => {
+    const row = await prisma.product.findUnique({
+      where: { id },
+      include: productInclude,
+    });
 
-  return row ? toProduct(row) : null;
+    return row ? toProduct(row) : null;
+  });
+}
+
+export async function invalidateProductCaches(id?: string): Promise<void> {
+  await Promise.all([
+    invalidateNamespace(LIST_NAMESPACE),
+    invalidateNamespace(SEARCH_NAMESPACE),
+    id ? invalidateKey(cacheKey(DETAIL_NAMESPACE, id)) : Promise.resolve(),
+  ]);
 }
 
 export async function create(data: CreateProductInput): Promise<Product> {
@@ -148,6 +171,7 @@ export async function create(data: CreateProductInput): Promise<Product> {
     include: productInclude,
   });
 
+  await invalidateProductCaches();
   return toProduct(row);
 }
 
@@ -163,9 +187,11 @@ export async function update(id: string, data: UpdateProductInput): Promise<Prod
     include: productInclude,
   });
 
+  await invalidateProductCaches(id);
   return toProduct(row);
 }
 
 export async function remove(id: string): Promise<void> {
   await prisma.product.delete({ where: { id } });
+  await invalidateProductCaches(id);
 }

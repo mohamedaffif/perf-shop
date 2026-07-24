@@ -1,9 +1,11 @@
 import { randomBytes } from "crypto";
 import { Prisma } from "@/lib/generated/prisma/client";
-import { getProduct } from "@/domain/product";
+import { getProduct, invalidateProductCaches } from "@/domain/product";
 import { validateCouponForOrder } from "@/domain/coupon";
 import { calculateShipping } from "@/lib/pricing";
+import { withInventoryLocks } from "@/lib/lock";
 import * as orderRepository from "./order.repository";
+import { publishOrderConfirmed, publishLowStockAlerts } from "./order.events";
 import { orderFiltersSchema, placeOrderSchema, updateOrderStatusSchema } from "./order.validator";
 import type { Order, PaginatedOrders } from "./order.types";
 
@@ -109,28 +111,46 @@ export async function placeOrder(rawInput: unknown, userId?: string | null): Pro
     items: orderItems,
   };
 
-  const MAX_ATTEMPTS = 3;
-  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    try {
-      return await orderRepository.createOrderWithStockDecrement({
-        ...orderData,
-        orderNumber: generateOrderNumber(),
-      });
-    } catch (err) {
-      if (err instanceof orderRepository.StockConflictError) {
-        const item = orderItems.find((i) => i.productId === err.productId);
-        throw new OutOfStockError(item?.productName ?? err.productId);
+  const productIds = orderItems.map((item) => item.productId);
+
+  const result = await withInventoryLocks(productIds, async () => {
+    const MAX_ATTEMPTS = 3;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      try {
+        return await orderRepository.createOrderWithStockDecrement({
+          ...orderData,
+          orderNumber: generateOrderNumber(),
+        });
+      } catch (err) {
+        if (err instanceof orderRepository.StockConflictError) {
+          const item = orderItems.find((i) => i.productId === err.productId);
+          throw new OutOfStockError(item?.productName ?? err.productId);
+        }
+
+        const isUniqueClash =
+          err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002";
+        if (isUniqueClash && attempt < MAX_ATTEMPTS) continue;
+
+        throw err;
       }
-
-      const isUniqueClash =
-        err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002";
-      if (isUniqueClash && attempt < MAX_ATTEMPTS) continue;
-
-      throw err;
     }
+
+    throw new Error("Failed to generate a unique order number");
+  });
+
+  const { order, touchedProductIds, lowStockAlerts } = result;
+
+  // Stock was decremented via a raw query in order.repository.ts, bypassing
+  // the product repository's own cache invalidation — invalidate here so
+  // product/list/search caches don't serve stale stockQuantity values.
+  await Promise.all(touchedProductIds.map((id) => invalidateProductCaches(id)));
+
+  await publishOrderConfirmed(order);
+  if (lowStockAlerts.length > 0) {
+    await publishLowStockAlerts(lowStockAlerts);
   }
 
-  throw new Error("Failed to generate a unique order number");
+  return order;
 }
 
 export async function getOrderByOrderNumber(orderNumber: string): Promise<Order> {

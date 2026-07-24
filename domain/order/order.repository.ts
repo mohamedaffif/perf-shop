@@ -31,6 +31,14 @@ export class StockConflictError extends Error {
   }
 }
 
+const LOW_STOCK_THRESHOLD = 5;
+
+export interface LowStockAlert {
+  productId: string;
+  productName: string;
+  stockQuantity: number;
+}
+
 export interface OrderItemCreateData {
   productId: string | null;
   productName: string;
@@ -66,8 +74,16 @@ export interface CreateOrderData {
   items: OrderItemCreateData[];
 }
 
-export async function createOrderWithStockDecrement(data: CreateOrderData): Promise<Order> {
+export interface CreateOrderResult {
+  order: Order;
+  touchedProductIds: string[];
+  lowStockAlerts: LowStockAlert[];
+}
+
+export async function createOrderWithStockDecrement(data: CreateOrderData): Promise<CreateOrderResult> {
   const { items, couponId, ...orderFields } = data;
+  const lowStockAlerts: LowStockAlert[] = [];
+  const touchedProductIds: string[] = [];
 
   const row = await prisma.$transaction(async (tx) => {
     for (const item of items) {
@@ -81,6 +97,21 @@ export async function createOrderWithStockDecrement(data: CreateOrderData): Prom
       if (result.count === 0) {
         throw new StockConflictError(item.productId);
       }
+
+      touchedProductIds.push(item.productId);
+
+      const updated = await tx.product.findUnique({
+        where: { id: item.productId },
+        select: { name: true, stockQuantity: true },
+      });
+
+      if (updated && updated.stockQuantity <= LOW_STOCK_THRESHOLD) {
+        lowStockAlerts.push({
+          productId: item.productId,
+          productName: updated.name,
+          stockQuantity: updated.stockQuantity,
+        });
+      }
     }
 
     if (couponId) {
@@ -93,7 +124,7 @@ export async function createOrderWithStockDecrement(data: CreateOrderData): Prom
     });
   });
 
-  return toOrder(row);
+  return { order: toOrder(row), touchedProductIds, lowStockAlerts };
 }
 
 export async function findByOrderNumber(orderNumber: string): Promise<Order | null> {
