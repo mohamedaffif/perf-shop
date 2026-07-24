@@ -14,7 +14,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const idempotencyKey = request.headers.get("idempotency-key");
 
-    const order = await withIdempotency(idempotencyKey, () => placeOrder(body, session?.user?.id ?? null));
+    const order = await withIdempotency(idempotencyKey, () =>
+      placeOrder(body, session?.user?.id ?? null)
+    );
     return NextResponse.json(order, { status: 201 });
   } catch (error) {
     return handleApiError(error);

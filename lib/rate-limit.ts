@@ -30,7 +30,11 @@ return current
  * request is allowed through rather than blocked, since a rate-limiter
  * outage shouldn't take down otherwise-healthy traffic.
  */
-export async function enforceRateLimit({ key, limit, windowSeconds }: RateLimitOptions): Promise<void> {
+export async function enforceRateLimit({
+  key,
+  limit,
+  windowSeconds,
+}: RateLimitOptions): Promise<void> {
   const redisKey = `perf-shop:ratelimit:${key}`;
 
   const count = await withRedisFallback(

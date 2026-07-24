@@ -34,11 +34,15 @@ export async function findMany(filters: BrandFilters): Promise<{ items: Brand[];
 }
 
 export async function findById(id: string): Promise<Brand | null> {
-  return cached(cacheKey(DETAIL_NAMESPACE, { id }), 300, () => prisma.brand.findUnique({ where: { id } }));
+  return cached(cacheKey(DETAIL_NAMESPACE, { id }), 300, () =>
+    prisma.brand.findUnique({ where: { id } })
+  );
 }
 
 export async function findBySlug(slug: string): Promise<Brand | null> {
-  return cached(cacheKey(DETAIL_NAMESPACE, { slug }), 300, () => prisma.brand.findUnique({ where: { slug } }));
+  return cached(cacheKey(DETAIL_NAMESPACE, { slug }), 300, () =>
+    prisma.brand.findUnique({ where: { slug } })
+  );
 }
 
 async function invalidateBrandCaches(brand?: { id: string; slug: string }): Promise<void> {

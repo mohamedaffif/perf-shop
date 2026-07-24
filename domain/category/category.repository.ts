@@ -41,18 +41,24 @@ export async function findMany(
 }
 
 export async function findById(id: string): Promise<Category | null> {
-  return cached(cacheKey(DETAIL_NAMESPACE, { id }), 300, () => prisma.category.findUnique({ where: { id } }));
+  return cached(cacheKey(DETAIL_NAMESPACE, { id }), 300, () =>
+    prisma.category.findUnique({ where: { id } })
+  );
 }
 
 export async function findBySlug(slug: string): Promise<Category | null> {
-  return cached(cacheKey(DETAIL_NAMESPACE, { slug }), 300, () => prisma.category.findUnique({ where: { slug } }));
+  return cached(cacheKey(DETAIL_NAMESPACE, { slug }), 300, () =>
+    prisma.category.findUnique({ where: { slug } })
+  );
 }
 
 async function invalidateCategoryCaches(category?: { id: string; slug: string }): Promise<void> {
   await Promise.all([
     invalidateNamespace(LIST_NAMESPACE),
     category ? invalidateKey(cacheKey(DETAIL_NAMESPACE, { id: category.id })) : Promise.resolve(),
-    category ? invalidateKey(cacheKey(DETAIL_NAMESPACE, { slug: category.slug })) : Promise.resolve(),
+    category
+      ? invalidateKey(cacheKey(DETAIL_NAMESPACE, { slug: category.slug }))
+      : Promise.resolve(),
   ]);
 }
 

@@ -19,12 +19,16 @@ async function handleOrderConfirmed(payload: unknown): Promise<void> {
 async function handleEmailCustomer(payload: unknown): Promise<void> {
   const event = payload as OrderConfirmedEvent;
   // Stub: no email provider is wired up yet — this is where one (e.g. Resend) plugs in.
-  console.log(`[worker] would send confirmation email to ${event.email} for order ${event.orderNumber}`);
+  console.log(
+    `[worker] would send confirmation email to ${event.email} for order ${event.orderNumber}`
+  );
 }
 
 async function handleNotificationAdmin(payload: unknown): Promise<void> {
   const event = payload as OrderConfirmedEvent;
-  console.log(`[worker] admin notification: new order ${event.orderNumber} totalling ${event.total}`);
+  console.log(
+    `[worker] admin notification: new order ${event.orderNumber} totalling ${event.total}`
+  );
 }
 
 async function handleInvoiceGenerate(payload: unknown): Promise<void> {

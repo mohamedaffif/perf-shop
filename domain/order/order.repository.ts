@@ -80,7 +80,9 @@ export interface CreateOrderResult {
   lowStockAlerts: LowStockAlert[];
 }
 
-export async function createOrderWithStockDecrement(data: CreateOrderData): Promise<CreateOrderResult> {
+export async function createOrderWithStockDecrement(
+  data: CreateOrderData
+): Promise<CreateOrderResult> {
   const { items, couponId, ...orderFields } = data;
   const lowStockAlerts: LowStockAlert[] = [];
   const touchedProductIds: string[] = [];

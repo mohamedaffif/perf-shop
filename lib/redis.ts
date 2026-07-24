@@ -28,7 +28,10 @@ if (process.env.NODE_ENV !== "production") {
  * is down or the operation throws, instead of letting a cache/rate-limit
  * outage take down an otherwise-healthy request.
  */
-export async function withRedisFallback<T>(operation: () => Promise<T>, onUnavailable: () => T | Promise<T>): Promise<T> {
+export async function withRedisFallback<T>(
+  operation: () => Promise<T>,
+  onUnavailable: () => T | Promise<T>
+): Promise<T> {
   try {
     return await operation();
   } catch (err) {

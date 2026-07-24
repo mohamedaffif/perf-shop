@@ -23,7 +23,10 @@ const IN_PROGRESS = "__IN_PROGRESS__";
  * prevent duplicate orders/charges, so it fails closed: if Redis can't be
  * reached, the request is rejected rather than silently allowed through.
  */
-export async function withIdempotency<T>(key: string | null, handler: () => Promise<T>): Promise<T> {
+export async function withIdempotency<T>(
+  key: string | null,
+  handler: () => Promise<T>
+): Promise<T> {
   if (!key) return handler();
 
   const redisKey = `perf-shop:idempotency:${key}`;

@@ -40,7 +40,10 @@ async function withInventoryLock<T>(productId: string, fn: () => Promise<T>): Pr
 }
 
 /** Acquires per-product locks in sorted order so concurrent multi-item orders can't deadlock. */
-export async function withInventoryLocks<T>(productIds: string[], fn: () => Promise<T>): Promise<T> {
+export async function withInventoryLocks<T>(
+  productIds: string[],
+  fn: () => Promise<T>
+): Promise<T> {
   const sorted = Array.from(new Set(productIds)).sort();
 
   function acquireNext(index: number): Promise<T> {
