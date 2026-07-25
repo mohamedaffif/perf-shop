@@ -1,16 +1,26 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
 import { formatPrice } from "@/lib/utils";
 import { useDeleteCouponMutation, useListCouponsQuery } from "@/lib/api/couponsApi";
 
 export default function AdminCouponsPage() {
-  const { data, isLoading } = useListCouponsQuery({ pageSize: 100 });
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setSearch(searchInput), 300);
+    return () => clearTimeout(timeout);
+  }, [searchInput]);
+
+  const { data, isLoading } = useListCouponsQuery({ pageSize: 100, search });
   const [deleteCoupon] = useDeleteCouponMutation();
 
   function handleDelete(id: string, code: string) {
@@ -29,6 +39,16 @@ export default function AdminCouponsPage() {
             New coupon
           </Link>
         </Button>
+      </div>
+
+      <div className="relative w-64">
+        <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+        <Input
+          placeholder="Search coupons"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="pl-9"
+        />
       </div>
 
       {isLoading ? (

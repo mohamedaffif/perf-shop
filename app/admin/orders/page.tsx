@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Typography } from "@/components/ui/typography";
 import { ShopPagination } from "@/components/shop/ShopPagination";
+import { OrdersSearchInput } from "@/components/admin/OrdersSearchInput";
 import { formatPrice } from "@/lib/utils";
 import { listOrders } from "@/domain/order";
 import type { Order, OrderStatus } from "@/domain/order/order.types";
@@ -35,6 +36,7 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
   const sp = await searchParams;
   const status = Array.isArray(sp.status) ? sp.status[0] : sp.status;
   const page = Array.isArray(sp.page) ? sp.page[0] : sp.page;
+  const search = Array.isArray(sp.q) ? sp.q[0] : sp.q;
 
   const {
     items,
@@ -43,16 +45,22 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
     pageSize,
   } = await listOrders({
     status: status as OrderStatus | undefined,
+    search,
     page,
   });
 
+  const searchQs = search ? `&q=${encodeURIComponent(search)}` : "";
+
   return (
     <div className="flex flex-col gap-6">
-      <Typography variant="h1">Orders</Typography>
+      <div className="flex items-center justify-between">
+        <Typography variant="h1">Orders</Typography>
+        <OrdersSearchInput defaultValue={search ?? ""} />
+      </div>
 
       <div className="flex flex-wrap gap-2">
         <Link
-          href="/admin/orders"
+          href={`/admin/orders${search ? `?q=${encodeURIComponent(search)}` : ""}`}
           className={`rounded-full border px-3 py-1 text-xs font-medium ${
             !status ? "border-primary text-primary" : "border-border text-muted-foreground"
           }`}
@@ -62,7 +70,7 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
         {STATUS_FILTERS.map((s) => (
           <Link
             key={s}
-            href={`/admin/orders?status=${s}`}
+            href={`/admin/orders?status=${s}${searchQs}`}
             className={`rounded-full border px-3 py-1 text-xs font-medium ${
               status === s ? "border-primary text-primary" : "border-border text-muted-foreground"
             }`}

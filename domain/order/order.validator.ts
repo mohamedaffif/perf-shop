@@ -13,6 +13,7 @@ export const orderStatusSchema = z.enum([
 export const orderFiltersSchema = z.object({
   userId: z.string().optional(),
   status: orderStatusSchema.optional(),
+  search: z.string().optional(),
   page: z.coerce.number().int().positive().default(1),
   pageSize: z.coerce.number().int().positive().max(100).default(20),
 });

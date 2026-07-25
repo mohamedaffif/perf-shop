@@ -462,3 +462,28 @@ model Coupon {
 
   @@map("coupons")
 }
+
+model StoreSettings {
+  id String @id @default(cuid())
+
+  storeName    String  @default("DE PERFUME SHOP")
+  supportEmail String?
+  supportPhone String?
+  storeAddress String?
+
+  currency String @default("KES")
+  timezone String @default("Africa/Nairobi")
+
+  pesapalEnabled      Boolean @default(true)
+  codEnabled          Boolean @default(true)
+  bankTransferEnabled Boolean @default(false)
+
+  newOrderAlerts  Boolean @default(true)
+  lowStockAlerts  Boolean @default(true)
+  marketingDigest Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("store_settings")
+}

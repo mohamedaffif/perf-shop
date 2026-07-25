@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { PrismaClient, Coupon as CouponRow } from "@/lib/generated/prisma/client";
+import type { Prisma, PrismaClient, Coupon as CouponRow } from "@/lib/generated/prisma/client";
 import type { Coupon, CouponFilters, CreateCouponInput, UpdateCouponInput } from "./coupon.types";
 
 function toCoupon(row: CouponRow): Coupon {
@@ -11,18 +11,28 @@ function toCoupon(row: CouponRow): Coupon {
   };
 }
 
+function buildWhere(filters: CouponFilters): Prisma.CouponWhereInput {
+  const { search } = filters;
+
+  return {
+    code: search ? { contains: search, mode: "insensitive" } : undefined,
+  };
+}
+
 export async function findMany(
   filters: CouponFilters
 ): Promise<{ items: Coupon[]; total: number }> {
   const { page = 1, pageSize = 20 } = filters;
+  const where = buildWhere(filters);
 
   const [rows, total] = await Promise.all([
     prisma.coupon.findMany({
+      where,
       skip: (page - 1) * pageSize,
       take: pageSize,
       orderBy: { createdAt: "desc" },
     }),
-    prisma.coupon.count(),
+    prisma.coupon.count({ where }),
   ]);
 
   return { items: rows.map(toCoupon), total };

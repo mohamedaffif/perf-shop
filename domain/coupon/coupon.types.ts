@@ -33,6 +33,7 @@ export interface CreateCouponInput {
 export type UpdateCouponInput = Partial<CreateCouponInput>;
 
 export interface CouponFilters {
+  search?: string;
   page?: number;
   pageSize?: number;
 }

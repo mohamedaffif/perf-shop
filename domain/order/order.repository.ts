@@ -148,9 +148,18 @@ export async function findById(id: string): Promise<Order | null> {
 }
 
 function buildWhere(filters: OrderFilters): Prisma.OrderWhereInput {
-  const { userId, status } = filters;
+  const { userId, status, search } = filters;
 
-  return { userId, status };
+  return {
+    userId,
+    status,
+    OR: search
+      ? [
+          { orderNumber: { contains: search, mode: "insensitive" } },
+          { email: { contains: search, mode: "insensitive" } },
+        ]
+      : undefined,
+  };
 }
 
 export async function findMany(filters: OrderFilters): Promise<{ items: Order[]; total: number }> {

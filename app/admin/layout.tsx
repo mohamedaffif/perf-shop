@@ -7,6 +7,7 @@ import "../globals.css";
 import { cn } from "@/lib/utils";
 import { auth } from "@/auth";
 import Providers from "@/lib/provider";
+import { AdminMobileNav } from "@/components/admin/AdminMobileNav";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
@@ -35,7 +36,9 @@ const ADMIN_NAV = [
   { label: "Dashboard", href: "/admin" },
   { label: "Products", href: "/admin/products" },
   { label: "Orders", href: "/admin/orders" },
+  { label: "Customers", href: "/admin/customers" },
   { label: "Coupons", href: "/admin/coupons" },
+  { label: "Settings", href: "/admin/settings" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -66,12 +69,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <Providers>
           <header className="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-              <Link
-                href="/admin"
-                className="font-heading text-foreground text-xl font-semibold tracking-wide"
-              >
-                DE PERFUME SHOP ADMIN
-              </Link>
+              <div className="flex items-center gap-3">
+                <AdminMobileNav links={ADMIN_NAV} />
+                <Link
+                  href="/admin"
+                  className="font-heading text-foreground text-xl font-semibold tracking-wide"
+                >
+                  DE PERFUME SHOP ADMIN
+                </Link>
+              </div>
               <Link href="/" className="text-muted-foreground hover:text-foreground text-sm">
                 Back to store
               </Link>
@@ -79,7 +85,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </header>
 
           <div className="mx-auto flex w-full max-w-7xl flex-1 gap-10 px-4 py-10 sm:px-6 lg:px-8">
-            <nav className="flex w-48 shrink-0 flex-col gap-1">
+            <nav className="hidden w-48 shrink-0 flex-col gap-1 lg:flex">
               {ADMIN_NAV.map((item) => (
                 <Link
                   key={item.href}

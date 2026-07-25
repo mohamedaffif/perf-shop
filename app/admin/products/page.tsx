@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
 import { formatPrice } from "@/lib/utils";
 import { useDeleteProductMutation, useListProductsQuery } from "@/lib/api/productsApi";
@@ -14,7 +15,18 @@ const PAGE_SIZE = 20;
 
 export default function AdminProductsPage() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useListProductsQuery({ page, pageSize: PAGE_SIZE });
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [searchInput]);
+
+  const { data, isLoading } = useListProductsQuery({ page, pageSize: PAGE_SIZE, search });
   const [deleteProduct] = useDeleteProductMutation();
 
   function handleDelete(id: string, name: string) {
@@ -35,6 +47,16 @@ export default function AdminProductsPage() {
             New product
           </Link>
         </Button>
+      </div>
+
+      <div className="relative w-64">
+        <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+        <Input
+          placeholder="Search products"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="pl-9"
+        />
       </div>
 
       {isLoading ? (

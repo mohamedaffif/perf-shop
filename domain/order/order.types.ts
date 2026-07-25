@@ -41,6 +41,7 @@ export interface OrderItem {
 export interface OrderFilters {
   userId?: string;
   status?: OrderStatus;
+  search?: string;
   page?: number;
   pageSize?: number;
 }
