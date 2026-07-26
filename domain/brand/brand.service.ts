@@ -9,6 +9,13 @@ export class BrandNotFoundError extends Error {
   }
 }
 
+export class BrandInUseError extends Error {
+  constructor(count: number) {
+    super(`Cannot delete: ${count} product${count === 1 ? "" : "s"} still use this brand`);
+    this.name = "BrandInUseError";
+  }
+}
+
 export async function listBrands(rawFilters: unknown): Promise<PaginatedBrands> {
   const filters = brandFiltersSchema.parse(rawFilters);
   const { items, total } = await brandRepository.findMany(filters);
@@ -43,5 +50,11 @@ export async function updateBrand(id: string, rawInput: unknown): Promise<Brand>
 
 export async function deleteBrand(id: string): Promise<void> {
   await getBrand(id);
+
+  const productCount = await brandRepository.countProducts(id);
+  if (productCount > 0) {
+    throw new BrandInUseError(productCount);
+  }
+
   await brandRepository.remove(id);
 }

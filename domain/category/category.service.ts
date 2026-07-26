@@ -13,6 +13,13 @@ export class CategoryNotFoundError extends Error {
   }
 }
 
+export class CategoryInUseError extends Error {
+  constructor(count: number) {
+    super(`Cannot delete: ${count} product${count === 1 ? "" : "s"} still use this category`);
+    this.name = "CategoryInUseError";
+  }
+}
+
 export async function listCategories(rawFilters: unknown): Promise<PaginatedCategories> {
   const filters = categoryFiltersSchema.parse(rawFilters);
   const { items, total } = await categoryRepository.findMany(filters);
@@ -47,5 +54,11 @@ export async function updateCategory(id: string, rawInput: unknown): Promise<Cat
 
 export async function deleteCategory(id: string): Promise<void> {
   await getCategory(id);
+
+  const productCount = await categoryRepository.countProducts(id);
+  if (productCount > 0) {
+    throw new CategoryInUseError(productCount);
+  }
+
   await categoryRepository.remove(id);
 }

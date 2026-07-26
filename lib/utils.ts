@@ -13,3 +13,11 @@ const currencyFormatter = new Intl.NumberFormat("en-KE", {
 export function formatPrice(price: number): string {
   return currencyFormatter.format(price);
 }
+
+export function slugify(input: string): string {
+  return input
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}

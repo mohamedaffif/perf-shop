@@ -45,6 +45,10 @@ export async function findBySlug(slug: string): Promise<Brand | null> {
   );
 }
 
+export async function countProducts(brandId: string): Promise<number> {
+  return prisma.product.count({ where: { brandId } });
+}
+
 async function invalidateBrandCaches(brand?: { id: string; slug: string }): Promise<void> {
   await Promise.all([
     invalidateNamespace(LIST_NAMESPACE),

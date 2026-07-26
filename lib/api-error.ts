@@ -35,11 +35,19 @@ export function handleApiError(error: unknown): NextResponse {
     return NextResponse.json({ error: error.message }, { status: 409 });
   }
 
+  if (error instanceof Error && error.name.endsWith("InUseError")) {
+    return NextResponse.json({ error: error.message }, { status: 409 });
+  }
+
   if (error instanceof Error && error.name.endsWith("ForbiddenError")) {
     return NextResponse.json({ error: error.message }, { status: 403 });
   }
 
   if (error instanceof Error && error.name === "InvalidCouponError") {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+
+  if (error instanceof Error && error.name === "PaymentMethodDisabledError") {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 

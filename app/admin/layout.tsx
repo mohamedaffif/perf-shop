@@ -36,6 +36,8 @@ export const metadata: Metadata = {
 const ADMIN_NAV: { label: string; href: string; roles: UserRole[] }[] = [
   { label: "Dashboard", href: "/admin", roles: ["STAFF", "ADMIN"] },
   { label: "Products", href: "/admin/products", roles: ["STAFF", "ADMIN"] },
+  { label: "Brands", href: "/admin/brands", roles: ["STAFF", "ADMIN"] },
+  { label: "Categories", href: "/admin/categories", roles: ["STAFF", "ADMIN"] },
   { label: "Orders", href: "/admin/orders", roles: ["STAFF", "ADMIN"] },
   { label: "Customers", href: "/admin/customers", roles: ["STAFF", "ADMIN"] },
   { label: "Coupons", href: "/admin/coupons", roles: ["STAFF", "ADMIN"] },
