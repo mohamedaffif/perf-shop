@@ -2,12 +2,13 @@ import { randomBytes } from "crypto";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { getProduct, invalidateProductCaches } from "@/domain/product";
 import { validateCouponForOrder } from "@/domain/coupon";
+import { getStoreSettings } from "@/domain/settings";
 import { calculateShipping } from "@/lib/pricing";
 import { withInventoryLocks } from "@/lib/lock";
 import * as orderRepository from "./order.repository";
 import { publishOrderConfirmed, publishLowStockAlerts } from "./order.events";
 import { orderFiltersSchema, placeOrderSchema, updateOrderStatusSchema } from "./order.validator";
-import type { Order, PaginatedOrders } from "./order.types";
+import type { Order, PaginatedOrders, PaymentMethod } from "./order.types";
 
 export class OutOfStockError extends Error {
   constructor(productName: string) {
@@ -30,6 +31,13 @@ export class InvalidCouponError extends Error {
   }
 }
 
+export class PaymentMethodDisabledError extends Error {
+  constructor(method: PaymentMethod) {
+    super(`${method} is not currently available for checkout`);
+    this.name = "PaymentMethodDisabledError";
+  }
+}
+
 function generateOrderNumber(): string {
   const now = new Date();
   const date = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(
@@ -41,6 +49,16 @@ function generateOrderNumber(): string {
 
 export async function placeOrder(rawInput: unknown, userId?: string | null): Promise<Order> {
   const input = placeOrderSchema.parse(rawInput);
+
+  const settings = await getStoreSettings();
+  const paymentMethodEnabled: Record<PaymentMethod, boolean> = {
+    PESAPAL: settings.pesapalEnabled,
+    COD: settings.codEnabled,
+    BANK_TRANSFER: settings.bankTransferEnabled,
+  };
+  if (!paymentMethodEnabled[input.paymentMethod]) {
+    throw new PaymentMethodDisabledError(input.paymentMethod);
+  }
 
   const orderItems = await Promise.all(
     input.items.map(async ({ productId, quantity }) => {
@@ -108,6 +126,7 @@ export async function placeOrder(rawInput: unknown, userId?: string | null): Pro
     total,
     couponId,
     couponCode,
+    paymentMethod: input.paymentMethod,
     items: orderItems,
   };
 
@@ -145,7 +164,13 @@ export async function placeOrder(rawInput: unknown, userId?: string | null): Pro
   // product/list/search caches don't serve stale stockQuantity values.
   await Promise.all(touchedProductIds.map((id) => invalidateProductCaches(id)));
 
-  await publishOrderConfirmed(order);
+  // Pesapal orders are confirmed later, once GetTransactionStatus reports the
+  // payment actually cleared (see domain/payment) — firing this now would
+  // email/mark an unpaid order as confirmed. COD/bank-transfer orders have no
+  // online payment step, so the existing WhatsApp-handoff flow still applies.
+  if (order.paymentMethod !== "PESAPAL") {
+    await publishOrderConfirmed(order);
+  }
   if (lowStockAlerts.length > 0) {
     await publishLowStockAlerts(lowStockAlerts);
   }

@@ -1,6 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/lib/generated/prisma/client";
-import type { Order, OrderFilters, OrderItem, OrderStatus } from "./order.types";
+import type {
+  Order,
+  OrderFilters,
+  OrderItem,
+  OrderStatus,
+  PaymentMethod,
+  PaymentStatus,
+} from "./order.types";
 
 const orderInclude = {
   items: true,
@@ -71,6 +78,7 @@ export interface CreateOrderData {
   total: number;
   couponId?: string | null;
   couponCode?: string | null;
+  paymentMethod: PaymentMethod;
   items: OrderItemCreateData[];
 }
 
@@ -147,6 +155,22 @@ export async function findById(id: string): Promise<Order | null> {
   return row ? toOrder(row) : null;
 }
 
+/**
+ * Looks up an order by its Pesapal tracking id rather than merchant
+ * reference — the merchant reference must be regenerated fresh on every
+ * retry attempt (Pesapal requires uniqueness per request), so the tracking
+ * id we store right after each SubmitOrderRequest is the stable key for
+ * matching an IPN/callback back to the order.
+ */
+export async function findByPaymentReference(paymentReference: string): Promise<Order | null> {
+  const row = await prisma.order.findFirst({
+    where: { paymentReference },
+    include: orderInclude,
+  });
+
+  return row ? toOrder(row) : null;
+}
+
 function buildWhere(filters: OrderFilters): Prisma.OrderWhereInput {
   const { userId, status, search } = filters;
 
@@ -188,4 +212,44 @@ export async function updateStatus(id: string, status: OrderStatus): Promise<Ord
   });
 
   return toOrder(row);
+}
+
+/** Records the Pesapal tracking id + raw submit response against an order right after SubmitOrderRequest succeeds. */
+export async function updatePaymentTracking(
+  orderNumber: string,
+  data: { paymentReference: string; gatewayResponse: Prisma.InputJsonValue }
+): Promise<void> {
+  await prisma.order.update({
+    where: { orderNumber },
+    data: { paymentReference: data.paymentReference, gatewayResponse: data.gatewayResponse },
+  });
+}
+
+export interface PaymentConfirmationData {
+  paymentStatus: PaymentStatus;
+  paidAt: Date | null;
+  failureReason: string | null;
+  gatewayResponse: Prisma.InputJsonValue;
+}
+
+/**
+ * Idempotently transitions paymentStatus PENDING -> the given status, along
+ * with the supporting details (paidAt/failureReason/gatewayResponse) customer
+ * support needs without having to go dig through Pesapal's dashboard. Returns
+ * the updated order, or null if no row was still PENDING (already confirmed by
+ * a concurrent IPN/browser-callback call, or the order doesn't exist) — the
+ * same conditional-update-then-count-check pattern used for stock decrement above.
+ */
+export async function updatePaymentStatusIfPending(
+  orderNumber: string,
+  data: PaymentConfirmationData
+): Promise<Order | null> {
+  const result = await prisma.order.updateMany({
+    where: { orderNumber, paymentStatus: "PENDING" },
+    data,
+  });
+
+  if (result.count === 0) return null;
+
+  return findByOrderNumber(orderNumber);
 }

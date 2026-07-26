@@ -354,6 +354,9 @@ model Order {
   paymentStatus    PaymentStatus @default(PENDING)
   paymentMethod    String?
   paymentReference String?
+  paidAt           DateTime?
+  failureReason    String?
+  gatewayResponse  Json?
 
   email String
   phone String?

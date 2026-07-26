@@ -22,6 +22,8 @@ export const updateOrderStatusSchema = z.object({
   status: orderStatusSchema,
 });
 
+export const paymentMethodSchema = z.enum(["PESAPAL", "COD", "BANK_TRANSFER"]);
+
 export const orderLineItemSchema = z.object({
   productId: z.string().min(1),
   quantity: z.number().int().positive().max(20),
@@ -39,5 +41,6 @@ export const placeOrderSchema = z.object({
   shippingPostalCode: z.string().min(1, "Postal code is required"),
   shippingCountry: z.string().min(1, "Country is required"),
   couponCode: z.string().optional(),
+  paymentMethod: paymentMethodSchema,
   items: z.array(orderLineItemSchema).min(1, "Your cart is empty"),
 });

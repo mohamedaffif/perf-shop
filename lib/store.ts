@@ -20,6 +20,7 @@ import { couponsApi } from "./api/couponsApi";
 import { newsletterApi } from "./api/newsletterApi";
 import { customersApi } from "./api/customersApi";
 import { settingsApi } from "./api/settingsApi";
+import { ordersApi } from "./api/ordersApi";
 import cartReducer from "@/redux/slices/cartSlice";
 
 const persistedCartReducer = persistReducer({ key: "cart", storage }, cartReducer);
@@ -37,6 +38,7 @@ export const store = configureStore({
     [newsletterApi.reducerPath]: newsletterApi.reducer,
     [customersApi.reducerPath]: customersApi.reducer,
     [settingsApi.reducerPath]: settingsApi.reducer,
+    [ordersApi.reducerPath]: ordersApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -53,7 +55,8 @@ export const store = configureStore({
       couponsApi.middleware,
       newsletterApi.middleware,
       customersApi.middleware,
-      settingsApi.middleware
+      settingsApi.middleware,
+      ordersApi.middleware
     ),
 });
 

@@ -33,6 +33,31 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
       <OrderSummaryCard order={order} showStatus />
 
       <div className="border-border rounded-lg border p-4 text-sm">
+        <p className="text-foreground font-semibold">Payment</p>
+        <div className="text-muted-foreground mt-1 flex flex-col gap-1">
+          <p>
+            Method: <span className="text-foreground">{order.paymentMethod ?? "—"}</span> · Status:{" "}
+            <span className="text-foreground">{order.paymentStatus}</span>
+          </p>
+          {order.paymentReference ? <p>Reference: {order.paymentReference}</p> : null}
+          {order.paidAt ? <p>Paid at: {new Date(order.paidAt).toLocaleString()}</p> : null}
+          {order.failureReason ? (
+            <p className="text-danger-foreground">Failure reason: {order.failureReason}</p>
+          ) : null}
+          {order.gatewayResponse != null ? (
+            <details className="mt-1">
+              <summary className="text-foreground cursor-pointer text-xs font-medium">
+                Gateway response
+              </summary>
+              <pre className="bg-muted mt-2 max-h-64 overflow-auto rounded p-2 text-xs">
+                {JSON.stringify(order.gatewayResponse, null, 2)}
+              </pre>
+            </details>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="border-border rounded-lg border p-4 text-sm">
         <p className="text-foreground font-semibold">Shipping to</p>
         <p className="text-muted-foreground mt-1">
           {order.shippingFullName}

@@ -4,38 +4,75 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
 import { OrderSummaryCard } from "@/components/order/OrderSummaryCard";
+import { RetryPesapalPaymentButton } from "@/components/order/RetryPesapalPaymentButton";
 import { getOrderByOrderNumber, OrderNotFoundError } from "@/domain/order";
+import { confirmPesapalPayment } from "@/domain/payment";
 import { buildOrderWhatsAppUrl } from "@/lib/whatsapp";
 
 type OrderConfirmationPageProps = {
   params: Promise<{ orderNumber: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function OrderConfirmationPage({ params }: OrderConfirmationPageProps) {
+export default async function OrderConfirmationPage({
+  params,
+  searchParams,
+}: OrderConfirmationPageProps) {
   const { orderNumber } = await params;
+  const sp = await searchParams;
 
-  const order = await getOrderByOrderNumber(orderNumber).catch((err) => {
+  let order = await getOrderByOrderNumber(orderNumber).catch((err) => {
     if (err instanceof OrderNotFoundError) return null;
     throw err;
   });
 
   if (!order) notFound();
 
+  // Pesapal's browser redirect lands here with the same tracking id the IPN
+  // carries — confirm eagerly so the customer isn't stuck on "pending" if
+  // they beat the async IPN back to this page. Idempotent either way.
+  const orderTrackingId = typeof sp.OrderTrackingId === "string" ? sp.OrderTrackingId : undefined;
+  if (orderTrackingId && order.paymentStatus === "PENDING") {
+    await confirmPesapalPayment(orderTrackingId).catch((err) => {
+      console.error("[order-confirmation] failed to confirm Pesapal payment", err);
+    });
+    order = await getOrderByOrderNumber(orderNumber);
+  }
+
   const whatsappUrl = buildOrderWhatsAppUrl(order);
+  const isPesapalIncomplete =
+    order.paymentMethod === "PESAPAL" &&
+    (order.paymentStatus === "PENDING" || order.paymentStatus === "FAILED");
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8">
       <Typography variant="h1">Thank you!</Typography>
-      <p className="text-muted-foreground mt-2">
-        Order <span className="text-foreground font-semibold">{order.orderNumber}</span> has been
-        received and is <span className="font-semibold">pending payment confirmation</span>.
-      </p>
+
+      {order.paymentStatus === "PAID" ? (
+        <p className="text-muted-foreground mt-2">
+          Order <span className="text-foreground font-semibold">{order.orderNumber}</span> has been
+          received and <span className="font-semibold">payment is confirmed</span>.
+        </p>
+      ) : isPesapalIncomplete ? (
+        <p className="text-muted-foreground mt-2">
+          Order <span className="text-foreground font-semibold">{order.orderNumber}</span> has been
+          received, but <span className="font-semibold">payment is incomplete</span>. Retry payment
+          below to finish your purchase.
+        </p>
+      ) : (
+        <p className="text-muted-foreground mt-2">
+          Order <span className="text-foreground font-semibold">{order.orderNumber}</span> has been
+          received and is <span className="font-semibold">pending payment confirmation</span>.
+        </p>
+      )}
 
       <div className="mt-8">
         <OrderSummaryCard order={order} />
       </div>
 
-      {whatsappUrl ? (
+      {isPesapalIncomplete ? (
+        <RetryPesapalPaymentButton orderNumber={order.orderNumber} />
+      ) : whatsappUrl && order.paymentStatus !== "PAID" ? (
         <Button asChild className="mt-8 w-full" size="lg">
           <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
             Confirm payment on WhatsApp

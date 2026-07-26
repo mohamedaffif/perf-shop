@@ -5,6 +5,8 @@ export type OrderStatus =
 
 export type PaymentStatus = "PENDING" | "PAID" | "FAILED" | "REFUNDED";
 
+export type PaymentMethod = "PESAPAL" | "COD" | "BANK_TRANSFER";
+
 export interface OrderLineItemInput {
   productId: string;
   quantity: number;
@@ -22,6 +24,7 @@ export interface PlaceOrderInput {
   shippingPostalCode: string;
   shippingCountry: string;
   couponCode?: string;
+  paymentMethod: PaymentMethod;
   items: OrderLineItemInput[];
 }
 
@@ -60,6 +63,9 @@ export interface Order {
   paymentStatus: PaymentStatus;
   paymentMethod: string | null;
   paymentReference: string | null;
+  paidAt: Date | null;
+  failureReason: string | null;
+  gatewayResponse: unknown | null;
   email: string;
   phone: string | null;
   subtotal: number;

@@ -16,6 +16,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:seed": "tsx prisma/seed.ts",
+    "pesapal:register-ipn": "tsx scripts/register-pesapal-ipn.ts",
     "worker": "tsx worker/index.ts",
     "email:dev": "email dev --dir emails"
   },
