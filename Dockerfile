@@ -12,6 +12,13 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ENV DATABASE_URL="postgresql://user:password@localhost:5432/de_perfume_shop" \
+    AUTH_SECRET="ci-placeholder-secret" \
+    REDIS_URL="redis://localhost:6379" \
+    RABBITMQ_URL="amqp://localhost:5672" \
+    RESEND_API_KEY="re_ci_placeholder" \
+    RESEND_FROM_EMAIL="ci@example.com" \
+    ADMIN_NOTIFICATION_EMAIL="ci@example.com"
 RUN pnpm exec prisma generate
 RUN pnpm build
 
