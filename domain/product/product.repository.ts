@@ -92,7 +92,7 @@ interface SearchHit {
 // finds the best-matching substring within the longer field (~0.5 for the
 // same pair). An explicit 0.3 threshold is used rather than the `<%`
 // operator's default GUC (0.6, too strict for realistic typos, and a
-// session-level override would be unreliable under Neon's pooled
+// session-level override would be unreliable under Supabase's pooled
 // connections). Ranking can't be expressed via the query builder, so this
 // drops to a parameterized raw query, then hydrates full rows through the
 // normal include/mapper and reapplies the rank order in JS (findMany's

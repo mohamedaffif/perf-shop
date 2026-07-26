@@ -7,7 +7,7 @@ Stack:
 - Tailwind CSS
 - shadcn/ui
 - Prisma 7
-- PostgreSQL (neon)
+- PostgreSQL (Supabase)
 
 Rules:
 
