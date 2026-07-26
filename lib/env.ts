@@ -3,6 +3,9 @@ import { z } from "zod";
 const envSchema = z.object({
   REDIS_URL: z.url("REDIS_URL must be a valid redis:// connection string"),
   RABBITMQ_URL: z.url("RABBITMQ_URL must be a valid amqp:// connection string"),
+  RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required"),
+  RESEND_FROM_EMAIL: z.email("RESEND_FROM_EMAIL must be a valid email address"),
+  ADMIN_NOTIFICATION_EMAIL: z.email("ADMIN_NOTIFICATION_EMAIL must be a valid email address"),
 });
 
 export type Env = z.infer<typeof envSchema>;

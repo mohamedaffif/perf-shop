@@ -1,7 +1,12 @@
 import "dotenv/config";
+import { render } from "react-email";
 import { consumeQueue, publishEvent, QUEUES } from "@/lib/rabbitmq";
+import { resend } from "@/lib/resend";
+import { getEnv } from "@/lib/env";
 import { updateOrderStatus } from "@/domain/order";
 import type { OrderConfirmedEvent, StockLowEvent } from "@/domain/order/order.events";
+import OrderConfirmationEmail from "@/emails/order-confirmation";
+import AdminNewOrderEmail from "@/emails/admin-new-order";
 
 async function handleOrderConfirmed(payload: unknown): Promise<void> {
   const event = payload as OrderConfirmedEvent;
@@ -18,17 +23,45 @@ async function handleOrderConfirmed(payload: unknown): Promise<void> {
 
 async function handleEmailCustomer(payload: unknown): Promise<void> {
   const event = payload as OrderConfirmedEvent;
-  // Stub: no email provider is wired up yet — this is where one (e.g. Resend) plugs in.
-  console.log(
-    `[worker] would send confirmation email to ${event.email} for order ${event.orderNumber}`
+  const html = await render(
+    OrderConfirmationEmail({
+      orderNumber: event.orderNumber,
+      items: event.items,
+      total: event.total,
+    })
   );
+
+  const { error } = await resend.emails.send({
+    from: getEnv().RESEND_FROM_EMAIL,
+    to: event.email,
+    subject: `Order ${event.orderNumber} confirmed`,
+    html,
+  });
+  if (error) throw new Error(`Resend send failed: ${error.message}`);
+
+  console.log(`[worker] sent confirmation email to ${event.email} for order ${event.orderNumber}`);
 }
 
 async function handleNotificationAdmin(payload: unknown): Promise<void> {
   const event = payload as OrderConfirmedEvent;
-  console.log(
-    `[worker] admin notification: new order ${event.orderNumber} totalling ${event.total}`
+  const html = await render(
+    AdminNewOrderEmail({
+      orderNumber: event.orderNumber,
+      email: event.email,
+      total: event.total,
+      items: event.items,
+    })
   );
+
+  const { error } = await resend.emails.send({
+    from: getEnv().RESEND_FROM_EMAIL,
+    to: getEnv().ADMIN_NOTIFICATION_EMAIL,
+    subject: `New order ${event.orderNumber}`,
+    html,
+  });
+  if (error) throw new Error(`Resend send failed: ${error.message}`);
+
+  console.log(`[worker] sent admin notification for order ${event.orderNumber}`);
 }
 
 async function handleInvoiceGenerate(payload: unknown): Promise<void> {
