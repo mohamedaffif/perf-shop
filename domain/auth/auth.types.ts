@@ -1,4 +1,6 @@
-export type UserRole = "CUSTOMER" | "STAFF" | "ADMIN";
+import type { UserRole } from "@/lib/generated/prisma/client";
+
+export type { UserRole };
 
 export interface AuthUser {
   id: string;

@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
 import { createCoupon, listCoupons } from "@/domain/coupon";
 import { handleApiError } from "@/lib/api-error";
-
-function isStaff(role: string | undefined): boolean {
-  return role === "STAFF" || role === "ADMIN";
-}
+import { requireRole } from "@/lib/auth/require-role";
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user || !isStaff(session.user.role)) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const authorization = await requireRole(["STAFF", "ADMIN"]);
+    if (!authorization.authorized) {
+      return NextResponse.json({ error: authorization.error }, { status: authorization.status });
     }
 
     const { searchParams } = request.nextUrl;
@@ -27,9 +23,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user || !isStaff(session.user.role)) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const authorization = await requireRole(["STAFF", "ADMIN"]);
+    if (!authorization.authorized) {
+      return NextResponse.json({ error: authorization.error }, { status: authorization.status });
     }
 
     const body = await request.json();

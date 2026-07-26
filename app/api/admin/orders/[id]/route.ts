@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
 import { updateOrderStatus } from "@/domain/order";
 import { handleApiError } from "@/lib/api-error";
+import { requireRole } from "@/lib/auth/require-role";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
-    const session = await auth();
-    const role = session?.user?.role;
-
-    if (!session?.user || (role !== "STAFF" && role !== "ADMIN")) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const authorization = await requireRole(["STAFF", "ADMIN"]);
+    if (!authorization.authorized) {
+      return NextResponse.json({ error: authorization.error }, { status: authorization.status });
     }
 
     const { id } = await params;

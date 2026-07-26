@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deleteBrand, getBrand, updateBrand } from "@/domain/brand";
 import { handleApiError } from "@/lib/api-error";
+import { requireRole } from "@/lib/auth/require-role";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -16,6 +17,11 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
+    const authorization = await requireRole(["STAFF", "ADMIN"]);
+    if (!authorization.authorized) {
+      return NextResponse.json({ error: authorization.error }, { status: authorization.status });
+    }
+
     const { id } = await params;
     const body = await request.json();
     const brand = await updateBrand(id, body);
@@ -27,6 +33,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(_request: NextRequest, { params }: RouteParams) {
   try {
+    const authorization = await requireRole(["ADMIN"]);
+    if (!authorization.authorized) {
+      return NextResponse.json({ error: authorization.error }, { status: authorization.status });
+    }
+
     const { id } = await params;
     await deleteBrand(id);
     return new NextResponse(null, { status: 204 });

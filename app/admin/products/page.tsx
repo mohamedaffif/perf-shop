@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,8 @@ import { useDeleteProductMutation, useListProductsQuery } from "@/lib/api/produc
 const PAGE_SIZE = 20;
 
 export default function AdminProductsPage() {
+  const { data: session } = useSession();
+  const canDelete = session?.user?.role === "ADMIN";
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
@@ -83,15 +86,17 @@ export default function AdminProductsPage() {
                     <Pencil className="size-4" />
                   </Link>
                 </Button>
-                <Button
-                  type="button"
-                  size="icon"
-                  variant="ghost"
-                  aria-label="Delete product"
-                  onClick={() => handleDelete(product.id, product.name)}
-                >
-                  <Trash2 className="size-4" />
-                </Button>
+                {canDelete ? (
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    aria-label="Delete product"
+                    onClick={() => handleDelete(product.id, product.name)}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                ) : null}
               </div>
             </div>
           ))}

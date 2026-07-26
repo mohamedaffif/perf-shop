@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { auth } from "@/auth";
 import Providers from "@/lib/provider";
 import { AdminMobileNav } from "@/components/admin/AdminMobileNav";
+import type { UserRole } from "@/lib/generated/prisma/client";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
@@ -32,13 +33,13 @@ export const metadata: Metadata = {
   description: "DE PERFUME SHOP admin dashboard",
 };
 
-const ADMIN_NAV = [
-  { label: "Dashboard", href: "/admin" },
-  { label: "Products", href: "/admin/products" },
-  { label: "Orders", href: "/admin/orders" },
-  { label: "Customers", href: "/admin/customers" },
-  { label: "Coupons", href: "/admin/coupons" },
-  { label: "Settings", href: "/admin/settings" },
+const ADMIN_NAV: { label: string; href: string; roles: UserRole[] }[] = [
+  { label: "Dashboard", href: "/admin", roles: ["STAFF", "ADMIN"] },
+  { label: "Products", href: "/admin/products", roles: ["STAFF", "ADMIN"] },
+  { label: "Orders", href: "/admin/orders", roles: ["STAFF", "ADMIN"] },
+  { label: "Customers", href: "/admin/customers", roles: ["STAFF", "ADMIN"] },
+  { label: "Coupons", href: "/admin/coupons", roles: ["STAFF", "ADMIN"] },
+  { label: "Settings", href: "/admin/settings", roles: ["ADMIN"] },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -52,6 +53,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (role !== "STAFF" && role !== "ADMIN") {
     redirect("/");
   }
+
+  const visibleNav = ADMIN_NAV.filter((item) => item.roles.includes(role));
 
   return (
     <html
@@ -70,7 +73,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <header className="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
               <div className="flex items-center gap-3">
-                <AdminMobileNav links={ADMIN_NAV} />
+                <AdminMobileNav links={visibleNav.map(({ label, href }) => ({ label, href }))} />
                 <Link
                   href="/admin"
                   className="font-heading text-foreground text-xl font-semibold tracking-wide"
@@ -86,7 +89,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
           <div className="mx-auto flex w-full max-w-7xl flex-1 gap-10 px-4 py-10 sm:px-6 lg:px-8">
             <nav className="hidden w-48 shrink-0 flex-col gap-1 lg:flex">
-              {ADMIN_NAV.map((item) => (
+              {visibleNav.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}

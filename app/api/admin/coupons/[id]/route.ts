@@ -1,19 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
 import { deleteCoupon, getCoupon, updateCoupon } from "@/domain/coupon";
 import { handleApiError } from "@/lib/api-error";
+import { requireRole } from "@/lib/auth/require-role";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
-function isStaff(role: string | undefined): boolean {
-  return role === "STAFF" || role === "ADMIN";
-}
-
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
-    const session = await auth();
-    if (!session?.user || !isStaff(session.user.role)) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const authorization = await requireRole(["STAFF", "ADMIN"]);
+    if (!authorization.authorized) {
+      return NextResponse.json({ error: authorization.error }, { status: authorization.status });
     }
 
     const { id } = await params;
@@ -26,9 +22,9 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
-    const session = await auth();
-    if (!session?.user || !isStaff(session.user.role)) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const authorization = await requireRole(["STAFF", "ADMIN"]);
+    if (!authorization.authorized) {
+      return NextResponse.json({ error: authorization.error }, { status: authorization.status });
     }
 
     const { id } = await params;
@@ -42,9 +38,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(_request: NextRequest, { params }: RouteParams) {
   try {
-    const session = await auth();
-    if (!session?.user || !isStaff(session.user.role)) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const authorization = await requireRole(["STAFF", "ADMIN"]);
+    if (!authorization.authorized) {
+      return NextResponse.json({ error: authorization.error }, { status: authorization.status });
     }
 
     const { id } = await params;
