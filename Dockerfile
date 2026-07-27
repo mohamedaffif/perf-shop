@@ -13,6 +13,7 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV DATABASE_URL="postgresql://user:password@localhost:5432/de_perfume_shop" \
+    DIRECT_URL="postgresql://user:password@localhost:5432/de_perfume_shop" \
     AUTH_SECRET="ci-placeholder-secret" \
     REDIS_URL="redis://localhost:6379" \
     RABBITMQ_URL="amqp://localhost:5672" \

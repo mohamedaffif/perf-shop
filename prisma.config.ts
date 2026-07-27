@@ -8,6 +8,9 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: env("DATABASE_URL"),
+    // The Prisma CLI (generate/migrate) needs a direct connection, not the
+    // app's pooled DATABASE_URL — migrations require session state and
+    // advisory locks the transaction pooler doesn't support.
+    url: env("DIRECT_URL"),
   },
 });
