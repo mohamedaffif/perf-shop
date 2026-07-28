@@ -38,10 +38,19 @@ export default function LoginPage() {
       <Button
         type="button"
         variant="outline"
-        className="mb-4 w-full"
+        className="mb-3 w-full"
         onClick={() => signIn("google", { callbackUrl })}
       >
         Continue with Google
+      </Button>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="mb-4 w-full"
+        onClick={() => signIn("github", { callbackUrl })}
+      >
+        Continue with GitHub
       </Button>
 
       <div className="mb-4 flex items-center gap-3">
