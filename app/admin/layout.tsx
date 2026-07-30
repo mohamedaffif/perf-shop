@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { auth } from "@/auth";
 import Providers from "@/lib/provider";
 import { AdminMobileNav } from "@/components/admin/AdminMobileNav";
+import { ADMIN_ROLES, isStaffRole, STAFF_ROLES } from "@/lib/auth/roles";
 import type { UserRole } from "@/lib/generated/prisma/client";
 
 const cormorantGaramond = Cormorant_Garamond({
@@ -34,14 +35,14 @@ export const metadata: Metadata = {
 };
 
 const ADMIN_NAV: { label: string; href: string; roles: UserRole[] }[] = [
-  { label: "Dashboard", href: "/admin", roles: ["STAFF", "ADMIN"] },
-  { label: "Products", href: "/admin/products", roles: ["STAFF", "ADMIN"] },
-  { label: "Brands", href: "/admin/brands", roles: ["STAFF", "ADMIN"] },
-  { label: "Categories", href: "/admin/categories", roles: ["STAFF", "ADMIN"] },
-  { label: "Orders", href: "/admin/orders", roles: ["STAFF", "ADMIN"] },
-  { label: "Customers", href: "/admin/customers", roles: ["STAFF", "ADMIN"] },
-  { label: "Coupons", href: "/admin/coupons", roles: ["STAFF", "ADMIN"] },
-  { label: "Settings", href: "/admin/settings", roles: ["ADMIN"] },
+  { label: "Dashboard", href: "/admin", roles: [...STAFF_ROLES] },
+  { label: "Products", href: "/admin/products", roles: [...STAFF_ROLES] },
+  { label: "Brands", href: "/admin/brands", roles: [...STAFF_ROLES] },
+  { label: "Categories", href: "/admin/categories", roles: [...STAFF_ROLES] },
+  { label: "Orders", href: "/admin/orders", roles: [...STAFF_ROLES] },
+  { label: "Customers", href: "/admin/customers", roles: [...STAFF_ROLES] },
+  { label: "Coupons", href: "/admin/coupons", roles: [...STAFF_ROLES] },
+  { label: "Settings", href: "/admin/settings", roles: [...ADMIN_ROLES] },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -52,7 +53,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/login");
   }
 
-  if (role !== "STAFF" && role !== "ADMIN") {
+  if (!isStaffRole(role)) {
     redirect("/");
   }
 

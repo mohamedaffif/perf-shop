@@ -4,6 +4,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { SearchDialog } from "@/components/search/SearchDialog";
+import { isStaffRole } from "@/lib/auth/roles";
 import { MegaMenu } from "./MegaMenu";
 import { MobileMenu } from "./MobileMenu";
 
@@ -143,7 +144,7 @@ export async function Navbar() {
 
         <div className="flex items-center gap-1">
           <SearchDialog />
-          {(role === "STAFF" || role === "ADMIN") && (
+          {isStaffRole(role) && (
             <Link
               href="/admin"
               aria-label="Admin dashboard"

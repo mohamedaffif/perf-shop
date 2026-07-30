@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { deleteCategory, getCategory, updateCategory } from "@/domain/category";
 import { handleApiError } from "@/lib/api-error";
 import { requireRole } from "@/lib/auth/require-role";
+import { ADMIN_ROLES, STAFF_ROLES } from "@/lib/auth/roles";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -17,7 +18,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
-    const authorization = await requireRole(["STAFF", "ADMIN"]);
+    const authorization = await requireRole(STAFF_ROLES);
     if (!authorization.authorized) {
       return NextResponse.json({ error: authorization.error }, { status: authorization.status });
     }
@@ -33,7 +34,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(_request: NextRequest, { params }: RouteParams) {
   try {
-    const authorization = await requireRole(["ADMIN"]);
+    const authorization = await requireRole(ADMIN_ROLES);
     if (!authorization.authorized) {
       return NextResponse.json({ error: authorization.error }, { status: authorization.status });
     }

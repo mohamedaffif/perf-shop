@@ -1,5 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
 
+import { isStaffRole, type AppRole } from "@/lib/auth/roles";
+
 export const authConfig = {
   pages: { signIn: "/login" },
   providers: [],
@@ -9,7 +11,7 @@ export const authConfig = {
       const role = auth?.user?.role;
 
       if (nextUrl.pathname.startsWith("/admin")) {
-        return isLoggedIn && (role === "STAFF" || role === "ADMIN");
+        return isLoggedIn && isStaffRole(role);
       }
 
       if (nextUrl.pathname.startsWith("/account")) {
@@ -28,7 +30,7 @@ export const authConfig = {
     session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as "CUSTOMER" | "STAFF" | "ADMIN";
+        session.user.role = token.role as AppRole;
       }
       return session;
     },

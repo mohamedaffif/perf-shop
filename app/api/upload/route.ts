@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { InvalidImageError, uploadProductImage } from "@/domain/media";
 import { requireRole } from "@/lib/auth/require-role";
+import { STAFF_ROLES } from "@/lib/auth/roles";
 
 export async function POST(request: NextRequest) {
-  const authorization = await requireRole(["STAFF", "ADMIN"]);
+  const authorization = await requireRole(STAFF_ROLES);
   if (!authorization.authorized) {
     return NextResponse.json({ error: authorization.error }, { status: authorization.status });
   }

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
+import { isAdminRole } from "@/lib/auth/roles";
 import { formatPrice } from "@/lib/utils";
 import { useDeleteProductMutation, useListProductsQuery } from "@/lib/api/productsApi";
 
@@ -16,7 +17,7 @@ const PAGE_SIZE = 20;
 
 export default function AdminProductsPage() {
   const { data: session } = useSession();
-  const canDelete = session?.user?.role === "ADMIN";
+  const canDelete = isAdminRole(session?.user?.role);
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");

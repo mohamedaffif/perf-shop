@@ -8,13 +8,14 @@ import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
+import { isAdminRole } from "@/lib/auth/roles";
 import { useDeleteCategoryMutation, useListCategoriesQuery } from "@/lib/api/categoriesApi";
 
 const PAGE_SIZE = 20;
 
 export default function AdminCategoriesPage() {
   const { data: session } = useSession();
-  const canDelete = session?.user?.role === "ADMIN";
+  const canDelete = isAdminRole(session?.user?.role);
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
