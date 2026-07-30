@@ -1,105 +1,42 @@
-export type ProductStatus = "DRAFT" | "PUBLISHED";
+import type { z } from "zod";
+import type {
+  badgeSchema,
+  concentrationSchema,
+  createProductSchema,
+  productFiltersSchema,
+  productImageInputSchema,
+  productStatusSchema,
+  scentFamilySchema,
+  sizeSchema,
+  updateProductSchema,
+} from "./product.validator";
+import type { ProductRow } from "./product.repository";
+import type { Paginated } from "@/domain/pagination";
 
-export type Concentration =
-  "EXTRAIT_DE_PARFUM" | "EAU_DE_PARFUM" | "EAU_DE_TOILETTE" | "EAU_DE_COLOGNE" | "EAU_FRAICHE";
+export type ProductStatus = z.infer<typeof productStatusSchema>;
+export type Concentration = z.infer<typeof concentrationSchema>;
+export type Badge = z.infer<typeof badgeSchema>;
+export type ScentFamily = z.infer<typeof scentFamilySchema>;
+export type Size = z.infer<typeof sizeSchema>;
 
-export type Badge = "NEW" | "BEST_SELLER" | "LIMITED_EDITION" | "SALE";
+// Derived from the repository's Prisma.ProductGetPayload row; only the
+// Decimal->number conversion toProduct() performs needs overriding here.
+export type Product = Omit<ProductRow, "price"> & { price: number };
 
-export type ScentFamily =
-  "FLORAL" | "ORIENTAL" | "FRESH" | "WOODY" | "AROMATIC" | "CITRUS" | "SPICY";
+export type ProductImageInput = z.output<typeof productImageInputSchema>;
 
-export type Size = "ML_50" | "ML_75" | "ML_100";
+// Pre-parse shape sent by the client (fields with .default() are optional).
+export type CreateProductInput = z.input<typeof createProductSchema>;
+// Post-parse shape the repository receives after createProductSchema.parse().
+export type ParsedCreateProductInput = z.output<typeof createProductSchema>;
 
-export interface ProductImage {
-  id: string;
-  url: string;
-  publicId: string;
-  altText: string | null;
-  isPrimary: boolean;
-  order: number;
-}
+// updateProductSchema has no defaults/transforms (built from raw fields, see
+// product.validator.ts), so its input and output types are identical.
+export type UpdateProductInput = z.output<typeof updateProductSchema>;
 
-export interface ProductBrand {
-  id: string;
-  name: string;
-  slug: string;
-}
+// Pre-parse shape used by RTK Query callers (page/pageSize are optional).
+export type ProductFilters = z.input<typeof productFiltersSchema>;
+// Post-parse shape the repository receives (page/pageSize are defaulted).
+export type ParsedProductFilters = z.output<typeof productFiltersSchema>;
 
-export interface ProductCategory {
-  id: string;
-  name: string;
-  slug: string;
-}
-
-export interface Product {
-  id: string;
-  name: string;
-  brandId: string;
-  brand: ProductBrand;
-  categoryId: string;
-  category: ProductCategory;
-  concentration: Concentration;
-  scentFamily: ScentFamily;
-  description: string | null;
-  topNotes: string[];
-  heartNotes: string[];
-  baseNotes: string[];
-  size: Size;
-  price: number;
-  stockQuantity: number;
-  status: ProductStatus;
-  badges: Badge[];
-  images: ProductImage[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface ProductImageInput {
-  url: string;
-  publicId: string;
-  altText?: string;
-  isPrimary?: boolean;
-  order?: number;
-}
-
-export interface CreateProductInput {
-  name: string;
-  brandId: string;
-  categoryId: string;
-  concentration: Concentration;
-  scentFamily: ScentFamily;
-  description?: string;
-  topNotes?: string[];
-  heartNotes?: string[];
-  baseNotes?: string[];
-  size: Size;
-  price: number;
-  stockQuantity?: number;
-  status?: ProductStatus;
-  badges?: Badge[];
-  images?: ProductImageInput[];
-}
-
-export type UpdateProductInput = Partial<CreateProductInput>;
-
-export interface ProductFilters {
-  status?: ProductStatus;
-  brandId?: string;
-  categoryId?: string;
-  concentration?: Concentration;
-  scentFamily?: ScentFamily;
-  size?: Size;
-  badge?: Badge;
-  minPrice?: number;
-  maxPrice?: number;
-  search?: string;
-  page?: number;
-  pageSize?: number;
-}
-
-export interface PaginatedProducts {
-  items: Product[];
-  total: number;
-  page: number;
-  pageSize: number;
-}
+export type PaginatedProducts = Paginated<Product>;

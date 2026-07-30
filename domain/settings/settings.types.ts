@@ -1,3 +1,6 @@
+import type { z } from "zod";
+import type { updateStoreSettingsSchema } from "./settings.validator";
+
 export interface StoreSettings {
   id: string;
   storeName: string;
@@ -16,17 +19,5 @@ export interface StoreSettings {
   updatedAt: Date;
 }
 
-export interface UpdateStoreSettingsInput {
-  storeName?: string;
-  supportEmail?: string;
-  supportPhone?: string;
-  storeAddress?: string;
-  currency?: string;
-  timezone?: string;
-  pesapalEnabled?: boolean;
-  codEnabled?: boolean;
-  bankTransferEnabled?: boolean;
-  newOrderAlerts?: boolean;
-  lowStockAlerts?: boolean;
-  marketingDigest?: boolean;
-}
+// No .default() fields, so input and output are identical.
+export type UpdateStoreSettingsInput = z.infer<typeof updateStoreSettingsSchema>;

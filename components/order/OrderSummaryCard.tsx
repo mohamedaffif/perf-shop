@@ -1,20 +1,24 @@
 import { Badge } from "@/components/ui/badge";
 import { SIZE_LABELS } from "@/components/product/product-meta";
+import { STATUS_LABELS } from "@/components/order/order-meta";
 import { formatPrice } from "@/lib/utils";
 import type { Order } from "@/domain/order/order.types";
 
-const STATUS_LABELS: Record<Order["status"], string> = {
-  PENDING: "Pending",
-  CONFIRMED: "Confirmed",
-  PROCESSING: "Processing",
-  SHIPPED: "Shipped",
-  DELIVERED: "Delivered",
-  CANCELLED: "Cancelled",
-  REFUNDED: "Refunded",
-};
+type OrderSummaryData = Pick<
+  Order,
+  | "orderNumber"
+  | "status"
+  | "items"
+  | "subtotal"
+  | "discountAmount"
+  | "shippingCost"
+  | "taxAmount"
+  | "total"
+  | "couponCode"
+>;
 
 interface OrderSummaryCardProps {
-  order: Order;
+  order: OrderSummaryData;
   showStatus?: boolean;
 }
 

@@ -15,7 +15,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { formatPrice } from "@/lib/utils";
-import type { Size } from "@/domain/product/product.types";
+import { sizeSchema } from "@/domain/product/product.validator";
+import { isOneOf } from "@/lib/type-guards";
 import { SIZE_LABELS } from "@/components/product/product-meta";
 import { CartBadge } from "@/components/cart/CartBadge";
 import { useCart } from "@/hooks/useCart";
@@ -66,7 +67,9 @@ export function CartDrawer() {
                       </p>
                       <p className="text-foreground text-sm font-medium">{item.name}</p>
                       <p className="text-muted-foreground text-xs">
-                        {SIZE_LABELS[item.size as Size] ?? item.size}
+                        {isOneOf(sizeSchema.options, item.size)
+                          ? SIZE_LABELS[item.size]
+                          : item.size}
                       </p>
                     </div>
                     <button

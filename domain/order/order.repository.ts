@@ -9,11 +9,11 @@ import type {
   PaymentStatus,
 } from "./order.types";
 
-const orderInclude = {
+export const orderInclude = {
   items: true,
 } satisfies Prisma.OrderInclude;
 
-type OrderRow = Prisma.OrderGetPayload<{ include: typeof orderInclude }>;
+export type OrderRow = Prisma.OrderGetPayload<{ include: typeof orderInclude }>;
 
 function toOrder(row: OrderRow): Order {
   return {

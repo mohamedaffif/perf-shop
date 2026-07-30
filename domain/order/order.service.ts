@@ -94,8 +94,8 @@ export async function placeOrder(rawInput: unknown, userId?: string | null): Pro
   if (input.couponCode) {
     const result = await validateCouponForOrder(input.couponCode, subtotal, userId);
 
-    if (!result.valid || !result.coupon) {
-      throw new InvalidCouponError(result.error ?? "Invalid coupon code");
+    if (!result.valid) {
+      throw new InvalidCouponError(result.error);
     }
 
     discountAmount = result.discountAmount;

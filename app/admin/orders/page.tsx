@@ -6,27 +6,12 @@ import { ShopPagination } from "@/components/shop/ShopPagination";
 import { OrdersSearchInput } from "@/components/admin/OrdersSearchInput";
 import { formatPrice } from "@/lib/utils";
 import { listOrders } from "@/domain/order";
-import type { Order, OrderStatus } from "@/domain/order/order.types";
+import { orderStatusSchema } from "@/domain/order/order.validator";
+import { isOneOf } from "@/lib/type-guards";
+import { STATUS_LABELS } from "@/components/order/order-meta";
+import type { Order } from "@/domain/order/order.types";
 
-const STATUS_LABELS: Record<OrderStatus, string> = {
-  PENDING: "Pending",
-  CONFIRMED: "Confirmed",
-  PROCESSING: "Processing",
-  SHIPPED: "Shipped",
-  DELIVERED: "Delivered",
-  CANCELLED: "Cancelled",
-  REFUNDED: "Refunded",
-};
-
-const STATUS_FILTERS: OrderStatus[] = [
-  "PENDING",
-  "CONFIRMED",
-  "PROCESSING",
-  "SHIPPED",
-  "DELIVERED",
-  "CANCELLED",
-  "REFUNDED",
-];
+const STATUS_FILTERS = orderStatusSchema.options;
 
 type AdminOrdersPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -44,7 +29,7 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
     page: currentPage,
     pageSize,
   } = await listOrders({
-    status: status as OrderStatus | undefined,
+    status: status !== undefined && isOneOf(orderStatusSchema.options, status) ? status : undefined,
     search,
     page,
   });

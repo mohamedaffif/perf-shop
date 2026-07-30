@@ -2,9 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { cached, cacheKey, invalidateKey, invalidateNamespace } from "@/lib/cache";
 import type {
-  CreateProductInput,
+  ParsedCreateProductInput,
+  ParsedProductFilters,
   Product,
-  ProductFilters,
   UpdateProductInput,
 } from "./product.types";
 
@@ -12,13 +12,13 @@ const LIST_NAMESPACE = "product:list";
 const DETAIL_NAMESPACE = "product:detail";
 const SEARCH_NAMESPACE = "product:search";
 
-const productInclude = {
+export const productInclude = {
   images: true,
   brand: true,
   category: true,
 } satisfies Prisma.ProductInclude;
 
-type ProductRow = Prisma.ProductGetPayload<{ include: typeof productInclude }>;
+export type ProductRow = Prisma.ProductGetPayload<{ include: typeof productInclude }>;
 
 function toProduct(row: ProductRow): Product {
   return {
@@ -27,7 +27,7 @@ function toProduct(row: ProductRow): Product {
   };
 }
 
-function buildWhere(filters: ProductFilters): Prisma.ProductWhereInput {
+function buildWhere(filters: ParsedProductFilters): Prisma.ProductWhereInput {
   const {
     status,
     brandId,
@@ -58,7 +58,7 @@ function buildWhere(filters: ProductFilters): Prisma.ProductWhereInput {
 }
 
 export async function findMany(
-  filters: ProductFilters
+  filters: ParsedProductFilters
 ): Promise<{ items: Product[]; total: number }> {
   return cached(cacheKey(LIST_NAMESPACE, filters), 60, async () => {
     const where = buildWhere(filters);
@@ -160,7 +160,7 @@ export async function invalidateProductCaches(id?: string): Promise<void> {
   ]);
 }
 
-export async function create(data: CreateProductInput): Promise<Product> {
+export async function create(data: ParsedCreateProductInput): Promise<Product> {
   const { images, ...product } = data;
 
   const row = await prisma.product.create({

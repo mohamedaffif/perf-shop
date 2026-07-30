@@ -7,6 +7,7 @@ import { Typography } from "@/components/ui/typography";
 import { useCart } from "@/hooks/useCart";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { CheckoutSummary } from "@/components/checkout/CheckoutSummary";
+import { PAYMENT_METHOD_LABELS } from "@/components/order/order-meta";
 import type { PaymentMethod } from "@/domain/order/order.types";
 
 interface CheckoutPageClientProps {
@@ -34,9 +35,13 @@ export function CheckoutPageClient({
   if (items.length === 0) return null;
 
   const availablePaymentMethods: { value: PaymentMethod; label: string }[] = [
-    ...(pesapalEnabled ? [{ value: "PESAPAL" as const, label: "Pay now (Pesapal)" }] : []),
-    ...(codEnabled ? [{ value: "COD" as const, label: "Cash on delivery" }] : []),
-    ...(bankTransferEnabled ? [{ value: "BANK_TRANSFER" as const, label: "Bank transfer" }] : []),
+    ...(pesapalEnabled
+      ? [{ value: "PESAPAL" as const, label: PAYMENT_METHOD_LABELS.PESAPAL }]
+      : []),
+    ...(codEnabled ? [{ value: "COD" as const, label: PAYMENT_METHOD_LABELS.COD }] : []),
+    ...(bankTransferEnabled
+      ? [{ value: "BANK_TRANSFER" as const, label: PAYMENT_METHOD_LABELS.BANK_TRANSFER }]
+      : []),
   ];
 
   return (

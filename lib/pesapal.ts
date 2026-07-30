@@ -267,6 +267,9 @@ export async function submitOrder(params: SubmitOrderParams): Promise<SubmitOrde
   });
 }
 
+// Record<number, T> has no finite key set, so `satisfies` (which would keep
+// the literal {0:...,1:...} key type) breaks indexing by a runtime number —
+// the plain annotation is the correct tool here, not satisfies.
 const STATUS_CODE_MAP: Record<number, PaymentStatus> = {
   0: "FAILED", // INVALID
   1: "PAID", // COMPLETED

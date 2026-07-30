@@ -42,12 +42,12 @@ export async function deleteCoupon(id: string): Promise<void> {
   await couponRepository.remove(id);
 }
 
-export interface CouponValidationResult {
-  valid: boolean;
-  discountAmount: number;
-  coupon?: Coupon;
-  error?: string;
-}
+// A discriminated union instead of optional valid/coupon/error fields — the
+// caller can't accidentally read `coupon` or `discountAmount` off a failed
+// validation, unlike the previous { valid: boolean; coupon?; error? } shape.
+export type CouponValidationResult =
+  | { valid: true; discountAmount: number; coupon: Coupon }
+  | { valid: false; discountAmount: 0; error: string };
 
 export async function validateCouponForOrder(
   code: string,

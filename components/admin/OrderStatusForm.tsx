@@ -12,20 +12,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAsyncForm } from "@/hooks/useAsyncForm";
-import type { OrderStatus } from "@/domain/order/order.types";
+import { orderStatusSchema } from "@/domain/order/order.validator";
+import { STATUS_LABELS } from "@/components/order/order-meta";
+import { isOneOf } from "@/lib/type-guards";
+import type { Order, OrderStatus } from "@/domain/order/order.types";
 
-const STATUS_OPTIONS: OrderStatus[] = [
-  "PENDING",
-  "CONFIRMED",
-  "PROCESSING",
-  "SHIPPED",
-  "DELIVERED",
-  "CANCELLED",
-  "REFUNDED",
-];
+const STATUS_OPTIONS = orderStatusSchema.options;
 
 interface OrderStatusFormProps {
-  orderId: string;
+  orderId: Order["id"];
   currentStatus: OrderStatus;
 }
 
@@ -51,14 +46,19 @@ export function OrderStatusForm({ orderId, currentStatus }: OrderStatusFormProps
   return (
     <form onSubmit={handleSubmit} className="flex items-end gap-3">
       <div className="space-y-1.5">
-        <Select value={status} onValueChange={(v) => setStatus(v as OrderStatus)}>
+        <Select
+          value={status}
+          onValueChange={(v) => {
+            if (isOneOf(STATUS_OPTIONS, v)) setStatus(v);
+          }}
+        >
           <SelectTrigger className="w-48">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {STATUS_OPTIONS.map((option) => (
               <SelectItem key={option} value={option}>
-                {option}
+                {STATUS_LABELS[option]}
               </SelectItem>
             ))}
           </SelectContent>

@@ -21,6 +21,14 @@ import { useListBrandsQuery } from "@/lib/api/brandsApi";
 import { useListCategoriesQuery } from "@/lib/api/categoriesApi";
 import { useUploadImageMutation } from "@/lib/api/uploadApi";
 import { useCreateProductMutation, useUpdateProductMutation } from "@/lib/api/productsApi";
+import {
+  badgeSchema,
+  concentrationSchema,
+  productStatusSchema,
+  scentFamilySchema,
+  sizeSchema,
+} from "@/domain/product/product.validator";
+import { isOneOf } from "@/lib/type-guards";
 import type {
   Badge,
   Concentration,
@@ -30,26 +38,10 @@ import type {
   Size,
 } from "@/domain/product/product.types";
 
-const CONCENTRATION_OPTIONS: Concentration[] = [
-  "EXTRAIT_DE_PARFUM",
-  "EAU_DE_PARFUM",
-  "EAU_DE_TOILETTE",
-  "EAU_DE_COLOGNE",
-  "EAU_FRAICHE",
-];
-
-const SCENT_FAMILY_OPTIONS: ScentFamily[] = [
-  "FLORAL",
-  "ORIENTAL",
-  "FRESH",
-  "WOODY",
-  "AROMATIC",
-  "CITRUS",
-  "SPICY",
-];
-
-const SIZE_OPTIONS: Size[] = ["ML_50", "ML_75", "ML_100"];
-const BADGE_OPTIONS: Badge[] = ["NEW", "BEST_SELLER", "LIMITED_EDITION", "SALE"];
+const CONCENTRATION_OPTIONS = concentrationSchema.options;
+const SCENT_FAMILY_OPTIONS = scentFamilySchema.options;
+const SIZE_OPTIONS = sizeSchema.options;
+const BADGE_OPTIONS = badgeSchema.options;
 
 interface ProductFormProps {
   product?: Product;
@@ -212,7 +204,12 @@ export function ProductForm({ product }: ProductFormProps) {
       <div className="grid grid-cols-3 gap-4">
         <div className="space-y-1.5">
           <Label>Concentration</Label>
-          <Select value={concentration} onValueChange={(v) => setConcentration(v as Concentration)}>
+          <Select
+            value={concentration}
+            onValueChange={(v) => {
+              if (isOneOf(CONCENTRATION_OPTIONS, v)) setConcentration(v);
+            }}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -228,7 +225,12 @@ export function ProductForm({ product }: ProductFormProps) {
 
         <div className="space-y-1.5">
           <Label>Scent Family</Label>
-          <Select value={scentFamily} onValueChange={(v) => setScentFamily(v as ScentFamily)}>
+          <Select
+            value={scentFamily}
+            onValueChange={(v) => {
+              if (isOneOf(SCENT_FAMILY_OPTIONS, v)) setScentFamily(v);
+            }}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -244,7 +246,12 @@ export function ProductForm({ product }: ProductFormProps) {
 
         <div className="space-y-1.5">
           <Label>Size</Label>
-          <Select value={size} onValueChange={(v) => setSize(v as Size)}>
+          <Select
+            value={size}
+            onValueChange={(v) => {
+              if (isOneOf(SIZE_OPTIONS, v)) setSize(v);
+            }}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -308,7 +315,12 @@ export function ProductForm({ product }: ProductFormProps) {
         </div>
         <div className="space-y-1.5">
           <Label>Status</Label>
-          <Select value={status} onValueChange={(v) => setStatus(v as "DRAFT" | "PUBLISHED")}>
+          <Select
+            value={status}
+            onValueChange={(v) => {
+              if (isOneOf(productStatusSchema.options, v)) setStatus(v);
+            }}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>

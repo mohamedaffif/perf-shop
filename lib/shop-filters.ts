@@ -1,3 +1,10 @@
+import {
+  badgeSchema,
+  concentrationSchema,
+  scentFamilySchema,
+  sizeSchema,
+} from "@/domain/product/product.validator";
+import { isOneOf } from "@/lib/type-guards";
 import type { Badge, Concentration, ScentFamily, Size } from "@/domain/product/product.types";
 
 export const ALL_VALUE = "all";
@@ -31,15 +38,25 @@ export interface ShopSearchParams {
   page?: string;
 }
 
+// Drops a param instead of passing it through when it doesn't match one of
+// the enum's values — a stale/malformed query string would otherwise reach
+// productFiltersSchema.parse() downstream and throw, crashing the shop page.
+function parseEnumParam<T extends string>(
+  value: string | undefined,
+  options: readonly T[]
+): T | undefined {
+  return value !== undefined && isOneOf(options, value) ? value : undefined;
+}
+
 export function parseShopFilters(
   sp: Record<string, string | string[] | undefined>
 ): ShopSearchParams {
   return {
     brandId: first(sp.brandId),
-    concentration: first(sp.concentration) as Concentration | undefined,
-    scentFamily: first(sp.scentFamily) as ScentFamily | undefined,
-    size: first(sp.size) as Size | undefined,
-    badge: first(sp.badge) as Badge | undefined,
+    concentration: parseEnumParam(first(sp.concentration), concentrationSchema.options),
+    scentFamily: parseEnumParam(first(sp.scentFamily), scentFamilySchema.options),
+    size: parseEnumParam(first(sp.size), sizeSchema.options),
+    badge: parseEnumParam(first(sp.badge), badgeSchema.options),
     minPrice: first(sp.minPrice),
     maxPrice: first(sp.maxPrice),
     page: first(sp.page),

@@ -4,7 +4,8 @@ import Image from "next/image";
 
 import { formatPrice } from "@/lib/utils";
 import { calculateShipping } from "@/lib/pricing";
-import type { Size } from "@/domain/product/product.types";
+import { sizeSchema } from "@/domain/product/product.validator";
+import { isOneOf } from "@/lib/type-guards";
 import { SIZE_LABELS } from "@/components/product/product-meta";
 import { CouponInput } from "@/components/checkout/CouponInput";
 import { useCart } from "@/hooks/useCart";
@@ -54,7 +55,8 @@ export function CheckoutSummary({
               </p>
               <p className="text-foreground text-sm font-medium">{item.name}</p>
               <p className="text-muted-foreground text-xs">
-                {SIZE_LABELS[item.size as Size] ?? item.size} · Qty {item.quantity}
+                {isOneOf(sizeSchema.options, item.size) ? SIZE_LABELS[item.size] : item.size} · Qty{" "}
+                {item.quantity}
               </p>
               <span className="text-foreground mt-auto text-sm font-semibold">
                 {formatPrice(item.price * item.quantity)}

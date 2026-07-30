@@ -10,6 +10,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAsyncForm } from "@/hooks/useAsyncForm";
 import { useCart } from "@/hooks/useCart";
 import { useCreateOrderMutation, type PlaceOrderResponse } from "@/lib/api/ordersApi";
+import { isOneOf } from "@/lib/type-guards";
+import { paymentMethodSchema } from "@/domain/order/order.validator";
 import type { PaymentMethod } from "@/domain/order/order.types";
 
 const initialForm = {
@@ -182,7 +184,9 @@ export function CheckoutForm({
         {availablePaymentMethods.length > 0 ? (
           <RadioGroup
             value={paymentMethod}
-            onValueChange={(value) => setPaymentMethod(value as PaymentMethod)}
+            onValueChange={(value) => {
+              if (isOneOf(paymentMethodSchema.options, value)) setPaymentMethod(value);
+            }}
           >
             {availablePaymentMethods.map((method) => (
               <div key={method.value} className="flex items-center gap-2">

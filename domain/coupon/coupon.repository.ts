@@ -1,6 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma, PrismaClient, Coupon as CouponRow } from "@/lib/generated/prisma/client";
-import type { Coupon, CouponFilters, CreateCouponInput, UpdateCouponInput } from "./coupon.types";
+import type {
+  Coupon,
+  ParsedCouponFilters,
+  ParsedCreateCouponInput,
+  ParsedUpdateCouponInput,
+} from "./coupon.types";
 
 function toCoupon(row: CouponRow): Coupon {
   return {
@@ -11,7 +16,7 @@ function toCoupon(row: CouponRow): Coupon {
   };
 }
 
-function buildWhere(filters: CouponFilters): Prisma.CouponWhereInput {
+function buildWhere(filters: ParsedCouponFilters): Prisma.CouponWhereInput {
   const { search } = filters;
 
   return {
@@ -20,7 +25,7 @@ function buildWhere(filters: CouponFilters): Prisma.CouponWhereInput {
 }
 
 export async function findMany(
-  filters: CouponFilters
+  filters: ParsedCouponFilters
 ): Promise<{ items: Coupon[]; total: number }> {
   const { page = 1, pageSize = 20 } = filters;
   const where = buildWhere(filters);
@@ -48,12 +53,12 @@ export async function findByCode(code: string): Promise<Coupon | null> {
   return row ? toCoupon(row) : null;
 }
 
-export async function create(data: CreateCouponInput): Promise<Coupon> {
+export async function create(data: ParsedCreateCouponInput): Promise<Coupon> {
   const row = await prisma.coupon.create({ data });
   return toCoupon(row);
 }
 
-export async function update(id: string, data: UpdateCouponInput): Promise<Coupon> {
+export async function update(id: string, data: ParsedUpdateCouponInput): Promise<Coupon> {
   const row = await prisma.coupon.update({ where: { id }, data });
   return toCoupon(row);
 }

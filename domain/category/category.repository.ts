@@ -3,15 +3,15 @@ import { Prisma } from "@/lib/generated/prisma/client";
 import { cached, cacheKey, invalidateKey, invalidateNamespace } from "@/lib/cache";
 import type {
   Category,
-  CategoryFilters,
   CreateCategoryInput,
+  ParsedCategoryFilters,
   UpdateCategoryInput,
 } from "./category.types";
 
 const LIST_NAMESPACE = "category:list";
 const DETAIL_NAMESPACE = "category:detail";
 
-function buildWhere(filters: CategoryFilters): Prisma.CategoryWhereInput {
+function buildWhere(filters: ParsedCategoryFilters): Prisma.CategoryWhereInput {
   const { search } = filters;
 
   return {
@@ -20,7 +20,7 @@ function buildWhere(filters: CategoryFilters): Prisma.CategoryWhereInput {
 }
 
 export async function findMany(
-  filters: CategoryFilters
+  filters: ParsedCategoryFilters
 ): Promise<{ items: Category[]; total: number }> {
   return cached(cacheKey(LIST_NAMESPACE, filters), 300, async () => {
     const where = buildWhere(filters);

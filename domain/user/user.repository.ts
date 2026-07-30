@@ -1,6 +1,6 @@
 import { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import type { Customer, CustomerFilters, CustomerStats } from "./user.types";
+import type { Customer, CustomerStats, ParsedCustomerFilters } from "./user.types";
 
 const customerInclude = {
   orders: { select: { total: true, createdAt: true, status: true } },
@@ -40,7 +40,7 @@ function toCustomer(row: CustomerRow): Customer {
   };
 }
 
-function buildWhere(filters: CustomerFilters): Prisma.UserWhereInput {
+function buildWhere(filters: ParsedCustomerFilters): Prisma.UserWhereInput {
   const { search } = filters;
 
   return {
@@ -55,7 +55,7 @@ function buildWhere(filters: CustomerFilters): Prisma.UserWhereInput {
 }
 
 export async function findMany(
-  filters: CustomerFilters
+  filters: ParsedCustomerFilters
 ): Promise<{ items: Customer[]; total: number }> {
   const { page = 1, pageSize = 20 } = filters;
   const where = buildWhere(filters);

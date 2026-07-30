@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/select";
 import { useAsyncForm } from "@/hooks/useAsyncForm";
 import { useCreateCouponMutation, useUpdateCouponMutation } from "@/lib/api/couponsApi";
+import { couponTypeSchema } from "@/domain/coupon/coupon.validator";
+import { isOneOf } from "@/lib/type-guards";
 import type { Coupon, CouponType } from "@/domain/coupon/coupon.types";
 
 function toDateInputValue(date: Date | null): string {
@@ -94,7 +96,12 @@ export function CouponForm({ coupon }: CouponFormProps) {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <Label>Type</Label>
-          <Select value={type} onValueChange={(v) => setType(v as CouponType)}>
+          <Select
+            value={type}
+            onValueChange={(v) => {
+              if (isOneOf(couponTypeSchema.options, v)) setType(v);
+            }}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
