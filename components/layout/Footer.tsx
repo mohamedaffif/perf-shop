@@ -18,6 +18,10 @@ const FOOTER_COLUMNS = [
       { label: "Our Brands", href: "/brands" },
     ],
   },
+  {
+    heading: "Company",
+    links: [{ label: "About", href: "/about" }],
+  },
 ];
 
 const SOCIAL_LINKS = [
