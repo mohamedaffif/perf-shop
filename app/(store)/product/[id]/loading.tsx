@@ -12,7 +12,7 @@ export default function ProductLoading() {
           <Skeleton className="h-4 w-1/3" />
         </div>
 
-        <Skeleton className="aspect-4/3 w-full rounded-image" />
+        <Skeleton className="rounded-image aspect-4/3 w-full" />
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-5/6" />
         <Skeleton className="h-10 w-full" />

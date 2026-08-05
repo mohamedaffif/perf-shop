@@ -19,7 +19,7 @@ export default function ShopLoading() {
         <div className="grid flex-1 grid-cols-2 items-stretch gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="space-y-3">
-              <Skeleton className="aspect-4/3 w-full rounded-image" />
+              <Skeleton className="rounded-image aspect-4/3 w-full" />
               <Skeleton className="h-4 w-1/2" />
               <Skeleton className="h-5 w-3/4" />
             </div>

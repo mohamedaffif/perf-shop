@@ -34,7 +34,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
   }
 
   return (
-    <Card className="bg-background ring-primary/40 hover:shadow-card-hover flex flex-col gap-0 overflow-hidden rounded-image py-0 ring-1 transition-shadow duration-200">
+    <Card className="bg-background ring-primary/40 hover:shadow-card-hover rounded-image flex flex-col gap-0 overflow-hidden py-0 ring-1 transition-shadow duration-200">
       <div className="bg-muted relative aspect-4/3">
         {image ? (
           <Image

@@ -34,7 +34,7 @@ export function ProductDetails({ product, onAddToCart }: ProductDetailsProps) {
         </p>
       </div>
 
-      <div className="bg-muted relative aspect-4/3 overflow-hidden rounded-image">
+      <div className="bg-muted rounded-image relative aspect-4/3 overflow-hidden">
         {image ? (
           <Image
             src={image.url}
