@@ -28,13 +28,13 @@ export function ProductDetails({ product, onAddToCart }: ProductDetailsProps) {
         <p className="text-primary text-xs font-semibold tracking-wider uppercase">
           {product.brand.name}
         </p>
-        <h1 className="font-heading text-foreground text-2xl">{product.name}</h1>
+        <h1 className="font-heading text-foreground text-2xl text-balance">{product.name}</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           {longevity} · {oil}
         </p>
       </div>
 
-      <div className="bg-muted relative aspect-4/3 overflow-hidden rounded-lg">
+      <div className="bg-muted relative aspect-4/3 overflow-hidden rounded-image">
         {image ? (
           <Image
             src={image.url}
@@ -51,7 +51,7 @@ export function ProductDetails({ product, onAddToCart }: ProductDetailsProps) {
               viewBox="0 0 52 90"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.4"
+              strokeWidth="2"
             >
               <rect x="20" y="2" width="12" height="12" rx="2" />
               <rect x="17" y="14" width="18" height="8" />
@@ -63,7 +63,9 @@ export function ProductDetails({ product, onAddToCart }: ProductDetailsProps) {
       </div>
 
       {product.description ? (
-        <p className="text-muted-foreground text-sm leading-relaxed">{product.description}</p>
+        <p className="text-muted-foreground text-sm leading-relaxed text-pretty">
+          {product.description}
+        </p>
       ) : null}
 
       {noteGroups.length > 0 ? (
@@ -103,7 +105,7 @@ export function ProductDetails({ product, onAddToCart }: ProductDetailsProps) {
       <div className="border-border border-t" />
 
       <div className="flex items-center gap-3">
-        <span className="font-heading text-foreground text-xl font-semibold">
+        <span className="font-heading text-foreground text-xl font-semibold tabular-nums">
           {formatPrice(product.price)}
         </span>
         {product.stockQuantity <= 0 ? (

@@ -50,7 +50,7 @@ function SelectContent({
         data-slot="select-content"
         position={position}
         className={cn(
-          "rounded-input border-border bg-popover text-popover-foreground relative z-50 max-h-96 min-w-32 overflow-hidden border shadow-md",
+          "rounded-input border-border bg-popover text-popover-foreground relative z-50 max-h-96 min-w-32 overflow-hidden border shadow-(--shadow-dropdown)",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1",
           className

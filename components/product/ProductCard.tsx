@@ -34,7 +34,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
   }
 
   return (
-    <Card className="bg-background ring-primary/40 hover:shadow-card-hover flex flex-col gap-0 overflow-hidden rounded-2xl py-0 ring-1 transition-shadow duration-200">
+    <Card className="bg-background ring-primary/40 hover:shadow-card-hover flex flex-col gap-0 overflow-hidden rounded-image py-0 ring-1 transition-shadow duration-200">
       <div className="bg-muted relative aspect-4/3">
         {image ? (
           <Image
@@ -52,7 +52,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
               viewBox="0 0 52 90"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.4"
+              strokeWidth="2"
             >
               <rect x="20" y="2" width="12" height="12" rx="2" />
               <rect x="17" y="14" width="18" height="8" />
@@ -99,10 +99,10 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
           <p className="text-primary text-xs font-semibold tracking-wider uppercase">
             {product.brand.name}
           </p>
-          <h3 className="font-heading text-foreground text-2xl">{product.name}</h3>
+          <h3 className="font-heading text-foreground text-2xl text-balance">{product.name}</h3>
         </div>
 
-        <span className="font-heading text-foreground text-xl font-semibold">
+        <span className="font-heading text-foreground text-xl font-semibold tabular-nums">
           {formatPrice(product.price)}
         </span>
 

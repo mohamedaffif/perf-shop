@@ -46,7 +46,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <Typography variant="h1" className="mb-8">
+      <Typography variant="h1" className="mb-8 text-balance">
         Shop All
       </Typography>
 

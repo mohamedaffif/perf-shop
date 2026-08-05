@@ -42,7 +42,7 @@ export function CouponInput({ subtotal, appliedCode, onApply, onRemove }: Coupon
         <button
           type="button"
           onClick={onRemove}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground transition-colors"
         >
           Remove
         </button>

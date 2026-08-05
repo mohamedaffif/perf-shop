@@ -76,7 +76,7 @@ export function CartDrawer() {
                       type="button"
                       aria-label="Remove item"
                       onClick={() => removeFromCart(item.productId)}
-                      className="text-muted-foreground hover:text-foreground"
+                      className="text-muted-foreground hover:text-foreground flex size-11 shrink-0 items-center justify-center rounded-full transition-colors"
                     >
                       <X className="size-4" />
                     </button>
@@ -87,24 +87,24 @@ export function CartDrawer() {
                       <Button
                         type="button"
                         variant="ghost"
-                        size="icon-sm"
+                        size="icon-touch"
                         aria-label="Decrease quantity"
                         onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                       >
                         <Minus className="size-3.5" />
                       </Button>
-                      <span className="w-6 text-center text-sm">{item.quantity}</span>
+                      <span className="w-6 text-center text-sm tabular-nums">{item.quantity}</span>
                       <Button
                         type="button"
                         variant="ghost"
-                        size="icon-sm"
+                        size="icon-touch"
                         aria-label="Increase quantity"
                         onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                       >
                         <Plus className="size-3.5" />
                       </Button>
                     </div>
-                    <span className="text-foreground text-sm font-semibold">
+                    <span className="text-foreground text-sm font-semibold tabular-nums">
                       {formatPrice(item.price * item.quantity)}
                     </span>
                   </div>
@@ -118,7 +118,9 @@ export function CartDrawer() {
           <SheetFooter>
             <div className="text-foreground flex items-center justify-between">
               <span className="font-semibold">Subtotal</span>
-              <span className="font-heading text-lg font-semibold">{formatPrice(subtotal)}</span>
+              <span className="font-heading text-lg font-semibold tabular-nums">
+                {formatPrice(subtotal)}
+              </span>
             </div>
             <SheetClose asChild>
               <Button asChild className="w-full">

@@ -58,7 +58,7 @@ export function CheckoutSummary({
                 {isOneOf(sizeSchema.options, item.size) ? SIZE_LABELS[item.size] : item.size} · Qty{" "}
                 {item.quantity}
               </p>
-              <span className="text-foreground mt-auto text-sm font-semibold">
+              <span className="text-foreground mt-auto text-sm font-semibold tabular-nums">
                 {formatPrice(item.price * item.quantity)}
               </span>
             </div>
@@ -78,23 +78,25 @@ export function CheckoutSummary({
       <div className="mt-4 flex flex-col gap-2 text-sm">
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">Subtotal</span>
-          <span>{formatPrice(subtotal)}</span>
+          <span className="tabular-nums">{formatPrice(subtotal)}</span>
         </div>
         {discountAmount > 0 ? (
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">Discount</span>
-            <span>-{formatPrice(discountAmount)}</span>
+            <span className="tabular-nums">-{formatPrice(discountAmount)}</span>
           </div>
         ) : null}
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">Shipping</span>
-          <span>{shippingCost > 0 ? formatPrice(shippingCost) : "Free"}</span>
+          <span className="tabular-nums">
+            {shippingCost > 0 ? formatPrice(shippingCost) : "Free"}
+          </span>
         </div>
       </div>
 
       <div className="border-border mt-4 flex items-center justify-between border-t pt-4">
         <span className="text-foreground font-semibold">Total</span>
-        <span className="font-heading text-foreground text-lg font-semibold">
+        <span className="font-heading text-foreground text-lg font-semibold tabular-nums">
           {formatPrice(total)}
         </span>
       </div>

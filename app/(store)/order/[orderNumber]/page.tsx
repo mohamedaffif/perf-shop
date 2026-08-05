@@ -46,21 +46,23 @@ export default async function OrderConfirmationPage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8">
-      <Typography variant="h1">Thank you!</Typography>
+      <Typography variant="h1" className="text-balance">
+        Thank you!
+      </Typography>
 
       {order.paymentStatus === "PAID" ? (
-        <p className="text-muted-foreground mt-2">
+        <p className="text-muted-foreground mt-2 text-pretty">
           Order <span className="text-foreground font-semibold">{order.orderNumber}</span> has been
           received and <span className="font-semibold">payment is confirmed</span>.
         </p>
       ) : isPesapalIncomplete ? (
-        <p className="text-muted-foreground mt-2">
+        <p className="text-muted-foreground mt-2 text-pretty">
           Order <span className="text-foreground font-semibold">{order.orderNumber}</span> has been
           received, but <span className="font-semibold">payment is incomplete</span>. Retry payment
           below to finish your purchase.
         </p>
       ) : (
-        <p className="text-muted-foreground mt-2">
+        <p className="text-muted-foreground mt-2 text-pretty">
           Order <span className="text-foreground font-semibold">{order.orderNumber}</span> has been
           received and is <span className="font-semibold">pending payment confirmation</span>.
         </p>

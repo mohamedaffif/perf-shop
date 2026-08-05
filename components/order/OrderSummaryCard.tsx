@@ -40,34 +40,38 @@ export function OrderSummaryCard({ order, showStatus = false }: OrderSummaryCard
               {SIZE_LABELS[item.productSize]} · Qty {item.quantity}
             </p>
           </div>
-          <span className="text-sm font-semibold">{formatPrice(item.lineTotal)}</span>
+          <span className="text-sm font-semibold tabular-nums">{formatPrice(item.lineTotal)}</span>
         </div>
       ))}
 
       <div className="flex flex-col gap-1.5 p-4 text-sm">
         <div className="text-muted-foreground flex items-center justify-between">
           <span>Subtotal</span>
-          <span>{formatPrice(order.subtotal)}</span>
+          <span className="tabular-nums">{formatPrice(order.subtotal)}</span>
         </div>
         {order.discountAmount > 0 ? (
           <div className="text-muted-foreground flex items-center justify-between">
             <span>Discount{order.couponCode ? ` (${order.couponCode})` : ""}</span>
-            <span>-{formatPrice(order.discountAmount)}</span>
+            <span className="tabular-nums">-{formatPrice(order.discountAmount)}</span>
           </div>
         ) : null}
         <div className="text-muted-foreground flex items-center justify-between">
           <span>Shipping</span>
-          <span>{order.shippingCost > 0 ? formatPrice(order.shippingCost) : "Free"}</span>
+          <span className="tabular-nums">
+            {order.shippingCost > 0 ? formatPrice(order.shippingCost) : "Free"}
+          </span>
         </div>
         <div className="text-muted-foreground flex items-center justify-between">
           <span>Tax</span>
-          <span>{formatPrice(order.taxAmount)}</span>
+          <span className="tabular-nums">{formatPrice(order.taxAmount)}</span>
         </div>
       </div>
 
       <div className="flex items-center justify-between p-4">
         <span className="font-semibold">Total</span>
-        <span className="font-heading text-lg font-semibold">{formatPrice(order.total)}</span>
+        <span className="font-heading text-lg font-semibold tabular-nums">
+          {formatPrice(order.total)}
+        </span>
       </div>
     </div>
   );
