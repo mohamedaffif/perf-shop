@@ -52,7 +52,7 @@ export default async function RootLayout({
         "font-sans"
       )}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <Providers>
           <AnnouncementBar />
           <Navbar />

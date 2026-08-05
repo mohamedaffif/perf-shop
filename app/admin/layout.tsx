@@ -71,7 +71,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         "font-sans"
       )}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <Providers>
           <header className="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">

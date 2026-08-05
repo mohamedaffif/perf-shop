@@ -41,7 +41,10 @@ export default async function AuthLayout({
         "font-sans"
       )}
     >
-      <body className="bg-background text-foreground flex min-h-full items-center justify-center p-6">
+      <body
+        className="bg-background text-foreground flex min-h-full items-center justify-center p-6"
+        suppressHydrationWarning
+      >
         <div className="w-full max-w-sm">
           <p className="font-heading text-foreground mb-8 text-center text-2xl font-semibold tracking-wide">
             DE PERFUME SHOP
