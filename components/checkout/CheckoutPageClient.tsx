@@ -14,12 +14,16 @@ interface CheckoutPageClientProps {
   pesapalEnabled: boolean;
   codEnabled: boolean;
   bankTransferEnabled: boolean;
+  initialEmail: string;
+  initialFullName: string;
 }
 
 export function CheckoutPageClient({
   pesapalEnabled,
   codEnabled,
   bankTransferEnabled,
+  initialEmail,
+  initialFullName,
 }: CheckoutPageClientProps) {
   const { items } = useCart();
   const router = useRouter();
@@ -54,6 +58,8 @@ export function CheckoutPageClient({
           couponCode={couponCode}
           onCityChange={setShippingCity}
           availablePaymentMethods={availablePaymentMethods}
+          initialEmail={initialEmail}
+          initialFullName={initialFullName}
         />
         <CheckoutSummary
           couponCode={couponCode}

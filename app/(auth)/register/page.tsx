@@ -2,14 +2,19 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAsyncForm } from "@/hooks/useAsyncForm";
+import { sanitizeCallbackUrl } from "@/lib/auth/callback-url";
 
 export default function RegisterPage() {
+  const searchParams = useSearchParams();
+  const callbackUrl = sanitizeCallbackUrl(searchParams.get("callbackUrl"));
+
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -32,7 +37,7 @@ export default function RegisterPage() {
       return { error: "Account created, but sign-in failed. Please sign in manually." };
     }
 
-    window.location.href = "/";
+    window.location.href = callbackUrl;
   });
 
   return (
@@ -45,7 +50,7 @@ export default function RegisterPage() {
         type="button"
         variant="outline"
         className="mb-4 w-full"
-        onClick={() => signIn("google", { callbackUrl: "/" })}
+        onClick={() => signIn("google", { callbackUrl })}
       >
         Continue with Google
       </Button>
@@ -94,7 +99,10 @@ export default function RegisterPage() {
 
       <p className="text-muted-foreground mt-6 text-center text-sm">
         Already have an account?{" "}
-        <Link href="/login" className="text-primary hover:underline">
+        <Link
+          href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+          className="text-primary hover:underline"
+        >
           Sign in
         </Link>
       </p>

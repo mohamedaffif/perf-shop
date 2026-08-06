@@ -3,21 +3,27 @@ import { auth } from "@/auth";
 import { placeOrder } from "@/domain/order";
 import { initiatePesapalPayment } from "@/domain/payment";
 import { handleApiError } from "@/lib/api-error";
-import { enforceRateLimit, getClientIp } from "@/lib/rate-limit";
+import { enforceRateLimit } from "@/lib/rate-limit";
 import { withIdempotency } from "@/lib/idempotency";
 
 export async function POST(request: NextRequest) {
   try {
     const session = await auth();
-    const identifier = session?.user?.id ? `user:${session.user.id}` : `ip:${getClientIp(request)}`;
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "You must be signed in to place an order." },
+        { status: 401 }
+      );
+    }
+
+    const identifier = `user:${session.user.id}`;
     await enforceRateLimit({ key: `orders:${identifier}`, limit: 20, windowSeconds: 60 * 10 });
 
     const body = await request.json();
     const idempotencyKey = request.headers.get("idempotency-key");
 
-    const order = await withIdempotency(idempotencyKey, () =>
-      placeOrder(body, session?.user?.id ?? null)
-    );
+    const order = await withIdempotency(idempotencyKey, () => placeOrder(body, session.user.id));
 
     if (order.paymentMethod !== "PESAPAL") {
       return NextResponse.json({ order }, { status: 201 });

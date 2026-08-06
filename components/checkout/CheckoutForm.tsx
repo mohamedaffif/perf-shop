@@ -14,32 +14,43 @@ import { isOneOf } from "@/lib/type-guards";
 import { paymentMethodSchema } from "@/domain/order/order.validator";
 import type { PaymentMethod } from "@/domain/order/order.types";
 
-const initialForm = {
-  email: "",
-  phone: "",
-  shippingFullName: "",
-  shippingLine1: "",
-  shippingLine2: "",
-  shippingCity: "",
-  shippingState: "",
-  shippingPostalCode: "",
-  shippingCountry: "Kenya",
-};
-
-type FormField = keyof typeof initialForm;
+type FormField =
+  | "email"
+  | "phone"
+  | "shippingFullName"
+  | "shippingLine1"
+  | "shippingLine2"
+  | "shippingCity"
+  | "shippingState"
+  | "shippingPostalCode"
+  | "shippingCountry";
 
 interface CheckoutFormProps {
   couponCode: string | null;
   onCityChange: (city: string) => void;
   availablePaymentMethods: { value: PaymentMethod; label: string }[];
+  initialEmail: string;
+  initialFullName: string;
 }
 
 export function CheckoutForm({
   couponCode,
   onCityChange,
   availablePaymentMethods,
+  initialEmail,
+  initialFullName,
 }: CheckoutFormProps) {
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState({
+    email: initialEmail,
+    phone: "",
+    shippingFullName: initialFullName,
+    shippingLine1: "",
+    shippingLine2: "",
+    shippingCity: "",
+    shippingState: "",
+    shippingPostalCode: "",
+    shippingCountry: "Kenya",
+  });
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | undefined>(
     availablePaymentMethods[0]?.value
   );

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, ShoppingBag, X } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,11 @@ import { useCart } from "@/hooks/useCart";
 
 export function CartDrawer() {
   const { items, subtotal, updateQuantity, removeFromCart } = useCart();
+  const { status } = useSession();
+  // "loading" isn't treated as signed-out: the server-side checkout guard
+  // is the real protection, this is only an upfront UX shortcut.
+  const checkoutHref =
+    status === "unauthenticated" ? "/login?callbackUrl=%2Fcheckout" : "/checkout";
 
   return (
     <Sheet>
@@ -124,7 +130,7 @@ export function CartDrawer() {
             </div>
             <SheetClose asChild>
               <Button asChild className="w-full">
-                <Link href="/checkout">Checkout</Link>
+                <Link href={checkoutHref}>Checkout</Link>
               </Button>
             </SheetClose>
           </SheetFooter>
