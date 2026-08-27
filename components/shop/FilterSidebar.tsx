@@ -1,8 +1,6 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Typography } from "@/components/ui/typography";
+import { FilterDropdown } from "@/components/shop/FilterDropdown";
 import type { Brand } from "@/domain/brand/brand.types";
 import type { Badge, Concentration, ScentFamily, Size } from "@/domain/product/product.types";
 import { useQueryParamFilter } from "@/hooks/useQueryParamFilter";
@@ -51,121 +49,62 @@ export function FilterSidebar({ brands }: FilterSidebarProps) {
     setParams({ minPrice: bucket?.min, maxPrice: bucket?.max });
   }
 
+  const filters = [
+    {
+      id: "brandId",
+      label: "Brand",
+      allLabel: "All Brands",
+      value: searchParams.get("brandId") ?? ALL_VALUE,
+      onValueChange: (value: string) => setParam("brandId", value),
+      options: brands.map((brand) => ({ value: brand.id, label: brand.name })),
+    },
+    {
+      id: "price",
+      label: "Price",
+      allLabel: "All Prices",
+      value: currentPriceBucketId(searchParams.get("minPrice"), searchParams.get("maxPrice")),
+      onValueChange: setPriceBucket,
+      options: PRICE_BUCKETS.map((bucket) => ({ value: bucket.id, label: bucket.label })),
+    },
+    {
+      id: "concentration",
+      label: "Concentration",
+      allLabel: "All",
+      value: searchParams.get("concentration") ?? ALL_VALUE,
+      onValueChange: (value: string) => setParam("concentration", value),
+      options: CONCENTRATION_OPTIONS,
+    },
+    {
+      id: "scentFamily",
+      label: "Family",
+      allLabel: "All",
+      value: searchParams.get("scentFamily") ?? ALL_VALUE,
+      onValueChange: (value: string) => setParam("scentFamily", value),
+      options: SCENT_FAMILY_OPTIONS,
+    },
+    {
+      id: "size",
+      label: "Size",
+      allLabel: "All Sizes",
+      value: searchParams.get("size") ?? ALL_VALUE,
+      onValueChange: (value: string) => setParam("size", value),
+      options: SIZE_OPTIONS,
+    },
+    {
+      id: "badge",
+      label: "Badge",
+      allLabel: "All",
+      value: searchParams.get("badge") ?? ALL_VALUE,
+      onValueChange: (value: string) => setParam("badge", value),
+      options: BADGE_OPTIONS,
+    },
+  ];
+
   return (
-    <aside className="flex w-full flex-col gap-8 lg:w-60 lg:shrink-0">
-      <div className="flex flex-col gap-3">
-        <Typography variant="h6">Brand</Typography>
-        <RadioGroup
-          value={searchParams.get("brandId") ?? ALL_VALUE}
-          onValueChange={(value) => setParam("brandId", value)}
-        >
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value={ALL_VALUE} id="brand-all" />
-            <Label htmlFor="brand-all">All Brands</Label>
-          </div>
-          {brands.map((brand) => (
-            <div key={brand.id} className="flex items-center gap-2">
-              <RadioGroupItem value={brand.id} id={`brand-${brand.id}`} />
-              <Label htmlFor={`brand-${brand.id}`}>{brand.name}</Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <Typography variant="h6">Price</Typography>
-        <RadioGroup
-          value={currentPriceBucketId(searchParams.get("minPrice"), searchParams.get("maxPrice"))}
-          onValueChange={setPriceBucket}
-        >
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value={ALL_VALUE} id="price-all" />
-            <Label htmlFor="price-all">All Prices</Label>
-          </div>
-          {PRICE_BUCKETS.map((bucket) => (
-            <div key={bucket.id} className="flex items-center gap-2">
-              <RadioGroupItem value={bucket.id} id={`price-${bucket.id}`} />
-              <Label htmlFor={`price-${bucket.id}`}>{bucket.label}</Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <Typography variant="h6">Concentration</Typography>
-        <RadioGroup
-          value={searchParams.get("concentration") ?? ALL_VALUE}
-          onValueChange={(value) => setParam("concentration", value)}
-        >
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value={ALL_VALUE} id="concentration-all" />
-            <Label htmlFor="concentration-all">All</Label>
-          </div>
-          {CONCENTRATION_OPTIONS.map((option) => (
-            <div key={option.value} className="flex items-center gap-2">
-              <RadioGroupItem value={option.value} id={`concentration-${option.value}`} />
-              <Label htmlFor={`concentration-${option.value}`}>{option.label}</Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <Typography variant="h6">Family</Typography>
-        <RadioGroup
-          value={searchParams.get("scentFamily") ?? ALL_VALUE}
-          onValueChange={(value) => setParam("scentFamily", value)}
-        >
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value={ALL_VALUE} id="scentFamily-all" />
-            <Label htmlFor="scentFamily-all">All</Label>
-          </div>
-          {SCENT_FAMILY_OPTIONS.map((option) => (
-            <div key={option.value} className="flex items-center gap-2">
-              <RadioGroupItem value={option.value} id={`scentFamily-${option.value}`} />
-              <Label htmlFor={`scentFamily-${option.value}`}>{option.label}</Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <Typography variant="h6">Size</Typography>
-        <RadioGroup
-          value={searchParams.get("size") ?? ALL_VALUE}
-          onValueChange={(value) => setParam("size", value)}
-        >
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value={ALL_VALUE} id="size-all" />
-            <Label htmlFor="size-all">All Sizes</Label>
-          </div>
-          {SIZE_OPTIONS.map((option) => (
-            <div key={option.value} className="flex items-center gap-2">
-              <RadioGroupItem value={option.value} id={`size-${option.value}`} />
-              <Label htmlFor={`size-${option.value}`}>{option.label}</Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <Typography variant="h6">Badge</Typography>
-        <RadioGroup
-          value={searchParams.get("badge") ?? ALL_VALUE}
-          onValueChange={(value) => setParam("badge", value)}
-        >
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value={ALL_VALUE} id="badge-all" />
-            <Label htmlFor="badge-all">All</Label>
-          </div>
-          {BADGE_OPTIONS.map((option) => (
-            <div key={option.value} className="flex items-center gap-2">
-              <RadioGroupItem value={option.value} id={`badge-${option.value}`} />
-              <Label htmlFor={`badge-${option.value}`}>{option.label}</Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
+    <aside className="flex w-full flex-col gap-6 lg:w-60 lg:shrink-0">
+      {filters.map(({ id, ...filter }) => (
+        <FilterDropdown key={id} {...filter} />
+      ))}
     </aside>
   );
 }
