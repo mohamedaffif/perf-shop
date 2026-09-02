@@ -7,21 +7,25 @@ import { useSubscribeMutation } from "@/lib/api/newsletterApi";
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const [confirmation, setConfirmation] = useState<string | null>(null);
   const [subscribe] = useSubscribeMutation();
 
   const { error, isSubmitting, handleSubmit } = useAsyncForm(async () => {
     try {
-      await subscribe(email).unwrap();
-      setSubscribed(true);
+      const result = await subscribe(email).unwrap();
+      setConfirmation(
+        result.status === "already_subscribed"
+          ? "You're already on the list."
+          : "Almost there — check your inbox to confirm your subscription."
+      );
       setEmail("");
     } catch {
       return { error: "Something went wrong. Please try again." };
     }
   });
 
-  if (subscribed) {
-    return <p className="text-card-foreground mt-4 text-sm">You&apos;re subscribed. Thank you!</p>;
+  if (confirmation) {
+    return <p className="text-card-foreground mt-4 text-sm">{confirmation}</p>;
   }
 
   return (

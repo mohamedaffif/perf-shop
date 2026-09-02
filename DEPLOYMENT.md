@@ -83,8 +83,10 @@ docker compose exec app pnpm db:seed            # creates the admin user (produc
 - `https://<domain>` → teaser home, newsletter form, no product grid.
 - `https://<domain>/shop` and `/checkout` → redirect to `/`.
 - `/contact` → submit → message lands in `ADMIN_NOTIFICATION_EMAIL`.
-- Newsletter signup → row in `newsletter_subscribers` (visible at `/admin/subscribers`),
-  welcome email delivered.
+- Newsletter signup → "check your inbox" message + confirmation email. Clicking the link
+  lands on `/newsletter/confirmed`, adds the row to `newsletter_subscribers` (visible at
+  `/admin/subscribers`), and sends the welcome email. Unconfirmed signups are never
+  stored (held in Redis for 24h, then discarded).
 - `/admin` → sign in with the seeded admin.
 - `curl https://<domain>/api/health` → `{"status":"ok"}`.
 - `/sitemap.xml`, `/robots.txt`, favicon, and OG image resolve.

@@ -10,6 +10,16 @@ const subscriberSelect = {
   createdAt: true,
 } satisfies Prisma.NewsletterSubscriberSelect;
 
+/** Whether the email is already on the list (any subscription record, opted-out or not). */
+export async function findByEmail(
+  email: string
+): Promise<{ id: string; unsubscribedAt: Date | null } | null> {
+  return prisma.newsletterSubscriber.findUnique({
+    where: { email },
+    select: { id: true, unsubscribedAt: true },
+  });
+}
+
 /** Idempotent: re-subscribing an existing email is a no-op that clears any prior opt-out. */
 export async function upsert(email: string, source?: string): Promise<{ created: boolean }> {
   const existing = await prisma.newsletterSubscriber.findUnique({

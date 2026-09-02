@@ -129,3 +129,7 @@ See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for the VPS soft-launch runbook.
 ### Storefront kill-switch
 
 `NEXT_PUBLIC_SHOP_LIVE` gates the shop. `false` (default) runs the brand/teaser site — shop, cart, checkout, and account routes redirect to home and the commerce chrome is hidden. `true` brings the full storefront online. It is inlined at build time, so flipping it means rebuilding the image (`--build-arg NEXT_PUBLIC_SHOP_LIVE=true`, or the `NEXT_PUBLIC_SHOP_LIVE` repo variable for `docker-publish.yml`).
+
+### Newsletter
+
+Signup is double opt-in: `POST /api/newsletter` holds the pending email in Redis (24h, one-time token) and sends a confirmation link — `GET /api/newsletter/confirm` writes the `newsletter_subscribers` row and sends the welcome email. Unconfirmed addresses are never stored.

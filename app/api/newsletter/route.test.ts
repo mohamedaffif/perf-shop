@@ -25,13 +25,13 @@ describe("POST /api/newsletter", () => {
     mockedRateLimit.mockReset();
   });
 
-  it("subscribes a valid email", async () => {
-    mockedSubscribe.mockResolvedValue({ subscribed: true });
+  it("accepts a valid email and returns a pending status", async () => {
+    mockedSubscribe.mockResolvedValue({ status: "pending" });
 
     const response = await POST(makeRequest({ email: "reader@example.com" }));
 
     expect(response.status).toBe(200);
-    await expect(response.json()).resolves.toEqual({ subscribed: true });
+    await expect(response.json()).resolves.toEqual({ status: "pending" });
     expect(mockedSubscribe).toHaveBeenCalledWith({ email: "reader@example.com" });
   });
 
