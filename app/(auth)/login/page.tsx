@@ -8,6 +8,7 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { useAsyncForm } from "@/hooks/useAsyncForm";
 import { sanitizeCallbackUrl } from "@/lib/auth/callback-url";
 
@@ -36,29 +37,7 @@ export default function LoginPage() {
     <div className="border-border bg-card rounded-lg border p-6">
       <h1 className="font-heading text-card-foreground mb-6 text-xl font-semibold">Sign in</h1>
 
-      <Button
-        type="button"
-        variant="outline"
-        className="mb-3 w-full"
-        onClick={() => signIn("google", { callbackUrl })}
-      >
-        Continue with Google
-      </Button>
-
-      <Button
-        type="button"
-        variant="outline"
-        className="mb-4 w-full"
-        onClick={() => signIn("github", { callbackUrl })}
-      >
-        Continue with GitHub
-      </Button>
-
-      <div className="mb-4 flex items-center gap-3">
-        <div className="bg-border h-px flex-1" />
-        <span className="text-muted-foreground text-xs">or</span>
-        <div className="bg-border h-px flex-1" />
-      </div>
+      <OAuthButtons callbackUrl={callbackUrl} />
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">

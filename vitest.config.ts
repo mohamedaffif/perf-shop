@@ -14,6 +14,8 @@ export default defineConfig({
       RESEND_FROM_EMAIL: "ci@example.com",
       ADMIN_NOTIFICATION_EMAIL: "ci@example.com",
       NEXT_PUBLIC_APP_URL: "http://localhost:3000",
+      NEXT_PUBLIC_SHOP_LIVE: "false",
+      NEXT_PUBLIC_OAUTH_ENABLED: "false",
       PESAPAL_CONSUMER_KEY: "test-consumer-key",
       PESAPAL_CONSUMER_SECRET: "test-consumer-secret",
       PESAPAL_BASE_URL: "https://cybqa.pesapal.com/pesapalv3",

@@ -1,0 +1,16 @@
+# Reverse proxy + automatic HTTPS for the DE PERFUME SHOP app container.
+# SITE_ADDRESS and ACME_EMAIL are provided by docker-compose from .env.
+
+{
+	email {$ACME_EMAIL}
+}
+
+{$SITE_ADDRESS} {
+	encode zstd gzip
+
+	# Let the app set its own security headers (see next.config.ts); just make
+	# sure upstream never leaks a Server banner.
+	header -Server
+
+	reverse_proxy app:3000
+}

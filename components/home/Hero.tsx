@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
 import { Reveal } from "@/components/motion/Reveal";
+import { SHOP_LIVE } from "@/lib/storefront";
 
 export function Hero() {
   return (
@@ -19,7 +20,11 @@ export function Hero() {
           remembered, not just noticed.
         </p>
         <Button variant="secondary" asChild>
-          <Link href="#featured">Shop the Collection</Link>
+          {SHOP_LIVE ? (
+            <Link href="#featured">Shop the Collection</Link>
+          ) : (
+            <Link href="#newsletter">Get Early Access</Link>
+          )}
         </Button>
       </Reveal>
     </section>

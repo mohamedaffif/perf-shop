@@ -9,6 +9,12 @@ const envSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.url(
     "NEXT_PUBLIC_APP_URL must be a valid URL, e.g. https://deperfumeshop.com"
   ),
+  // Soft-launch storefront kill-switch. "false" (or unset) runs the teaser site;
+  // "true" brings the shop/cart/checkout routes online. See lib/storefront.ts.
+  NEXT_PUBLIC_SHOP_LIVE: z.enum(["true", "false"]).default("false"),
+  // Show the Google / GitHub sign-in buttons. Only enable once the matching
+  // AUTH_GOOGLE_* / AUTH_GITHUB_* credentials are configured (see auth.ts).
+  NEXT_PUBLIC_OAUTH_ENABLED: z.enum(["true", "false"]).default("false"),
   PESAPAL_CONSUMER_KEY: z.string().min(1, "PESAPAL_CONSUMER_KEY is required"),
   PESAPAL_CONSUMER_SECRET: z.string().min(1, "PESAPAL_CONSUMER_SECRET is required"),
   PESAPAL_BASE_URL: z.url("PESAPAL_BASE_URL must be a valid URL"),

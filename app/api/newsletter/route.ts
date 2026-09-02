@@ -1,19 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import { handleApiError } from "@/lib/api-error";
 
-const subscribeSchema = z.object({
-  email: z.email(),
-});
+import { subscribe } from "@/domain/newsletter";
+import { handleApiError } from "@/lib/api-error";
+import { enforceRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    await enforceRateLimit({
+      key: `newsletter:${getClientIp(request)}`,
+      limit: 5,
+      windowSeconds: 60 * 10,
+    });
+
     const body = await request.json();
-    const { email } = subscribeSchema.parse(body);
+    const result = await subscribe(body);
 
-    console.log(`Newsletter signup: ${email}`);
-
-    return NextResponse.json({ subscribed: true });
+    return NextResponse.json(result);
   } catch (error) {
     return handleApiError(error);
   }

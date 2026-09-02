@@ -14,6 +14,8 @@ jobs:
             image: de-perfume-shop
           - target: worker
             image: de-perfume-shop-worker
+          - target: migrate
+            image: de-perfume-shop-migrate
     steps:
       - uses: actions/checkout@v5
 
@@ -37,6 +39,10 @@ jobs:
           context: .
           target: ${{ matrix.target }}
           push: true
+          # Storefront kill-switch is baked at build time. Set the repo variable
+          # NEXT_PUBLIC_SHOP_LIVE to "true" to publish images with the shop live.
+          build-args: |
+            NEXT_PUBLIC_SHOP_LIVE=${{ vars.NEXT_PUBLIC_SHOP_LIVE || 'false' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=${{ matrix.target }}

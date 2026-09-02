@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { SearchDialog } from "@/components/search/SearchDialog";
 import { isStaffRole } from "@/lib/auth/roles";
+import { SHOP_LIVE } from "@/lib/storefront";
 import { MegaMenu } from "./MegaMenu";
 import { MobileMenu } from "./MobileMenu";
 
@@ -119,15 +120,22 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Sale", href: "/shop?badge=SALE" },
 ];
 
+// Soft-launch navigation: no shop, cart, or account until NEXT_PUBLIC_SHOP_LIVE=true.
+export const TEASER_NAV_LINKS: NavLink[] = [
+  { label: "Our Story", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
 export async function Navbar() {
   const session = await auth();
   const role = session?.user?.role;
+  const links = SHOP_LIVE ? NAV_LINKS : TEASER_NAV_LINKS;
 
   return (
     <header className="border-border bg-background/95 supports-backdrop-filter:bg-background/80 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
-          <MobileMenu links={NAV_LINKS} />
+          <MobileMenu links={links} />
           <Link
             href="/"
             className="font-heading text-foreground text-xl font-semibold tracking-wide"
@@ -137,13 +145,13 @@ export async function Navbar() {
         </div>
 
         <nav className="hidden items-center gap-8 lg:flex">
-          {NAV_LINKS.map((link) => (
+          {links.map((link) => (
             <MegaMenu key={link.href} link={link} />
           ))}
         </nav>
 
         <div className="flex items-center gap-1">
-          <SearchDialog />
+          {SHOP_LIVE && <SearchDialog />}
           {isStaffRole(role) && (
             <Link
               href="/admin"
@@ -153,14 +161,16 @@ export async function Navbar() {
               <ShieldCheck className="size-4" />
             </Link>
           )}
-          <Link
-            href={session ? "/account" : "/login"}
-            aria-label="Account"
-            className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
-          >
-            <User className="size-4" />
-          </Link>
-          <CartDrawer />
+          {SHOP_LIVE && (
+            <Link
+              href={session ? "/account" : "/login"}
+              aria-label="Account"
+              className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
+            >
+              <User className="size-4" />
+            </Link>
+          )}
+          {SHOP_LIVE && <CartDrawer />}
         </div>
       </div>
     </header>

@@ -5,12 +5,18 @@ import { X } from "lucide-react";
 
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { useInterval } from "@/hooks/useInterval";
+import { SHOP_LIVE } from "@/lib/storefront";
 
-const MESSAGES = [
-  "Free shipping on all orders over KES 50,000",
-  "New arrivals just dropped — shop the latest scents",
-  "Have a coupon code? Apply it at checkout",
-];
+const MESSAGES = SHOP_LIVE
+  ? [
+      "Free shipping on all orders over KES 50,000",
+      "New arrivals just dropped — shop the latest scents",
+      "Have a coupon code? Apply it at checkout",
+    ]
+  : [
+      "Something rare is on its way — join the list for early access",
+      "DE PERFUME SHOP — opening soon",
+    ];
 
 export function AnnouncementBar() {
   const { isOpen: visible, close } = useDisclosure({ defaultOpen: true });

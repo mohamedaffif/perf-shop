@@ -41,6 +41,7 @@ const ADMIN_NAV: { label: string; href: string; roles: UserRole[] }[] = [
   { label: "Categories", href: "/admin/categories", roles: [...STAFF_ROLES] },
   { label: "Orders", href: "/admin/orders", roles: [...STAFF_ROLES] },
   { label: "Customers", href: "/admin/customers", roles: [...STAFF_ROLES] },
+  { label: "Subscribers", href: "/admin/subscribers", roles: [...STAFF_ROLES] },
   { label: "Coupons", href: "/admin/coupons", roles: [...STAFF_ROLES] },
   { label: "Settings", href: "/admin/settings", roles: [...ADMIN_ROLES] },
 ];

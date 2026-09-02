@@ -116,4 +116,10 @@ pnpm pesapal:register-ipn   # one-time per-environment Pesapal IPN registration
 
 ## Deployment
 
-Built for Docker: `Dockerfile` produces a multi-stage production image, `docker-compose.yml` wires it up with Redis and RabbitMQ. GitHub Actions CI (`.github/workflows/ci.yml`) runs lint/typecheck/tests and builds the Docker image on push.
+Built for Docker: `Dockerfile` produces multi-stage `runner` / `worker` / `migrate` images, `docker-compose.yml` wires them up with Redis, RabbitMQ, a one-shot migration step, and (under the `production` profile) a Caddy reverse proxy with automatic TLS. GitHub Actions CI (`.github/workflows/ci.yml`) runs lint, typecheck, format, tests, and a build on push; `docker-publish.yml` builds and pushes the images to Docker Hub.
+
+See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for the VPS soft-launch runbook.
+
+### Storefront kill-switch
+
+`NEXT_PUBLIC_SHOP_LIVE` gates the shop. `false` (default) runs the brand/teaser site — shop, cart, checkout, and account routes redirect to home and the commerce chrome is hidden. `true` brings the full storefront online. It is inlined at build time, so flipping it means rebuilding the image (`--build-arg NEXT_PUBLIC_SHOP_LIVE=true`, or the `NEXT_PUBLIC_SHOP_LIVE` repo variable for `docker-publish.yml`).

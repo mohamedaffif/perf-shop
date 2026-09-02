@@ -18,6 +18,8 @@ import { searchApi } from "./api/searchApi";
 import { addressesApi } from "./api/addressesApi";
 import { couponsApi } from "./api/couponsApi";
 import { newsletterApi } from "./api/newsletterApi";
+import { contactApi } from "./api/contactApi";
+import { subscribersApi } from "./api/subscribersApi";
 import { customersApi } from "./api/customersApi";
 import { settingsApi } from "./api/settingsApi";
 import { ordersApi } from "./api/ordersApi";
@@ -36,6 +38,8 @@ export const store = configureStore({
     [addressesApi.reducerPath]: addressesApi.reducer,
     [couponsApi.reducerPath]: couponsApi.reducer,
     [newsletterApi.reducerPath]: newsletterApi.reducer,
+    [contactApi.reducerPath]: contactApi.reducer,
+    [subscribersApi.reducerPath]: subscribersApi.reducer,
     [customersApi.reducerPath]: customersApi.reducer,
     [settingsApi.reducerPath]: settingsApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
@@ -54,6 +58,8 @@ export const store = configureStore({
       addressesApi.middleware,
       couponsApi.middleware,
       newsletterApi.middleware,
+      contactApi.middleware,
+      subscribersApi.middleware,
       customersApi.middleware,
       settingsApi.middleware,
       ordersApi.middleware

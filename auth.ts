@@ -8,13 +8,20 @@ import { authConfig } from "./auth.config";
 import { verifyCredentials } from "@/domain/auth";
 import { enforceRateLimit, getClientIp } from "@/lib/rate-limit";
 
+// OAuth providers are only registered when their credentials are configured, so
+// the soft launch can run on the seeded Credentials admin alone without wiring up
+// Google / GitHub apps.
+const oauthProviders = [
+  process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET ? Google : null,
+  process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET ? GitHub : null,
+].filter((provider) => provider !== null);
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   providers: [
-    Google,
-    GitHub,
+    ...oauthProviders,
     Credentials({
       credentials: { email: {}, password: {} },
       authorize: async (creds, request) => {

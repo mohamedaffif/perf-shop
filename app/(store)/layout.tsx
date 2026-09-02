@@ -27,10 +27,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "DE PERFUME SHOP — Signature Fragrances",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "DE PERFUME SHOP — Signature Fragrances",
+    template: "%s — DE PERFUME SHOP",
+  },
   description:
     "Signature fragrances, curated for every occasion. Discover scents that stay with you.",
+  openGraph: {
+    type: "website",
+    siteName: "DE PERFUME SHOP",
+    url: siteUrl,
+    title: "DE PERFUME SHOP — Signature Fragrances",
+    description:
+      "Signature fragrances, curated for every occasion. Discover scents that stay with you.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DE PERFUME SHOP — Signature Fragrances",
+    description:
+      "Signature fragrances, curated for every occasion. Discover scents that stay with you.",
+  },
 };
 
 export default async function RootLayout({

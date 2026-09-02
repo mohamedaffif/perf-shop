@@ -7,6 +7,7 @@ import { ChevronDown, Menu, User, X } from "lucide-react";
 
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { cn } from "@/lib/utils";
+import { SHOP_LIVE } from "@/lib/storefront";
 import type { NavLink } from "./Navbar";
 
 export function MobileMenu({ links }: { links: NavLink[] }) {
@@ -104,16 +105,18 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
             })}
           </nav>
 
-          <div className="border-border mt-auto flex items-center gap-2 border-t pt-4">
-            <Link
-              href="/account"
-              onClick={close}
-              className="text-foreground hover:bg-muted flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors"
-            >
-              <User className="size-4" />
-              Account
-            </Link>
-          </div>
+          {SHOP_LIVE && (
+            <div className="border-border mt-auto flex items-center gap-2 border-t pt-4">
+              <Link
+                href="/account"
+                onClick={close}
+                className="text-foreground hover:bg-muted flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors"
+              >
+                <User className="size-4" />
+                Account
+              </Link>
+            </div>
+          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

@@ -8,6 +8,7 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { useAsyncForm } from "@/hooks/useAsyncForm";
 import { sanitizeCallbackUrl } from "@/lib/auth/callback-url";
 
@@ -46,20 +47,7 @@ export default function RegisterPage() {
         Create an account
       </h1>
 
-      <Button
-        type="button"
-        variant="outline"
-        className="mb-4 w-full"
-        onClick={() => signIn("google", { callbackUrl })}
-      >
-        Continue with Google
-      </Button>
-
-      <div className="mb-4 flex items-center gap-3">
-        <div className="bg-border h-px flex-1" />
-        <span className="text-muted-foreground text-xs">or</span>
-        <div className="bg-border h-px flex-1" />
-      </div>
+      <OAuthButtons callbackUrl={callbackUrl} providers={["google"]} />
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">

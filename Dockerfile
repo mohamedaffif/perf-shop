@@ -12,6 +12,12 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# NEXT_PUBLIC_* is inlined at build time, so the storefront kill-switch is baked
+# into the image. Flip it by rebuilding with --build-arg NEXT_PUBLIC_SHOP_LIVE=true.
+ARG NEXT_PUBLIC_SHOP_LIVE="false"
+ENV NEXT_PUBLIC_SHOP_LIVE="$NEXT_PUBLIC_SHOP_LIVE"
+ARG NEXT_PUBLIC_OAUTH_ENABLED="false"
+ENV NEXT_PUBLIC_OAUTH_ENABLED="$NEXT_PUBLIC_OAUTH_ENABLED"
 ENV DATABASE_URL="postgresql://user:password@localhost:5432/de_perfume_shop" \
     DIRECT_URL="postgresql://user:password@localhost:5432/de_perfume_shop" \
     AUTH_SECRET="ci-placeholder-secret" \
@@ -43,3 +49,8 @@ CMD ["node", "server.js"]
 FROM builder AS worker
 ENV NODE_ENV=production
 CMD ["pnpm", "run", "worker"]
+
+# One-shot: applies pending Prisma migrations, then exits. Run before app/worker.
+FROM builder AS migrate
+ENV NODE_ENV=production
+CMD ["pnpm", "exec", "prisma", "migrate", "deploy"]
