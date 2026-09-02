@@ -79,9 +79,15 @@ Core entities: `User` (+ `Account`/`Session` for Auth.js), `Brand`, `Category`, 
 
    ```bash
    pnpm prisma generate
-   pnpm prisma migrate deploy   # or `prisma migrate dev` while developing schema changes
+   pnpm prisma migrate deploy   # applies committed migrations — use this against Supabase
    pnpm db:seed                 # seeds brands/categories/products + an admin user from SEED_ADMIN_EMAIL/PASSWORD
    ```
+
+   > **Changing the schema?** Run `pnpm prisma migrate dev` against a **local** Postgres
+   > (`docker compose up -d` starts one), never against Supabase — Supabase pre-installs
+   > extensions (`pg_stat_statements`, `pgcrypto`, `supabase_vault`, `uuid-ossp`) that make
+   > `migrate dev` report drift and offer to reset the database. Commit the generated
+   > migration, then `pnpm prisma migrate deploy` promotes it to Supabase.
 
 4. **Run local infra** (Redis, RabbitMQ)
 

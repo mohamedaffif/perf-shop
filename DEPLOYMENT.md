@@ -72,6 +72,12 @@ docker compose exec app pnpm db:seed            # creates the admin user (produc
 `migrate` applies pending Prisma migrations and exits; `app` waits for it and for its own
 `/api/health` check before Caddy routes traffic.
 
+> **Schema migrations.** The `migrate` container runs `prisma migrate deploy`. Never run
+> `prisma migrate dev` against Supabase: its pre-installed extensions (`pg_stat_statements`,
+> `pgcrypto`, `supabase_vault`, `uuid-ossp`) trigger Prisma drift detection and a
+> destructive reset prompt. Develop schema changes against a local Postgres, commit the
+> migration file, and let `migrate deploy` apply it.
+
 ## 5. Verify
 
 - `https://<domain>` → teaser home, newsletter form, no product grid.
