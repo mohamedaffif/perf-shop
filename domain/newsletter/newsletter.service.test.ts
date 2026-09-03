@@ -72,7 +72,9 @@ describe("subscribe", () => {
     mockedFindByEmail.mockResolvedValue(null);
     mockedSend.mockResolvedValueOnce({ error: { message: "smtp down" } } as never);
 
-    await expect(subscribe({ email: "reader@example.com" })).resolves.toEqual({ status: "pending" });
+    await expect(subscribe({ email: "reader@example.com" })).resolves.toEqual({
+      status: "pending",
+    });
   });
 });
 
