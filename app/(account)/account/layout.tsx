@@ -8,8 +8,12 @@ import { cn } from "@/lib/utils";
 import { auth } from "@/auth";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { SearchDialog } from "@/components/search/SearchDialog";
+import { SignOutButton } from "@/components/account/SignOutButton";
 import { CookieConsentBanner } from "@/components/consent/CookieConsentBanner";
+import { UserMenu } from "@/components/layout/UserMenu";
 import { Typography } from "@/components/ui/typography";
+import { ACCOUNT_NAV } from "@/lib/account-nav";
+import { toMenuUser } from "@/lib/auth/menu-user";
 import Providers from "@/lib/provider";
 import { readConsentCookieServer } from "@/lib/consent.server";
 
@@ -36,12 +40,6 @@ export const metadata: Metadata = {
   description: "Manage your DE PERFUME SHOP profile, orders, and addresses",
 };
 
-const ACCOUNT_NAV = [
-  { label: "Profile", href: "/account" },
-  { label: "Orders", href: "/account/orders" },
-  { label: "Addresses", href: "/account/addresses" },
-];
-
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
@@ -49,6 +47,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
     redirect("/login");
   }
 
+  const menuUser = toMenuUser(session.user);
   const initialConsent = await readConsentCookieServer();
 
   return (
@@ -75,6 +74,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
               </Link>
               <div className="flex items-center gap-1">
                 <SearchDialog />
+                {menuUser && <UserMenu user={menuUser} />}
                 <CartDrawer />
               </div>
             </div>
@@ -96,6 +96,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
                     {item.label}
                   </Link>
                 ))}
+                <SignOutButton className="text-foreground/80 hover:bg-muted hover:text-foreground rounded-md px-3 py-2 text-sm font-medium transition-colors" />
               </nav>
 
               <div className="min-w-0 flex-1">{children}</div>

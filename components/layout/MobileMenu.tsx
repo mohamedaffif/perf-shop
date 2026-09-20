@@ -3,14 +3,22 @@
 import * as React from "react";
 import Link from "next/link";
 import { Dialog } from "radix-ui";
-import { ChevronDown, Menu, User, X } from "lucide-react";
+import { ChevronDown, Menu, ShieldCheck, User, X } from "lucide-react";
 
+import { SignOutButton } from "@/components/account/SignOutButton";
+import { UserAvatar } from "@/components/account/UserAvatar";
 import { useDisclosure } from "@/hooks/useDisclosure";
+import { ACCOUNT_NAV } from "@/lib/account-nav";
+import type { MenuUser } from "@/lib/auth/menu-user";
+import { isStaffRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils";
 import { SHOP_LIVE } from "@/lib/storefront";
 import type { NavLink } from "./Navbar";
 
-export function MobileMenu({ links }: { links: NavLink[] }) {
+const footerLinkClass =
+  "text-foreground hover:bg-muted flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors";
+
+export function MobileMenu({ links, user }: { links: NavLink[]; user: MenuUser | null }) {
   const { isOpen: open, close, setIsOpen } = useDisclosure();
   const [expanded, setExpanded] = React.useState<string | null>(null);
 
@@ -106,15 +114,42 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
           </nav>
 
           {SHOP_LIVE && (
-            <div className="border-border mt-auto flex items-center gap-2 border-t pt-4">
-              <Link
-                href="/account"
-                onClick={close}
-                className="text-foreground hover:bg-muted flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors"
-              >
-                <User className="size-4" />
-                Account
-              </Link>
+            <div className="border-border mt-auto flex flex-col gap-1 border-t pt-4">
+              {user ? (
+                <>
+                  <div className="mb-2 flex items-center gap-3 px-3">
+                    <UserAvatar name={user.name} email={user.email} image={user.image} />
+                    <div className="min-w-0">
+                      <p className="text-foreground truncate text-sm font-medium">
+                        {user.name ?? "My account"}
+                      </p>
+                      <p className="text-muted-foreground truncate text-xs">{user.email}</p>
+                    </div>
+                  </div>
+                  {ACCOUNT_NAV.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={close}
+                      className={footerLinkClass}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                  {isStaffRole(user.role) && (
+                    <Link href="/admin" onClick={close} className={footerLinkClass}>
+                      <ShieldCheck className="size-4" />
+                      Admin dashboard
+                    </Link>
+                  )}
+                  <SignOutButton className={footerLinkClass} />
+                </>
+              ) : (
+                <Link href="/login" onClick={close} className={footerLinkClass}>
+                  <User className="size-4" />
+                  Sign in
+                </Link>
+              )}
             </div>
           )}
         </Dialog.Content>

@@ -15,6 +15,7 @@ import { productsApi } from "./api/productsApi";
 import { brandsApi } from "./api/brandsApi";
 import { categoriesApi } from "./api/categoriesApi";
 import { searchApi } from "./api/searchApi";
+import { accountApi } from "./api/accountApi";
 import { addressesApi } from "./api/addressesApi";
 import { couponsApi } from "./api/couponsApi";
 import { newsletterApi } from "./api/newsletterApi";
@@ -35,6 +36,7 @@ export const store = configureStore({
     [brandsApi.reducerPath]: brandsApi.reducer,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [searchApi.reducerPath]: searchApi.reducer,
+    [accountApi.reducerPath]: accountApi.reducer,
     [addressesApi.reducerPath]: addressesApi.reducer,
     [couponsApi.reducerPath]: couponsApi.reducer,
     [newsletterApi.reducerPath]: newsletterApi.reducer,
@@ -55,6 +57,7 @@ export const store = configureStore({
       brandsApi.middleware,
       categoriesApi.middleware,
       searchApi.middleware,
+      accountApi.middleware,
       addressesApi.middleware,
       couponsApi.middleware,
       newsletterApi.middleware,

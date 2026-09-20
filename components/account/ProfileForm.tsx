@@ -1,34 +1,41 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAsyncForm } from "@/hooks/useAsyncForm";
-import type { AuthUser } from "@/domain/auth/auth.types";
+import { useUpdateProfileMutation } from "@/lib/api/accountApi";
+import { getApiErrorMessage } from "@/lib/api/error-message";
+import type { AccountProfile } from "@/domain/auth/auth.types";
 
 interface ProfileFormProps {
-  profile: AuthUser;
+  profile: AccountProfile;
 }
 
 export function ProfileForm({ profile }: ProfileFormProps) {
   const [name, setName] = useState(profile.name ?? "");
+  const [phone, setPhone] = useState(profile.phone ?? "");
   const [success, setSuccess] = useState(false);
+  const router = useRouter();
+  const { update } = useSession();
+  const [updateProfile] = useUpdateProfileMutation();
 
   const { error, isSubmitting, handleSubmit } = useAsyncForm(async () => {
     setSuccess(false);
-    const response = await fetch("/api/account", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
-    });
 
-    if (!response.ok) {
-      const body = await response.json().catch(() => null);
-      return { error: body?.error ?? "Something went wrong updating your profile." };
+    try {
+      await updateProfile({ name, phone }).unwrap();
+    } catch (err) {
+      return { error: getApiErrorMessage(err, "Something went wrong updating your profile.") };
     }
 
+    // Re-read the name/photo into the session, then refresh the server-rendered header and overview.
+    await update();
+    router.refresh();
     setSuccess(true);
   });
 
@@ -45,6 +52,17 @@ export function ProfileForm({ profile }: ProfileFormProps) {
       <div className="space-y-1.5">
         <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" value={profile.email} disabled />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="phone">Phone (optional)</Label>
+        <Input
+          id="phone"
+          type="tel"
+          placeholder="+254 700 000000"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
       </div>
 
       {error && <p className="text-danger-foreground text-sm">{error}</p>}

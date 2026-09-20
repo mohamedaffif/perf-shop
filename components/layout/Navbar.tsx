@@ -4,10 +4,12 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { SearchDialog } from "@/components/search/SearchDialog";
+import { toMenuUser } from "@/lib/auth/menu-user";
 import { isStaffRole } from "@/lib/auth/roles";
 import { SHOP_LIVE } from "@/lib/storefront";
 import { MegaMenu } from "./MegaMenu";
 import { MobileMenu } from "./MobileMenu";
+import { UserMenu } from "./UserMenu";
 
 export type NavLink = {
   label: string;
@@ -128,14 +130,14 @@ export const TEASER_NAV_LINKS: NavLink[] = [
 
 export async function Navbar() {
   const session = await auth();
-  const role = session?.user?.role;
   const links = SHOP_LIVE ? NAV_LINKS : TEASER_NAV_LINKS;
+  const user = toMenuUser(session?.user);
 
   return (
     <header className="border-border bg-background/95 supports-backdrop-filter:bg-background/80 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
-          <MobileMenu links={links} />
+          <MobileMenu links={links} user={SHOP_LIVE ? user : null} />
           <Link
             href="/"
             className="font-heading text-foreground text-xl font-semibold tracking-wide"
@@ -152,23 +154,29 @@ export async function Navbar() {
 
         <div className="flex items-center gap-1">
           {SHOP_LIVE && <SearchDialog />}
-          {isStaffRole(role) && (
-            <Link
-              href="/admin"
-              aria-label="Admin dashboard"
-              className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
-            >
-              <ShieldCheck className="size-4" />
-            </Link>
-          )}
-          {SHOP_LIVE && (
-            <Link
-              href={session ? "/account" : "/login"}
-              aria-label="Account"
-              className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
-            >
-              <User className="size-4" />
-            </Link>
+          {SHOP_LIVE ? (
+            user ? (
+              <UserMenu user={user} />
+            ) : (
+              <Link
+                href="/login"
+                aria-label="Sign in"
+                className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
+              >
+                <User className="size-4" />
+              </Link>
+            )
+          ) : (
+            // Teaser site has no account area, but staff still need a way into the admin.
+            isStaffRole(user?.role) && (
+              <Link
+                href="/admin"
+                aria-label="Admin dashboard"
+                className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
+              >
+                <ShieldCheck className="size-4" />
+              </Link>
+            )
           )}
           {SHOP_LIVE && <CartDrawer />}
         </div>

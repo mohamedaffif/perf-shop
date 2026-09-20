@@ -1,7 +1,12 @@
 import bcrypt from "bcryptjs";
 import * as authRepository from "./auth.repository";
-import { loginSchema, registerSchema, updateProfileSchema } from "./auth.validator";
-import type { AuthUser } from "./auth.types";
+import {
+  changePasswordSchema,
+  loginSchema,
+  registerSchema,
+  updateProfileSchema,
+} from "./auth.validator";
+import type { AccountProfile, AuthUser } from "./auth.types";
 
 export class EmailAlreadyRegisteredError extends Error {
   constructor(email: string) {
@@ -14,6 +19,20 @@ export class UserNotFoundError extends Error {
   constructor(id: string) {
     super(`User ${id} not found`);
     this.name = "UserNotFoundError";
+  }
+}
+
+export class InvalidPasswordError extends Error {
+  constructor() {
+    super("Current password is incorrect");
+    this.name = "InvalidPasswordError";
+  }
+}
+
+export class PasswordNotSetError extends Error {
+  constructor() {
+    super("This account uses social sign-in and has no password to change");
+    this.name = "PasswordNotSetError";
   }
 }
 
@@ -66,23 +85,51 @@ export async function verifyEmailAfterOAuthLink(userId: string): Promise<void> {
   await authRepository.markEmailVerified(userId, { clearPassword: user.role === "CUSTOMER" });
 }
 
-export async function getProfile(userId: string): Promise<AuthUser> {
-  const user = await authRepository.findById(userId);
+export async function getProfile(userId: string): Promise<AccountProfile> {
+  const user = await authRepository.findByIdWithAccounts(userId);
 
   if (!user || !user.email) {
     throw new UserNotFoundError(userId);
   }
 
-  return { id: user.id, name: user.name, email: user.email, role: user.role };
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    image: user.image,
+    phone: user.phone,
+    emailVerified: user.emailVerified !== null,
+    createdAt: user.createdAt.toISOString(),
+    hasPassword: user.passwordHash !== null,
+    providers: user.accounts.map((account) => account.provider),
+  };
 }
 
-export async function updateProfile(userId: string, rawInput: unknown): Promise<AuthUser> {
+export async function updateProfile(userId: string, rawInput: unknown): Promise<AccountProfile> {
   const input = updateProfileSchema.parse(rawInput);
-  const user = await authRepository.updateUser(userId, input);
+  await authRepository.updateUser(userId, input);
 
-  if (!user.email) {
+  return getProfile(userId);
+}
+
+export async function changePassword(userId: string, rawInput: unknown): Promise<void> {
+  const { currentPassword, newPassword } = changePasswordSchema.parse(rawInput);
+  const user = await authRepository.findById(userId);
+
+  if (!user) {
     throw new UserNotFoundError(userId);
   }
 
-  return { id: user.id, name: user.name, email: user.email, role: user.role };
+  if (!user.passwordHash) {
+    throw new PasswordNotSetError();
+  }
+
+  const isValid = await bcrypt.compare(currentPassword, user.passwordHash);
+
+  if (!isValid) {
+    throw new InvalidPasswordError();
+  }
+
+  await authRepository.updatePasswordHash(userId, await bcrypt.hash(newPassword, 10));
 }

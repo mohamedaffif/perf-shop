@@ -5,7 +5,7 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "./auth.config";
-import { verifyCredentials, verifyEmailAfterOAuthLink } from "@/domain/auth";
+import { findById, verifyCredentials, verifyEmailAfterOAuthLink } from "@/domain/auth";
 import { enforceRateLimit, getClientIp } from "@/lib/rate-limit";
 
 // OAuth providers are only registered when their credentials are configured, so
@@ -26,6 +26,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
+  callbacks: {
+    ...authConfig.callbacks,
+    // The token only carries id/role from sign-in, so a profile edit would show a stale name
+    // until re-login. `session.update()` (client) just triggers this; the values come from the DB.
+    async jwt(params) {
+      const token = authConfig.callbacks.jwt(params);
+
+      if (params.trigger === "update" && typeof token.id === "string") {
+        const user = await findById(token.id);
+
+        if (user) {
+          token.name = user.name;
+          token.picture = user.image;
+        }
+      }
+
+      return token;
+    },
+  },
   events: {
     async linkAccount({ user }) {
       if (user.id) {

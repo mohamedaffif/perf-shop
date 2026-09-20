@@ -16,6 +16,7 @@ interface CheckoutPageClientProps {
   bankTransferEnabled: boolean;
   initialEmail: string;
   initialFullName: string;
+  initialPhone: string;
 }
 
 export function CheckoutPageClient({
@@ -24,6 +25,7 @@ export function CheckoutPageClient({
   bankTransferEnabled,
   initialEmail,
   initialFullName,
+  initialPhone,
 }: CheckoutPageClientProps) {
   const { items } = useCart();
   const router = useRouter();
@@ -60,6 +62,7 @@ export function CheckoutPageClient({
           availablePaymentMethods={availablePaymentMethods}
           initialEmail={initialEmail}
           initialFullName={initialFullName}
+          initialPhone={initialPhone}
         />
         <CheckoutSummary
           couponCode={couponCode}

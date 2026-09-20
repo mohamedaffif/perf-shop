@@ -7,6 +7,7 @@ import "../globals.css";
 import { cn } from "@/lib/utils";
 import { auth } from "@/auth";
 import Providers from "@/lib/provider";
+import { SignOutButton } from "@/components/account/SignOutButton";
 import { AdminMobileNav } from "@/components/admin/AdminMobileNav";
 import { ADMIN_ROLES, isStaffRole, STAFF_ROLES } from "@/lib/auth/roles";
 import type { UserRole } from "@/lib/generated/prisma/client";
@@ -85,9 +86,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                   DE PERFUME SHOP ADMIN
                 </Link>
               </div>
-              <Link href="/" className="text-muted-foreground hover:text-foreground text-sm">
-                Back to store
-              </Link>
+              <div className="flex items-center gap-4">
+                <Link href="/" className="text-muted-foreground hover:text-foreground text-sm">
+                  Back to store
+                </Link>
+                <SignOutButton className="text-muted-foreground hover:text-foreground text-sm" />
+              </div>
             </div>
           </header>
 

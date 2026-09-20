@@ -31,6 +31,7 @@ interface CheckoutFormProps {
   availablePaymentMethods: { value: PaymentMethod; label: string }[];
   initialEmail: string;
   initialFullName: string;
+  initialPhone: string;
 }
 
 export function CheckoutForm({
@@ -39,10 +40,11 @@ export function CheckoutForm({
   availablePaymentMethods,
   initialEmail,
   initialFullName,
+  initialPhone,
 }: CheckoutFormProps) {
   const [form, setForm] = useState({
     email: initialEmail,
-    phone: "",
+    phone: initialPhone,
     shippingFullName: initialFullName,
     shippingLine1: "",
     shippingLine2: "",

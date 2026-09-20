@@ -1,9 +1,11 @@
 import { z } from "zod";
 
+import { phoneSchema } from "@/lib/validation/phone";
+
 const addressFields = {
   label: z.string().optional(),
   fullName: z.string().min(1),
-  phone: z.string().min(7),
+  phone: phoneSchema,
   line1: z.string().min(1),
   line2: z.string().optional(),
   city: z.string().min(1),

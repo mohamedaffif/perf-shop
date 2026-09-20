@@ -47,6 +47,13 @@ export function handleApiError(error: unknown): NextResponse {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
+  if (
+    error instanceof Error &&
+    (error.name === "InvalidPasswordError" || error.name === "PasswordNotSetError")
+  ) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+
   if (error instanceof Error && error.name === "PaymentMethodDisabledError") {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
