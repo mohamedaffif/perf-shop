@@ -1,14 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { Dialog } from "radix-ui";
 import { Menu, X } from "lucide-react";
 
+import { DashboardNavLink, type DashboardNavLinkItem } from "@/components/layout/DashboardNav";
 import { useDisclosure } from "@/hooks/useDisclosure";
 
-type AdminNavLink = { label: string; href: string };
-
-export function AdminMobileNav({ links }: { links: AdminNavLink[] }) {
+export function AdminMobileNav({ links }: { links: DashboardNavLinkItem[] }) {
   const { isOpen: open, close, setIsOpen } = useDisclosure();
 
   return (
@@ -43,14 +41,7 @@ export function AdminMobileNav({ links }: { links: AdminNavLink[] }) {
 
           <nav className="mt-6 flex flex-col gap-1">
             {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={close}
-                className="text-foreground hover:bg-muted rounded-md px-3 py-3 text-sm font-medium transition-colors"
-              >
-                {link.label}
-              </Link>
+              <DashboardNavLink key={link.href} item={link} onClick={close} className="py-3" />
             ))}
           </nav>
         </Dialog.Content>

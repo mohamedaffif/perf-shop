@@ -9,6 +9,7 @@ import { auth } from "@/auth";
 import Providers from "@/lib/provider";
 import { SignOutButton } from "@/components/account/SignOutButton";
 import { AdminMobileNav } from "@/components/admin/AdminMobileNav";
+import { DashboardNav, type DashboardNavLinkItem } from "@/components/layout/DashboardNav";
 import { ADMIN_ROLES, isStaffRole, STAFF_ROLES } from "@/lib/auth/roles";
 import type { UserRole } from "@/lib/generated/prisma/client";
 
@@ -35,16 +36,21 @@ export const metadata: Metadata = {
   description: "DE PERFUME SHOP admin dashboard",
 };
 
-const ADMIN_NAV: { label: string; href: string; roles: UserRole[] }[] = [
-  { label: "Dashboard", href: "/admin", roles: [...STAFF_ROLES] },
-  { label: "Products", href: "/admin/products", roles: [...STAFF_ROLES] },
-  { label: "Brands", href: "/admin/brands", roles: [...STAFF_ROLES] },
-  { label: "Categories", href: "/admin/categories", roles: [...STAFF_ROLES] },
-  { label: "Orders", href: "/admin/orders", roles: [...STAFF_ROLES] },
-  { label: "Customers", href: "/admin/customers", roles: [...STAFF_ROLES] },
-  { label: "Subscribers", href: "/admin/subscribers", roles: [...STAFF_ROLES] },
-  { label: "Coupons", href: "/admin/coupons", roles: [...STAFF_ROLES] },
-  { label: "Settings", href: "/admin/settings", roles: [...ADMIN_ROLES] },
+const ADMIN_NAV: (DashboardNavLinkItem & { roles: UserRole[] })[] = [
+  { label: "Dashboard", href: "/admin", icon: "dashboard", exact: true, roles: [...STAFF_ROLES] },
+  { label: "Products", href: "/admin/products", icon: "products", roles: [...STAFF_ROLES] },
+  { label: "Brands", href: "/admin/brands", icon: "brands", roles: [...STAFF_ROLES] },
+  { label: "Categories", href: "/admin/categories", icon: "categories", roles: [...STAFF_ROLES] },
+  { label: "Orders", href: "/admin/orders", icon: "orders", roles: [...STAFF_ROLES] },
+  { label: "Customers", href: "/admin/customers", icon: "customers", roles: [...STAFF_ROLES] },
+  {
+    label: "Subscribers",
+    href: "/admin/subscribers",
+    icon: "subscribers",
+    roles: [...STAFF_ROLES],
+  },
+  { label: "Coupons", href: "/admin/coupons", icon: "coupons", roles: [...STAFF_ROLES] },
+  { label: "Settings", href: "/admin/settings", icon: "settings", roles: [...ADMIN_ROLES] },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -59,7 +65,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/");
   }
 
-  const visibleNav = ADMIN_NAV.filter((item) => item.roles.includes(role));
+  // Pick only the display fields so authorization metadata (roles) never reaches the client.
+  const visibleNav: DashboardNavLinkItem[] = ADMIN_NAV.filter((item) =>
+    item.roles.includes(role)
+  ).map(({ label, href, icon, exact }) => ({ label, href, icon, exact }));
 
   return (
     <html
@@ -78,7 +87,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <header className="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
               <div className="flex items-center gap-3">
-                <AdminMobileNav links={visibleNav.map(({ label, href }) => ({ label, href }))} />
+                <AdminMobileNav links={visibleNav} />
                 <Link
                   href="/admin"
                   className="font-heading text-foreground text-xl font-semibold tracking-wide"
@@ -96,17 +105,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </header>
 
           <div className="mx-auto flex w-full max-w-7xl flex-1 gap-10 px-4 py-10 sm:px-6 lg:px-8">
-            <nav className="hidden w-48 shrink-0 flex-col gap-1 lg:flex">
-              {visibleNav.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-foreground/80 hover:bg-muted hover:text-foreground rounded-md px-3 py-2 text-sm font-medium transition-colors"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+            <DashboardNav
+              links={visibleNav}
+              className="hidden w-48 shrink-0 flex-col gap-1 lg:flex"
+            />
 
             <main className="min-w-0 flex-1">{children}</main>
           </div>

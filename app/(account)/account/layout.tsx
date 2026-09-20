@@ -10,6 +10,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { SearchDialog } from "@/components/search/SearchDialog";
 import { SignOutButton } from "@/components/account/SignOutButton";
 import { CookieConsentBanner } from "@/components/consent/CookieConsentBanner";
+import { DashboardNav } from "@/components/layout/DashboardNav";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { Typography } from "@/components/ui/typography";
 import { ACCOUNT_NAV } from "@/lib/account-nav";
@@ -86,18 +87,12 @@ export default async function AccountLayout({ children }: { children: React.Reac
             </Typography>
 
             <div className="flex flex-col gap-10 lg:flex-row">
-              <nav className="flex shrink-0 flex-row gap-1 lg:w-48 lg:flex-col">
-                {ACCOUNT_NAV.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="text-foreground/80 hover:bg-muted hover:text-foreground rounded-md px-3 py-2 text-sm font-medium transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-                <SignOutButton className="text-foreground/80 hover:bg-muted hover:text-foreground rounded-md px-3 py-2 text-sm font-medium transition-colors" />
-              </nav>
+              <DashboardNav
+                links={ACCOUNT_NAV}
+                className="flex shrink-0 flex-row gap-1 lg:w-48 lg:flex-col"
+              >
+                <SignOutButton className="text-foreground/80 hover:bg-muted hover:text-foreground gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors" />
+              </DashboardNav>
 
               <div className="min-w-0 flex-1">{children}</div>
             </div>
