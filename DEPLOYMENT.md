@@ -98,6 +98,15 @@ docker compose exec app pnpm db:seed            # creates the admin user (produc
 > `pgcrypto`, `supabase_vault`, `uuid-ossp`) trigger Prisma drift detection and a
 > destructive reset prompt. Develop schema changes against a local Postgres, commit the
 > migration file, and let `migrate deploy` apply it.
+>
+> **Row Level Security.** Supabase exposes every `public` table through its Data API using
+> the anon key. The app never uses that API (all access is Prisma over a direct connection
+> as `postgres`, which bypasses RLS), so every table has RLS enabled with **no policies**
+> (`20260920120000_enable_rls`). Any migration that creates a table must also
+> `ALTER TABLE "<name>" ENABLE ROW LEVEL SECURITY` — `prisma/rls.test.ts` fails CI if not.
+> Don't add `FORCE ROW LEVEL SECURITY`. Confirm the role in `DATABASE_URL` has
+> `BYPASSRLS` (`select rolbypassrls from pg_roles where rolname = current_user;`) before
+> the first deploy that includes it.
 
 ## 5. Verify
 
