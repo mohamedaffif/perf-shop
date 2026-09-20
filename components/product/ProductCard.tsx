@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Heart } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +11,6 @@ import { Card } from "@/components/ui/card";
 import { cn, formatPrice } from "@/lib/utils";
 import type { Product } from "@/domain/product/product.types";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
-import { ProductDetailsDialog } from "@/components/product/ProductDetailsDialog";
 import { BADGE_META } from "@/components/product/product-meta";
 
 interface ProductCardProps {
@@ -36,6 +36,11 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
   return (
     <Card className="bg-background ring-primary/40 hover:shadow-card-hover rounded-image flex flex-col gap-0 overflow-hidden py-0 ring-1 transition-shadow duration-200">
       <div className="bg-muted relative aspect-4/3">
+        <Link
+          href={`/product/${product.id}`}
+          aria-label={`View ${product.brand.name} ${product.name}`}
+          className="absolute inset-0 z-0"
+        />
         {image ? (
           <Image
             src={image.url}
@@ -62,7 +67,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
           </div>
         )}
 
-        <div className="absolute top-3 left-3 flex flex-col items-start gap-1.5">
+        <div className="absolute top-3 left-3 z-10 flex flex-col items-start gap-1.5">
           {primaryBadge ? (
             <Badge className="rounded-full">{BADGE_META[primaryBadge].label}</Badge>
           ) : null}
@@ -83,7 +88,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
           variant="ghost"
           onClick={handleToggleFav}
           aria-label="Toggle wishlist"
-          className="bg-background/70 hover:bg-background/90 absolute top-2.5 right-2.5 rounded-full backdrop-blur-sm"
+          className="bg-background/70 hover:bg-background/90 absolute top-2.5 right-2.5 z-10 rounded-full backdrop-blur-sm"
         >
           <Heart
             className={cn(
@@ -95,12 +100,12 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
       </div>
 
       <div className="flex flex-1 flex-col gap-3.5 p-6">
-        <div>
+        <Link href={`/product/${product.id}`} className="block">
           <p className="text-primary text-xs font-semibold tracking-wider uppercase">
             {product.brand.name}
           </p>
           <h3 className="font-heading text-foreground text-2xl text-balance">{product.name}</h3>
-        </div>
+        </Link>
 
         <span className="font-heading text-foreground text-xl font-semibold tabular-nums">
           {formatPrice(product.price)}
@@ -108,7 +113,13 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist }: ProductC
 
         <div className="mt-auto flex flex-col gap-2.5 pt-0.5">
           <AddToCartButton product={product} onAddToCart={onAddToCart} className="w-full" />
-          <ProductDetailsDialog product={product} onAddToCart={onAddToCart} />
+          <Button
+            asChild
+            variant="outline"
+            className="border-primary/60 text-primary hover:bg-primary/10 w-full"
+          >
+            <Link href={`/product/${product.id}`}>View Details</Link>
+          </Button>
         </div>
       </div>
     </Card>
