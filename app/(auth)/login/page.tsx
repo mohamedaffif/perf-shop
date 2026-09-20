@@ -10,11 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { useAsyncForm } from "@/hooks/useAsyncForm";
+import { getAuthErrorMessage } from "@/lib/auth/auth-errors";
 import { sanitizeCallbackUrl } from "@/lib/auth/callback-url";
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
   const callbackUrl = sanitizeCallbackUrl(searchParams.get("callbackUrl"));
+  const redirectError = getAuthErrorMessage(searchParams.get("error"));
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -36,6 +38,8 @@ export default function LoginPage() {
   return (
     <div className="border-border bg-card rounded-lg border p-6">
       <h1 className="font-heading text-card-foreground mb-6 text-xl font-semibold">Sign in</h1>
+
+      {redirectError && <p className="text-danger-foreground mb-4 text-sm">{redirectError}</p>}
 
       <OAuthButtons callbackUrl={callbackUrl} />
 

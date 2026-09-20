@@ -38,6 +38,7 @@ services:
       target: runner
       args:
         NEXT_PUBLIC_SHOP_LIVE: ${NEXT_PUBLIC_SHOP_LIVE:-false}
+        NEXT_PUBLIC_OAUTH_ENABLED: ${NEXT_PUBLIC_OAUTH_ENABLED:-false}
     expose:
       - "3000"
     env_file:

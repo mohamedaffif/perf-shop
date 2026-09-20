@@ -41,8 +41,10 @@ jobs:
           push: true
           # Storefront kill-switch is baked at build time. Set the repo variable
           # NEXT_PUBLIC_SHOP_LIVE to "true" to publish images with the shop live.
+          # Likewise NEXT_PUBLIC_OAUTH_ENABLED shows the Google/GitHub sign-in buttons.
           build-args: |
             NEXT_PUBLIC_SHOP_LIVE=${{ vars.NEXT_PUBLIC_SHOP_LIVE || 'false' }}
+            NEXT_PUBLIC_OAUTH_ENABLED=${{ vars.NEXT_PUBLIC_OAUTH_ENABLED || 'false' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=${{ matrix.target }}

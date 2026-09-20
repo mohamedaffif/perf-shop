@@ -1,11 +1,15 @@
 import type { NextAuthConfig } from "next-auth";
 
+import { isOAuthSignInAllowed } from "@/lib/auth/oauth";
 import { isStaffRole, type AppRole } from "@/lib/auth/roles";
 
 export const authConfig = {
   pages: { signIn: "/login" },
   providers: [],
   callbacks: {
+    signIn({ account, profile }) {
+      return isOAuthSignInAllowed(account?.provider, profile);
+    },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const role = auth?.user?.role;

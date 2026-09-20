@@ -52,6 +52,20 @@ export async function registerCustomer(raw: unknown): Promise<AuthUser> {
   return { id: user.id, name: user.name, email: user.email, role: user.role };
 }
 
+// Called after an OAuth account is linked. Password sign-up never verifies the email, so a
+// password on an unverified customer account may have been set by someone who doesn't own
+// the address (pre-hijacking). The provider has now proven ownership, so drop that password.
+// Staff accounts are seeded/managed by admins, so their password is kept.
+export async function verifyEmailAfterOAuthLink(userId: string): Promise<void> {
+  const user = await authRepository.findById(userId);
+
+  if (!user || user.emailVerified) {
+    return;
+  }
+
+  await authRepository.markEmailVerified(userId, { clearPassword: user.role === "CUSTOMER" });
+}
+
 export async function getProfile(userId: string): Promise<AuthUser> {
   const user = await authRepository.findById(userId);
 

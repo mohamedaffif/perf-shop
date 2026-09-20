@@ -19,6 +19,16 @@ export function findById(id: string): Promise<User | null> {
   return prisma.user.findUnique({ where: { id } });
 }
 
+export function markEmailVerified(id: string, options: { clearPassword: boolean }): Promise<User> {
+  return prisma.user.update({
+    where: { id },
+    data: {
+      emailVerified: new Date(),
+      ...(options.clearPassword ? { passwordHash: null } : {}),
+    },
+  });
+}
+
 export function updateUser(id: string, data: { name?: string }): Promise<User> {
   return prisma.user.update({ where: { id }, data });
 }

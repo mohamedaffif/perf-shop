@@ -52,6 +52,27 @@ Copy `.env.example` → `.env` and fill:
 | `DOCKERHUB_USERNAME`                                              | Docker Hub account the images are pushed to, or `local` to build on the box |
 | `IMAGE_TAG`                                                       | `latest` or a commit SHA                                                    |
 
+### Google sign-in (optional)
+
+Off for the soft launch. To enable it:
+
+1. Google Cloud Console → **APIs & Services → OAuth consent screen**: app name, support
+   email, default scopes (`openid`, `email`, `profile` — no Google review needed). Publish
+   the app to **In production**; while it is in _Testing_ only listed test users can sign in.
+2. **Credentials → Create OAuth client ID → Web application**:
+   - Authorized JavaScript origin: `https://<domain>` (plus `http://localhost:3000` for dev).
+   - Authorized redirect URI: `https://<domain>/api/auth/callback/google` (plus
+     `http://localhost:3000/api/auth/callback/google` for dev).
+3. Set `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET` in `.env`, and `NEXT_PUBLIC_OAUTH_ENABLED=true`.
+4. `NEXT_PUBLIC_OAUTH_ENABLED` is inlined at build time, so rebuild the image: set the
+   `NEXT_PUBLIC_OAUTH_ENABLED` repo variable to `true` (published images) or export it before
+   `docker compose build` (building on the VPS).
+
+A Google sign-in with the email of an existing password account links to that account.
+If that account's email was never verified, its password is removed (Google now proves
+ownership), so the customer signs in with Google from then on. Staff accounts keep their
+password.
+
 ## 3. Build / publish images
 
 Push to `main` triggers `.github/workflows/docker-publish.yml`, which builds and pushes
