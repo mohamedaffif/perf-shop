@@ -1,3 +1,10 @@
+# Docker's default json-file logging is unbounded; cap it so the VPS disk can't fill up.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   redis:
     image: redis:7-alpine
@@ -8,6 +15,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    logging: *default-logging
     restart: unless-stopped
 
   rabbitmq:
@@ -19,9 +27,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging: *default-logging
     restart: unless-stopped
 
   # One-shot: applies pending Prisma migrations, then exits 0.
+  # Also used for seeding: `docker compose run --rm migrate pnpm db:seed`
   migrate:
     image: ${DOCKERHUB_USERNAME:-local}/de-perfume-shop-migrate:${IMAGE_TAG:-latest}
     build:
@@ -29,6 +39,7 @@ services:
       target: migrate
     env_file:
       - .env
+    logging: *default-logging
     restart: "no"
 
   app:
@@ -39,6 +50,8 @@ services:
       args:
         NEXT_PUBLIC_SHOP_LIVE: ${NEXT_PUBLIC_SHOP_LIVE:-false}
         NEXT_PUBLIC_OAUTH_ENABLED: ${NEXT_PUBLIC_OAUTH_ENABLED:-false}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+    init: true
     expose:
       - "3000"
     env_file:
@@ -66,6 +79,7 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
+    logging: *default-logging
     restart: unless-stopped
 
   worker:
@@ -73,6 +87,7 @@ services:
     build:
       context: .
       target: worker
+    init: true
     env_file:
       - .env
     environment:
@@ -86,6 +101,7 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
+    logging: *default-logging
     restart: unless-stopped
 
   # Production only: `docker compose --profile production up -d`
@@ -106,6 +122,7 @@ services:
     depends_on:
       app:
         condition: service_healthy
+    logging: *default-logging
     restart: unless-stopped
 
 volumes:

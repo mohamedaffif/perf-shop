@@ -9,8 +9,9 @@ the business, and subscribe to the newsletter. No payments, no Pesapal, no produ
 ### Supabase
 
 - Create the project. Copy the **Transaction Pooler** URL (port 6543, append
-  `?pgbouncer=true`) → `DATABASE_URL`, and the **Session Pooler / direct** URL (port 5432)
-  → `DIRECT_URL`.
+  `?pgbouncer=true`) → `DATABASE_URL`, and the **Session Pooler** URL (port 5432)
+  → `DIRECT_URL`. Use the pooler rather than the direct host: Supabase's direct connection
+  is IPv6-only and Docker's default network has no IPv6, so `migrate` couldn't reach it.
 
 ### Resend
 
@@ -75,9 +76,16 @@ password.
 
 ## 3. Build / publish images
 
-Push to `main` triggers `.github/workflows/docker-publish.yml`, which builds and pushes
+Once CI passes on `main`, `.github/workflows/docker-publish.yml` builds and pushes
 `de-perfume-shop`, `de-perfume-shop-worker`, and `de-perfume-shop-migrate` to Docker Hub
-(needs `DOCKERHUB_USERNAME` / `DOCKERHUB_TOKEN` repo secrets).
+(needs `DOCKERHUB_USERNAME` / `DOCKERHUB_TOKEN` repo secrets). Pull requests build all three
+targets without pushing, so a broken Dockerfile fails on the PR.
+
+`NEXT_PUBLIC_*` values are inlined at build time. Set these **repo variables** before
+publishing: `NEXT_PUBLIC_APP_URL` = `https://<domain>` (otherwise the sitemap, robots and
+metadata point at `http://localhost:3000`), plus `NEXT_PUBLIC_SHOP_LIVE` /
+`NEXT_PUBLIC_OAUTH_ENABLED` when you change them. When building on the VPS, export
+`NEXT_PUBLIC_APP_URL` (or keep it in `.env`, which compose reads for build args) before `--build`.
 
 To build on the VPS instead, set `DOCKERHUB_USERNAME=local` and use `--build` below.
 
@@ -87,11 +95,12 @@ To build on the VPS instead, set `DOCKERHUB_USERNAME=local` and use `--build` be
 docker compose --profile production pull        # skip if building locally
 docker compose --profile production up -d       # add --build to build on the box
 docker compose run --rm migrate                 # already runs via depends_on, but safe to run explicitly
-docker compose exec app pnpm db:seed            # creates the admin user (products seed too; harmless while shop is hidden)
+docker compose run --rm migrate pnpm db:seed   # creates the admin user (products seed too; harmless while shop is hidden)
 ```
 
 `migrate` applies pending Prisma migrations and exits; `app` waits for it and for its own
-`/api/health` check before Caddy routes traffic.
+`/api/health` check before Caddy routes traffic. Seeding runs in the `migrate` image because
+the `app` image is Next standalone output (no `tsx`, no `prisma/seed.ts`).
 
 > **Schema migrations.** The `migrate` container runs `prisma migrate deploy`. Never run
 > `prisma migrate dev` against Supabase: its pre-installed extensions (`pg_stat_statements`,
@@ -119,7 +128,8 @@ docker compose exec app pnpm db:seed            # creates the admin user (produc
   stored (held in Redis for 24h, then discarded).
 - `/admin` → sign in with the seeded admin.
 - `curl https://<domain>/api/health` → `{"status":"ok"}`.
-- `/sitemap.xml`, `/robots.txt`, favicon, and OG image resolve.
+- `/sitemap.xml`, `/robots.txt`, favicon, and OG image resolve, and the sitemap URLs start
+  with `https://<domain>` (not `http://localhost:3000`).
 
 ## 6. Redeploy
 

@@ -2,7 +2,7 @@
 # SITE_ADDRESS and ACME_EMAIL are provided by docker-compose from .env.
 
 {
-	email {$ACME_EMAIL}
+	email {$ACME_EMAIL:dev@localhost}
 }
 
 {$SITE_ADDRESS} {

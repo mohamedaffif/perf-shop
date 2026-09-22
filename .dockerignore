@@ -1,8 +1,17 @@
 node_modules
 .next
 .git
+.github
+.claude
+.agents
+.vscode
+.claudeignore
 *.tsbuildinfo
 .eslintcache
 .env*
+*.md
+Dockerfile
+docker-compose.yml
+Caddyfile
 lib/generated/prisma
 app/generated/prisma

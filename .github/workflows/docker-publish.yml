@@ -1,11 +1,15 @@
 name: Docker Publish
 
+# Runs only after CI passes on main, so a broken commit never becomes :latest.
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
 
 jobs:
   publish:
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,6 +22,15 @@ jobs:
             image: de-perfume-shop-migrate
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      # workflow_run's own github.sha is the default branch tip, which may be newer than
+      # the commit CI validated, so tag with the validated commit explicitly.
+      - id: sha
+        run: echo "short=${HEAD_SHA::7}" >> "$GITHUB_OUTPUT"
+        env:
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
 
       - uses: docker/setup-buildx-action@v4
 
@@ -32,7 +45,7 @@ jobs:
           images: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.image }}
           tags: |
             type=raw,value=latest
-            type=sha,format=short
+            type=raw,value=sha-${{ steps.sha.outputs.short }}
 
       - uses: docker/build-push-action@v7
         with:
@@ -41,10 +54,12 @@ jobs:
           push: true
           # Storefront kill-switch is baked at build time. Set the repo variable
           # NEXT_PUBLIC_SHOP_LIVE to "true" to publish images with the shop live.
-          # Likewise NEXT_PUBLIC_OAUTH_ENABLED shows the Google/GitHub sign-in buttons.
+          # Likewise NEXT_PUBLIC_OAUTH_ENABLED shows the Google/GitHub sign-in buttons, and
+          # NEXT_PUBLIC_APP_URL (https://<domain>) feeds the sitemap, robots and metadata.
           build-args: |
             NEXT_PUBLIC_SHOP_LIVE=${{ vars.NEXT_PUBLIC_SHOP_LIVE || 'false' }}
             NEXT_PUBLIC_OAUTH_ENABLED=${{ vars.NEXT_PUBLIC_OAUTH_ENABLED || 'false' }}
+            NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL || 'http://localhost:3000' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=${{ matrix.target }}
