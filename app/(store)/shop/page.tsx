@@ -23,12 +23,13 @@ type ShopPageProps = {
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const sp = await searchParams;
-  const { items, total, page, pageSize } = await listProducts({
-    status: "PUBLISHED",
-    ...parseShopFilters(sp),
-  });
-
-  const { items: brands } = await listBrands({ pageSize: 100 });
+  const [{ items, total, page, pageSize }, { items: brands }] = await Promise.all([
+    listProducts({
+      status: "PUBLISHED",
+      ...parseShopFilters(sp),
+    }),
+    listBrands({ pageSize: 100 }),
+  ]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

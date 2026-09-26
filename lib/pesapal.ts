@@ -62,6 +62,8 @@ function hasPesapalError(error: unknown): boolean {
 async function pesapalFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const { PESAPAL_BASE_URL } = getEnv();
   const response = await fetch(`${PESAPAL_BASE_URL}${path}`, {
+    // A hung Pesapal call must not tie up request handling or a DB connection.
+    signal: AbortSignal.timeout(10_000),
     ...init,
     headers: {
       Accept: "application/json",
