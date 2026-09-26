@@ -38,13 +38,11 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "**/*": ["./lib/generated/prisma/**/*"],
   },
+  // Cloudinary resizes and re-encodes on its CDN (see lib/cloudinary-loader.ts),
+  // so the app container never runs the sharp-based image optimizer.
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-      },
-    ],
+    loader: "custom",
+    loaderFile: "./lib/cloudinary-loader.ts",
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
