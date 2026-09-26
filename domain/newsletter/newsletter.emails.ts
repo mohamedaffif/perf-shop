@@ -7,8 +7,7 @@ import NewsletterWelcomeEmail from "@/emails/newsletter-welcome";
 
 /** Payload of the `email.newsletter` queue, published by newsletter.service. */
 export type NewsletterEmailJob =
-  | { kind: "confirm"; email: string; token: string }
-  | { kind: "welcome"; email: string };
+  { kind: "confirm"; email: string; token: string } | { kind: "welcome"; email: string };
 
 /**
  * Renders and sends one newsletter email. Runs in the worker, off the request
