@@ -47,7 +47,13 @@ export async function enforceRateLimit({
   }
 }
 
+/**
+ * The client IP as resolved by Caddy, which is the app's only entry point.
+ * Caddy trusts CF-Connecting-IP only from Cloudflare's ranges and always
+ * overwrites X-Real-IP (see Caddyfile), so this can't be spoofed. Never read
+ * X-Forwarded-For here: its first entry is client-controlled, and behind
+ * Cloudflare it would lump every visitor into a few shared buckets.
+ */
 export function getClientIp(request: Request): string {
-  const forwardedFor = request.headers.get("x-forwarded-for");
-  return forwardedFor?.split(",")[0]?.trim() || "unknown";
+  return request.headers.get("x-real-ip")?.trim() || "unknown";
 }
