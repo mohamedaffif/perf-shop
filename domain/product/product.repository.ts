@@ -1,6 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/lib/generated/prisma/client";
-import { cached, cacheKey, invalidateKey, invalidateNamespace } from "@/lib/cache";
+import {
+  cached,
+  cacheKey,
+  invalidateKey,
+  invalidateNamespace,
+  namespacedCacheKey,
+} from "@/lib/cache";
 import type {
   ParsedCreateProductInput,
   ParsedProductFilters,
@@ -60,7 +66,7 @@ function buildWhere(filters: ParsedProductFilters): Prisma.ProductWhereInput {
 export async function findMany(
   filters: ParsedProductFilters
 ): Promise<{ items: Product[]; total: number }> {
-  return cached(cacheKey(LIST_NAMESPACE, filters), 60, async () => {
+  return cached(await namespacedCacheKey(LIST_NAMESPACE, filters), 60, async () => {
     const where = buildWhere(filters);
     const { page = 1, pageSize = 20 } = filters;
 
@@ -100,9 +106,11 @@ interface SearchHit {
 const WORD_SIMILARITY_THRESHOLD = 0.3;
 
 export async function searchPublished(query: string, limit: number): Promise<Product[]> {
-  return cached(cacheKey(SEARCH_NAMESPACE, { query: query.trim().toLowerCase(), limit }), 60, () =>
-    searchPublishedUncached(query, limit)
-  );
+  const key = await namespacedCacheKey(SEARCH_NAMESPACE, {
+    query: query.trim().toLowerCase(),
+    limit,
+  });
+  return cached(key, 60, () => searchPublishedUncached(query, limit));
 }
 
 async function searchPublishedUncached(query: string, limit: number): Promise<Product[]> {

@@ -1,6 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/lib/generated/prisma/client";
-import { cached, cacheKey, invalidateKey, invalidateNamespace } from "@/lib/cache";
+import {
+  cached,
+  cacheKey,
+  invalidateKey,
+  invalidateNamespace,
+  namespacedCacheKey,
+} from "@/lib/cache";
 import type {
   Category,
   CreateCategoryInput,
@@ -22,7 +28,7 @@ function buildWhere(filters: ParsedCategoryFilters): Prisma.CategoryWhereInput {
 export async function findMany(
   filters: ParsedCategoryFilters
 ): Promise<{ items: Category[]; total: number }> {
-  return cached(cacheKey(LIST_NAMESPACE, filters), 300, async () => {
+  return cached(await namespacedCacheKey(LIST_NAMESPACE, filters), 300, async () => {
     const where = buildWhere(filters);
     const { page = 1, pageSize = 20 } = filters;
 
