@@ -46,16 +46,20 @@ export default async function ShopCategoryPage({ params, searchParams }: ShopCat
   }
 
   const categorySlug = CATEGORY_SLUG_MAP[category];
-  const categoryRecord = categorySlug ? await getCategoryBySlug(categorySlug) : null;
-
   const sp = await searchParams;
-  const { items, total, page, pageSize } = await listProducts({
-    status: "PUBLISHED",
-    categoryId: categoryRecord?.id,
-    ...parseShopFilters(sp),
-  });
 
-  const { items: brands } = await listBrands({ pageSize: 100 });
+  // Products need the category id first; brands don't, so load them alongside.
+  const [{ items, total, page, pageSize }, { items: brands }] = await Promise.all([
+    (async () => {
+      const categoryRecord = categorySlug ? await getCategoryBySlug(categorySlug) : null;
+      return listProducts({
+        status: "PUBLISHED",
+        categoryId: categoryRecord?.id,
+        ...parseShopFilters(sp),
+      });
+    })(),
+    listBrands({ pageSize: 100 }),
+  ]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
