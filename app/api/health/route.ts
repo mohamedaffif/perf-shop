@@ -1,31 +1,13 @@
 import { NextResponse } from "next/server";
 
-import { prisma } from "@/lib/prisma";
-import { redis } from "@/lib/redis";
-
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const checks: Record<string, "ok" | "error"> = {};
-
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-    checks.database = "ok";
-  } catch {
-    checks.database = "error";
-  }
-
-  try {
-    await redis.ping();
-    checks.redis = "ok";
-  } catch {
-    checks.redis = "error";
-  }
-
-  const healthy = Object.values(checks).every((status) => status === "ok");
-
-  return NextResponse.json(
-    { status: healthy ? "ok" : "degraded", checks },
-    { status: healthy ? 200 : 503 }
-  );
+/**
+ * Liveness only: "can this instance serve HTTP?". Docker, Caddy's load
+ * balancer and the uptime monitor use it, so it must not call Postgres, Redis
+ * or RabbitMQ — a dependency blip would otherwise pull every healthy replica
+ * out of rotation at once. Dependency status lives at /api/health/dependencies.
+ */
+export function GET() {
+  return NextResponse.json({ status: "ok" });
 }

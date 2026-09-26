@@ -87,6 +87,11 @@ async function connect(): Promise<Channel> {
   }
 }
 
+/** Throws if the broker is unreachable; reuses the live connection when there is one. */
+export async function pingRabbitMq(): Promise<void> {
+  await connect();
+}
+
 /**
  * Publishes a job onto its queue. Logged and swallowed on failure rather
  * than thrown — a missed publish after a successful DB write should not

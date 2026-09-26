@@ -5,9 +5,62 @@ x-logging: &default-logging
     max-size: "10m"
     max-file: "3"
 
+# Shared definition for the two Next.js replicas (app1/app2). Two single-threaded
+# Node processes let the kernel spread page rendering across both vCPUs; Caddy
+# load-balances between them.
+x-app: &app
+  image: ${DOCKERHUB_USERNAME:-local}/de-perfume-shop:${IMAGE_TAG:-latest}
+  build:
+    context: .
+    target: runner
+    args:
+      NEXT_PUBLIC_SHOP_LIVE: ${NEXT_PUBLIC_SHOP_LIVE:-false}
+      NEXT_PUBLIC_OAUTH_ENABLED: ${NEXT_PUBLIC_OAUTH_ENABLED:-false}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+  init: true
+  expose:
+    - "3000"
+  env_file:
+    - .env
+  environment:
+    NODE_ENV: production
+    REDIS_URL: redis://redis:6379
+    RABBITMQ_URL: amqp://rabbitmq:5672
+    # Heap cap below mem_limit: the gap covers buffers, native memory and sharp.
+    NODE_OPTIONS: --max-old-space-size=1024
+  mem_limit: 1536m
+  healthcheck:
+    # Liveness only — /api/health doesn't touch Postgres/Redis/RabbitMQ.
+    test:
+      [
+        "CMD",
+        "node",
+        "-e",
+        "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+      ]
+    interval: 15s
+    timeout: 5s
+    retries: 5
+    start_period: 20s
+  depends_on:
+    redis:
+      condition: service_healthy
+    rabbitmq:
+      condition: service_healthy
+    migrate:
+      condition: service_completed_successfully
+  logging: *default-logging
+  restart: unless-stopped
+
 services:
   redis:
     image: redis:7-alpine
+    # volatile-lru only evicts keys with a TTL: every disposable key (cache,
+    # rate limits, tokens, idempotency, locks) must set one, and no-TTL keys
+    # such as cache namespace version counters are never evicted.
+    # Alert if `INFO stats` evicted_keys ever rises above 0.
+    command: ["redis-server", "--maxmemory", "512mb", "--maxmemory-policy", "volatile-lru"]
+    mem_limit: 768m
     volumes:
       - redis-data:/data
     healthcheck:
@@ -20,8 +73,13 @@ services:
 
   rabbitmq:
     image: rabbitmq:4-management-alpine
+    # The management UI port (15672) is never published, so it's reachable only
+    # from inside the compose network. Colocated because queue volume is small;
+    # first stateful service to move off the VPS if throughput/backlog grows.
+    mem_limit: 768m
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+      - ./rabbitmq/20-memory.conf:/etc/rabbitmq/conf.d/20-memory.conf:ro
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
       interval: 10s
@@ -42,45 +100,9 @@ services:
     logging: *default-logging
     restart: "no"
 
-  app:
-    image: ${DOCKERHUB_USERNAME:-local}/de-perfume-shop:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      target: runner
-      args:
-        NEXT_PUBLIC_SHOP_LIVE: ${NEXT_PUBLIC_SHOP_LIVE:-false}
-        NEXT_PUBLIC_OAUTH_ENABLED: ${NEXT_PUBLIC_OAUTH_ENABLED:-false}
-        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
-    init: true
-    expose:
-      - "3000"
-    env_file:
-      - .env
-    environment:
-      NODE_ENV: production
-      REDIS_URL: redis://redis:6379
-      RABBITMQ_URL: amqp://rabbitmq:5672
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "node",
-          "-e",
-          "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
-        ]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
-    depends_on:
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
-    logging: *default-logging
-    restart: unless-stopped
+  app1: *app
+
+  app2: *app
 
   worker:
     image: ${DOCKERHUB_USERNAME:-local}/de-perfume-shop-worker:${IMAGE_TAG:-latest}
@@ -94,6 +116,8 @@ services:
       NODE_ENV: production
       REDIS_URL: redis://redis:6379
       RABBITMQ_URL: amqp://rabbitmq:5672
+      NODE_OPTIONS: --max-old-space-size=384
+    mem_limit: 512m
     depends_on:
       redis:
         condition: service_healthy
@@ -119,8 +143,11 @@ services:
       # Set SITE_ADDRESS (e.g. deperfumeshop.co.ke) and ACME_EMAIL in .env
       SITE_ADDRESS: ${SITE_ADDRESS:-localhost}
       ACME_EMAIL: ${ACME_EMAIL:-}
+    mem_limit: 128m
     depends_on:
-      app:
+      app1:
+        condition: service_healthy
+      app2:
         condition: service_healthy
     logging: *default-logging
     restart: unless-stopped

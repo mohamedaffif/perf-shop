@@ -98,8 +98,9 @@ docker compose run --rm migrate                 # already runs via depends_on, b
 docker compose run --rm migrate pnpm db:seed   # creates the admin user (products seed too; harmless while shop is hidden)
 ```
 
-`migrate` applies pending Prisma migrations and exits; `app` waits for it and for its own
-`/api/health` check before Caddy routes traffic. Seeding runs in the `migrate` image because
+`migrate` applies pending Prisma migrations and exits; the two app replicas (`app1`, `app2`)
+wait for it and for their own `/api/health` check before Caddy load-balances traffic
+across them. Seeding runs in the `migrate` image because
 the `app` image is Next standalone output (no `tsx`, no `prisma/seed.ts`).
 
 > **Schema migrations.** The `migrate` container runs `prisma migrate deploy`. Never run
@@ -127,7 +128,11 @@ the `app` image is Next standalone output (no `tsx`, no `prisma/seed.ts`).
   `/admin/subscribers`), and sends the welcome email. Unconfirmed signups are never
   stored (held in Redis for 24h, then discarded).
 - `/admin` → sign in with the seeded admin.
-- `curl https://<domain>/api/health` → `{"status":"ok"}`.
+- `curl https://<domain>/api/health` → `{"status":"ok"}` (liveness only; used by Docker and
+  Caddy, never touches dependencies).
+- `curl https://<domain>/api/health/dependencies` → `{"status":"ok","checks":{"database":"ok","redis":"ok","rabbitmq":"ok"}}`.
+  For monitoring only — never wire it into load-balancer or container health checks.
+- `docker compose ps` → `app1` and `app2` both `healthy`.
 - `/sitemap.xml`, `/robots.txt`, favicon, and OG image resolve, and the sitemap URLs start
   with `https://<domain>` (not `http://localhost:3000`).
 

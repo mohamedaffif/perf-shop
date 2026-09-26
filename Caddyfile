@@ -12,5 +12,15 @@
 	# sure upstream never leaks a Server banner.
 	header -Server
 
-	reverse_proxy app:3000
+	# Two Next.js replicas (docker-compose app1/app2). least_conn favours the
+	# less busy one; active health checks drop a replica that stops answering
+	# /api/health (liveness only), and lb_try_duration retries on the other
+	# replica while one restarts during a deploy.
+	reverse_proxy app1:3000 app2:3000 {
+		lb_policy least_conn
+		lb_try_duration 5s
+		health_uri /api/health
+		health_interval 10s
+		health_timeout 3s
+	}
 }
