@@ -12,7 +12,17 @@ import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { useAsyncForm } from "@/hooks/useAsyncForm";
 import { sanitizeCallbackUrl } from "@/lib/auth/callback-url";
 
+// The page is prerendered as static HTML; useSearchParams (callbackUrl) is
+// only known in the browser, so the form must sit in a Suspense boundary.
 export default function RegisterPage() {
+  return (
+    <React.Suspense>
+      <RegisterForm />
+    </React.Suspense>
+  );
+}
+
+function RegisterForm() {
   const searchParams = useSearchParams();
   const callbackUrl = sanitizeCallbackUrl(searchParams.get("callbackUrl"));
 

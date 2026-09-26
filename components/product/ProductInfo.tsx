@@ -4,7 +4,7 @@ import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/domain/product/product.types";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
 import { ProductNotesTabs } from "@/components/product/ProductNotesTabs";
-import { Badge } from "@/components/ui/badge";
+import { StockBadge } from "@/components/product/StockBadge";
 import { BADGE_META, CONCENTRATION_LABELS, SIZE_LABELS } from "@/components/product/product-meta";
 
 interface ProductInfoProps {
@@ -30,11 +30,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
         <span className="font-heading text-foreground text-2xl font-semibold tabular-nums">
           {formatPrice(product.price)}
         </span>
-        {product.stockQuantity <= 0 ? (
-          <Badge variant="destructive">Out of Stock</Badge>
-        ) : product.stockQuantity <= 5 ? (
-          <Badge variant="warning">Only {product.stockQuantity} left</Badge>
-        ) : null}
+        <StockBadge product={product} />
       </div>
 
       {product.badges.length > 0 ? (
@@ -56,7 +52,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
         </div>
       ) : null}
 
-      <AddToCartButton product={product} size="lg" className="w-full" />
+      <AddToCartButton product={product} liveStock size="lg" className="w-full" />
 
       <div className="border-border border-t" />
 

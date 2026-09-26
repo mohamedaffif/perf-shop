@@ -3,6 +3,7 @@ import { deleteBrand, getBrand, updateBrand } from "@/domain/brand";
 import { handleApiError } from "@/lib/api-error";
 import { requireRole } from "@/lib/auth/require-role";
 import { ADMIN_ROLES, STAFF_ROLES } from "@/lib/auth/roles";
+import { revalidateStorefront } from "@/lib/storefront-revalidate";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -26,6 +27,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     const body = await request.json();
     const brand = await updateBrand(id, body);
+    revalidateStorefront();
     return NextResponse.json(brand);
   } catch (error) {
     return handleApiError(error);
@@ -41,6 +43,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
 
     const { id } = await params;
     await deleteBrand(id);
+    revalidateStorefront();
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     return handleApiError(error);

@@ -2,8 +2,12 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { Typography } from "@/components/ui/typography";
 import { Reveal } from "@/components/motion/Reveal";
 import { listProducts } from "@/domain/product/product.service";
+import { IS_BUILD_PHASE } from "@/lib/build-phase";
 
 export async function FeaturedProducts() {
+  // No database at build time; the home page's ISR revalidation fills this in.
+  if (IS_BUILD_PHASE) return null;
+
   const { items } = await listProducts({ status: "PUBLISHED", pageSize: 8 });
 
   return (

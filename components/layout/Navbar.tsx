@@ -1,15 +1,11 @@
-import { ShieldCheck, User } from "lucide-react";
 import Link from "next/link";
 
-import { auth } from "@/auth";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { SearchDialog } from "@/components/search/SearchDialog";
-import { toMenuUser } from "@/lib/auth/menu-user";
-import { isStaffRole } from "@/lib/auth/roles";
 import { SHOP_LIVE } from "@/lib/storefront";
 import { MegaMenu } from "./MegaMenu";
 import { MobileMenu } from "./MobileMenu";
-import { UserMenu } from "./UserMenu";
+import { NavbarAccount } from "./NavbarAccount";
 
 export type NavLink = {
   label: string;
@@ -128,16 +124,17 @@ export const TEASER_NAV_LINKS: NavLink[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-export async function Navbar() {
-  const session = await auth();
+// Server-rendered and user-agnostic so it can be cached with the page; the
+// per-user parts (NavbarAccount, MobileMenu's account section) read the
+// session in the browser.
+export function Navbar() {
   const links = SHOP_LIVE ? NAV_LINKS : TEASER_NAV_LINKS;
-  const user = toMenuUser(session?.user);
 
   return (
     <header className="border-border bg-background/95 supports-backdrop-filter:bg-background/80 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
-          <MobileMenu links={links} user={SHOP_LIVE ? user : null} />
+          <MobileMenu links={links} />
           <Link
             href="/"
             className="font-heading text-foreground text-xl font-semibold tracking-wide"
@@ -154,30 +151,7 @@ export async function Navbar() {
 
         <div className="flex items-center gap-1">
           {SHOP_LIVE && <SearchDialog />}
-          {SHOP_LIVE ? (
-            user ? (
-              <UserMenu user={user} />
-            ) : (
-              <Link
-                href="/login"
-                aria-label="Sign in"
-                className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
-              >
-                <User className="size-4" />
-              </Link>
-            )
-          ) : (
-            // Teaser site has no account area, but staff still need a way into the admin.
-            isStaffRole(user?.role) && (
-              <Link
-                href="/admin"
-                aria-label="Admin dashboard"
-                className="text-foreground/80 hover:bg-muted hover:text-foreground inline-flex size-9 items-center justify-center rounded-full transition-colors"
-              >
-                <ShieldCheck className="size-4" />
-              </Link>
-            )
-          )}
+          <NavbarAccount />
           {SHOP_LIVE && <CartDrawer />}
         </div>
       </div>

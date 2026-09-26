@@ -13,7 +13,17 @@ import { useAsyncForm } from "@/hooks/useAsyncForm";
 import { getAuthErrorMessage } from "@/lib/auth/auth-errors";
 import { sanitizeCallbackUrl } from "@/lib/auth/callback-url";
 
+// The page is prerendered as static HTML; useSearchParams (callbackUrl, error)
+// is only known in the browser, so the form must sit in a Suspense boundary.
 export default function LoginPage() {
+  return (
+    <React.Suspense>
+      <LoginForm />
+    </React.Suspense>
+  );
+}
+
+function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = sanitizeCallbackUrl(searchParams.get("callbackUrl"));
   const redirectError = getAuthErrorMessage(searchParams.get("error"));

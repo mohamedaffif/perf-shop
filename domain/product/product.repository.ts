@@ -152,6 +152,20 @@ export async function findById(id: string): Promise<Product | null> {
   });
 }
 
+/**
+ * Live stock, deliberately uncached: product pages are ISR-cached HTML, so
+ * the only up-to-date stock figure a shopper sees comes from here. A primary
+ * key lookup on one column — cheap enough to run on every product view.
+ */
+export async function findStock(id: string): Promise<number | null> {
+  const row = await prisma.product.findUnique({
+    where: { id },
+    select: { stockQuantity: true },
+  });
+
+  return row?.stockQuantity ?? null;
+}
+
 export async function invalidateProductCaches(id?: string): Promise<void> {
   await Promise.all([
     invalidateNamespace(LIST_NAMESPACE),

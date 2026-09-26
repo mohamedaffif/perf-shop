@@ -8,8 +8,8 @@ import { ChevronDown, Menu, ShieldCheck, User, X } from "lucide-react";
 import { SignOutButton } from "@/components/account/SignOutButton";
 import { UserAvatar } from "@/components/account/UserAvatar";
 import { useDisclosure } from "@/hooks/useDisclosure";
+import { useMenuUser } from "@/hooks/useMenuUser";
 import { ACCOUNT_NAV } from "@/lib/account-nav";
-import type { MenuUser } from "@/lib/auth/menu-user";
 import { isStaffRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils";
 import { SHOP_LIVE } from "@/lib/storefront";
@@ -18,8 +18,9 @@ import type { NavLink } from "./Navbar";
 const footerLinkClass =
   "text-foreground hover:bg-muted flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors";
 
-export function MobileMenu({ links, user }: { links: NavLink[]; user: MenuUser | null }) {
+export function MobileMenu({ links }: { links: NavLink[] }) {
   const { isOpen: open, close, setIsOpen } = useDisclosure();
+  const { user } = useMenuUser();
   const [expanded, setExpanded] = React.useState<string | null>(null);
 
   return (

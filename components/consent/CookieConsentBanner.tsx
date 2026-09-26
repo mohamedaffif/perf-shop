@@ -3,20 +3,20 @@
 import Link from "next/link";
 
 import { useConsentPreferences } from "@/hooks/useConsentPreferences";
+import { useHydrated } from "@/hooks/useHydrated";
 import { Button } from "@/components/ui/button";
 import { CookiePreferencesDialog } from "@/components/consent/CookiePreferencesDialog";
-import type { ConsentState } from "@/lib/consent";
 
-interface CookieConsentBannerProps {
-  initialConsent: ConsentState | null;
-}
-
-export function CookieConsentBanner({ initialConsent }: CookieConsentBannerProps) {
-  const { hasDecided, openPreferences, dialogProps } = useConsentPreferences(initialConsent);
+// The consent cookie is read in the browser only, so layouts never call
+// cookies() and storefront pages stay cacheable. The banner waits for
+// hydration so visitors who already decided never see it flash.
+export function CookieConsentBanner() {
+  const hydrated = useHydrated();
+  const { hasDecided, openPreferences, dialogProps } = useConsentPreferences();
 
   return (
     <>
-      {!hasDecided && (
+      {hydrated && !hasDecided && (
         <div className="border-border bg-card text-card-foreground fixed inset-x-0 bottom-0 z-50 border-t shadow-lg">
           <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-4 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
             <p className="text-muted-foreground text-sm">

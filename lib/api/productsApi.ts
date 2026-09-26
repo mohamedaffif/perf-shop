@@ -26,6 +26,10 @@ export const productsApi = createApi({
       query: (id) => `/products/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Product", id }],
     }),
+    getProductStock: builder.query<{ stockQuantity: number }, string>({
+      query: (id) => `/products/${id}/stock`,
+      providesTags: (_result, _error, id) => [{ type: "Product", id }],
+    }),
     createProduct: builder.mutation<Product, CreateProductInput>({
       query: (body) => ({ url: "/products", method: "POST", body }),
       invalidatesTags: [{ type: "Product", id: "LIST" }],
@@ -50,6 +54,7 @@ export const productsApi = createApi({
 export const {
   useListProductsQuery,
   useGetProductQuery,
+  useGetProductStockQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,

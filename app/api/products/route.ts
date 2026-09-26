@@ -3,6 +3,7 @@ import { createProduct, listProducts } from "@/domain/product";
 import { handleApiError } from "@/lib/api-error";
 import { requireRole } from "@/lib/auth/require-role";
 import { STAFF_ROLES } from "@/lib/auth/roles";
+import { revalidateStorefront } from "@/lib/storefront-revalidate";
 
 export async function GET(request: NextRequest) {
   try {
@@ -23,6 +24,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const product = await createProduct(body);
+    revalidateStorefront();
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     return handleApiError(error);

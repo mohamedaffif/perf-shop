@@ -34,6 +34,16 @@ export async function getProduct(id: string): Promise<Product> {
   return product;
 }
 
+export async function getProductStock(id: string): Promise<number> {
+  const stockQuantity = await productRepository.findStock(id);
+
+  if (stockQuantity === null) {
+    throw new ProductNotFoundError(id);
+  }
+
+  return stockQuantity;
+}
+
 export async function createProduct(rawInput: unknown): Promise<Product> {
   const input = createProductSchema.parse(rawInput);
   return productRepository.create(input);

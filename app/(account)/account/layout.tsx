@@ -16,7 +16,6 @@ import { Typography } from "@/components/ui/typography";
 import { ACCOUNT_NAV } from "@/lib/account-nav";
 import { toMenuUser } from "@/lib/auth/menu-user";
 import Providers from "@/lib/provider";
-import { readConsentCookieServer } from "@/lib/consent.server";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
@@ -49,7 +48,6 @@ export default async function AccountLayout({ children }: { children: React.Reac
   }
 
   const menuUser = toMenuUser(session.user);
-  const initialConsent = await readConsentCookieServer();
 
   return (
     <html
@@ -98,7 +96,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
             </div>
           </main>
         </Providers>
-        <CookieConsentBanner initialConsent={initialConsent} />
+        <CookieConsentBanner />
       </body>
     </html>
   );

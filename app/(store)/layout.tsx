@@ -7,7 +7,6 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CookieConsentBanner } from "@/components/consent/CookieConsentBanner";
 import Providers from "@/lib/provider";
-import { readConsentCookieServer } from "@/lib/consent.server";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
@@ -53,13 +52,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+// No cookies()/auth() here: per-visitor UI (consent banner, account menu) is
+// resolved in the browser so catalog pages below can be served from cache.
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialConsent = await readConsentCookieServer();
-
   return (
     <html
       lang="en"
@@ -79,7 +78,7 @@ export default async function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </Providers>
-        <CookieConsentBanner initialConsent={initialConsent} />
+        <CookieConsentBanner />
       </body>
     </html>
   );

@@ -21,6 +21,18 @@ type ProductPageProps = {
   params: Promise<{ id: string }>;
 };
 
+// ISR: each product page is rendered on its first visit, then served from
+// cache and re-rendered in the background at most every 5 minutes. Admin
+// edits refresh it immediately via revalidateStorefront(). Stock is never
+// part of this cached HTML — ProductInfo loads it live in the browser.
+export const revalidate = 300;
+
+// Empty list = nothing prerendered at build (no database there); every
+// product page is generated on demand instead.
+export function generateStaticParams(): { id: string }[] {
+  return [];
+}
+
 const loadProduct = cache(async (id: string) => {
   return getProduct(id).catch((err) => {
     if (err instanceof ProductNotFoundError) return null;

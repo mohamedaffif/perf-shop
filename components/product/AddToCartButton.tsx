@@ -7,31 +7,42 @@ import { Button, type buttonVariants } from "@/components/ui/button";
 import type { VariantProps } from "class-variance-authority";
 import type { Product } from "@/domain/product/product.types";
 import { useCart } from "@/hooks/useCart";
+import { useLiveStock } from "@/hooks/useLiveStock";
 import { usePulse } from "@/hooks/usePulse";
 
 interface AddToCartButtonProps {
   product: Product;
   onAddToCart?: (product: Product) => void;
+  /** Fetch current stock instead of trusting `product` (used on the cached product page). */
+  liveStock?: boolean;
   size?: VariantProps<typeof buttonVariants>["size"];
   className?: string;
 }
 
-export function AddToCartButton({ product, onAddToCart, size, className }: AddToCartButtonProps) {
+export function AddToCartButton({
+  product,
+  onAddToCart,
+  liveStock = false,
+  size,
+  className,
+}: AddToCartButtonProps) {
   const [added, setAdded] = useState(false);
   const { addToCart } = useCart();
+  const stockQuantity = useLiveStock(product, liveStock);
   const buttonRef = usePulse<HTMLButtonElement>([added], {
     from: 0.94,
     shouldPulse: () => added,
   });
 
-  const outOfStock = product.stockQuantity <= 0;
+  const outOfStock = stockQuantity <= 0;
 
   function handleAddToCart() {
+    const current = { ...product, stockQuantity };
     setAdded(true);
     if (onAddToCart) {
-      onAddToCart(product);
+      onAddToCart(current);
     } else {
-      addToCart(product);
+      addToCart(current);
     }
     window.setTimeout(() => setAdded(false), 1600);
   }

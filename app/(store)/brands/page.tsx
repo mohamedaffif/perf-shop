@@ -10,6 +10,11 @@ import {
 import { Typography } from "@/components/ui/typography";
 import { listBrands } from "@/domain/brand";
 
+// Rendered per request (from the Redis brand cache) rather than ISR: a static
+// render would run at build time, where there's no database, and ship an
+// empty "No brands" page until the first revalidation.
+export const dynamic = "force-dynamic";
+
 export default async function BrandsPage() {
   const { items: brands } = await listBrands({ pageSize: 100 });
 

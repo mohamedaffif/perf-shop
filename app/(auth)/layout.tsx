@@ -3,7 +3,6 @@ import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "../globals.css";
 import { cn } from "@/lib/utils";
 import { CookieConsentBanner } from "@/components/consent/CookieConsentBanner";
-import { readConsentCookieServer } from "@/lib/consent.server";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
@@ -23,13 +22,11 @@ export const metadata: Metadata = {
   description: "Sign in to your DE PERFUME SHOP account",
 };
 
-export default async function AuthLayout({
+export default function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialConsent = await readConsentCookieServer();
-
   return (
     <html
       lang="en"
@@ -51,7 +48,7 @@ export default async function AuthLayout({
           </p>
           {children}
         </div>
-        <CookieConsentBanner initialConsent={initialConsent} />
+        <CookieConsentBanner />
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { Prisma } from "@/lib/generated/prisma/client";
-import { getProduct, invalidateProductCaches } from "@/domain/product";
+import { getProduct } from "@/domain/product";
 import { validateCouponForOrder } from "@/domain/coupon";
 import { getStoreSettings } from "@/domain/settings";
 import { calculateShipping } from "@/lib/pricing";
@@ -157,12 +157,12 @@ export async function placeOrder(rawInput: unknown, userId?: string | null): Pro
     throw new Error("Failed to generate a unique order number");
   });
 
-  const { order, touchedProductIds, lowStockAlerts } = result;
-
-  // Stock was decremented via a raw query in order.repository.ts, bypassing
-  // the product repository's own cache invalidation — invalidate here so
-  // product/list/search caches don't serve stale stockQuantity values.
-  await Promise.all(touchedProductIds.map((id) => invalidateProductCaches(id)));
+  // Product caches are deliberately NOT invalidated here. Wiping the list and
+  // search caches on every order would make catalog caching useless under
+  // checkout load. Cached stockQuantity may lag by up to the cache TTL, which
+  // is safe: the product page shows live stock (useLiveStock), and stock is
+  // enforced in the order transaction (StockConflictError), never from cache.
+  const { order, lowStockAlerts } = result;
 
   // Pesapal orders are confirmed later, once GetTransactionStatus reports the
   // payment actually cleared (see domain/payment) — firing this now would

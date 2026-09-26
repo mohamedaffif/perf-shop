@@ -11,6 +11,8 @@ vi.mock("@/domain/product", () => ({
   updateProduct: vi.fn().mockResolvedValue({ id: "prod_1" }),
   deleteProduct: vi.fn().mockResolvedValue(undefined),
 }));
+// revalidatePath needs a live Next.js request context; not under test here.
+vi.mock("@/lib/storefront-revalidate", () => ({ revalidateStorefront: vi.fn() }));
 
 const mockedAuth = auth as unknown as ReturnType<typeof vi.fn>;
 const mockedUpdateProduct = vi.mocked(updateProduct);
