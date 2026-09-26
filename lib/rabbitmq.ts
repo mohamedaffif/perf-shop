@@ -10,6 +10,7 @@ export const QUEUES = [
   "invoice.generate",
   "stock.low",
   "payment.events",
+  "email.newsletter",
 ] as const;
 
 export type QueueName = (typeof QUEUES)[number];

@@ -1,48 +1,18 @@
-import { render } from "react-email";
-
-import { getEnv } from "@/lib/env";
-import { resend } from "@/lib/resend";
+import { publishEvent } from "@/lib/rabbitmq";
 import { consumeTemporaryToken, createTemporaryToken } from "@/lib/tokens";
-import NewsletterConfirmEmail from "@/emails/newsletter-confirm";
-import NewsletterWelcomeEmail from "@/emails/newsletter-welcome";
 import * as newsletterRepository from "./newsletter.repository";
+import type { NewsletterEmailJob } from "./newsletter.emails";
 import { subscribeSchema, subscriberFiltersSchema } from "./newsletter.validator";
 import type { PaginatedSubscribers, Subscriber } from "./newsletter.types";
 
 const CONFIRM_TOKEN_PURPOSE = "newsletter-confirm";
 const CONFIRM_TOKEN_TTL_SECONDS = 60 * 60 * 24;
 
-async function sendConfirmationEmail(email: string, token: string): Promise<void> {
-  try {
-    const confirmUrl = `${getEnv().NEXT_PUBLIC_APP_URL}/api/newsletter/confirm?token=${token}`;
-    const html = await render(NewsletterConfirmEmail({ confirmUrl }));
-    const { error } = await resend.emails.send({
-      from: getEnv().RESEND_FROM_EMAIL,
-      to: email,
-      subject: "Confirm your subscription — DE PERFUME SHOP",
-      html,
-    });
-    if (error) throw new Error(error.message);
-  } catch (err) {
-    // A mail failure must never fail the signup itself; the visitor can retry.
-    console.error(`[newsletter] confirmation email to ${email} failed`, err);
-  }
-}
-
-async function sendWelcomeEmail(email: string): Promise<void> {
-  try {
-    const html = await render(NewsletterWelcomeEmail({ appUrl: getEnv().NEXT_PUBLIC_APP_URL }));
-    const { error } = await resend.emails.send({
-      from: getEnv().RESEND_FROM_EMAIL,
-      to: email,
-      subject: "You're on the list — DE PERFUME SHOP",
-      html,
-    });
-    if (error) throw new Error(error.message);
-  } catch (err) {
-    // A mail failure must never fail the signup itself.
-    console.error(`[newsletter] welcome email to ${email} failed`, err);
-  }
+// Emails are sent by the worker (sendNewsletterEmail), with queue retries, so a
+// slow or failing mail provider never slows or fails the signup request.
+// publishEvent logs and swallows broker errors — the visitor can retry.
+function queueNewsletterEmail(job: NewsletterEmailJob): Promise<void> {
+  return publishEvent("email.newsletter", job);
 }
 
 export type SubscribeResult = { status: "pending" | "already_subscribed" };
@@ -65,7 +35,7 @@ export async function subscribe(rawInput: unknown): Promise<SubscribeResult> {
     JSON.stringify({ email, source }),
     CONFIRM_TOKEN_TTL_SECONDS
   );
-  await sendConfirmationEmail(email, token);
+  await queueNewsletterEmail({ kind: "confirm", email, token });
 
   return { status: "pending" };
 }
@@ -83,7 +53,7 @@ export async function confirmSubscription(token: string): Promise<{ ok: boolean 
   }
 
   await newsletterRepository.upsert(email, source);
-  await sendWelcomeEmail(email);
+  await queueNewsletterEmail({ kind: "welcome", email });
 
   return { ok: true };
 }

@@ -1,21 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { consumeTemporaryToken, createTemporaryToken } from "@/lib/tokens";
-import { resend } from "@/lib/resend";
+import { publishEvent } from "@/lib/rabbitmq";
 import * as newsletterRepository from "./newsletter.repository";
 import { confirmSubscription, subscribe } from "./newsletter.service";
 
-vi.mock("react-email", async (importActual) => ({
-  ...(await importActual<typeof import("react-email")>()),
-  render: vi.fn().mockResolvedValue("<html></html>"),
-}));
 vi.mock("@/lib/tokens", () => ({
   createTemporaryToken: vi.fn(),
   consumeTemporaryToken: vi.fn(),
 }));
-vi.mock("@/lib/resend", () => ({
-  resend: { emails: { send: vi.fn().mockResolvedValue({ error: null }) } },
-}));
+vi.mock("@/lib/rabbitmq", () => ({ publishEvent: vi.fn().mockResolvedValue(undefined) }));
 vi.mock("./newsletter.repository", () => ({
   findByEmail: vi.fn(),
   upsert: vi.fn(),
@@ -25,7 +19,7 @@ const mockedCreateToken = vi.mocked(createTemporaryToken);
 const mockedConsumeToken = vi.mocked(consumeTemporaryToken);
 const mockedFindByEmail = vi.mocked(newsletterRepository.findByEmail);
 const mockedUpsert = vi.mocked(newsletterRepository.upsert);
-const mockedSend = vi.mocked(resend.emails.send);
+const mockedPublish = vi.mocked(publishEvent);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -34,7 +28,7 @@ beforeEach(() => {
 });
 
 describe("subscribe", () => {
-  it("mints a confirmation token and sends the email for a new address", async () => {
+  it("mints a confirmation token and queues the email for a new address", async () => {
     mockedFindByEmail.mockResolvedValue(null);
 
     const result = await subscribe({ email: "New@Example.com" });
@@ -45,7 +39,11 @@ describe("subscribe", () => {
       JSON.stringify({ email: "new@example.com", source: undefined }),
       60 * 60 * 24
     );
-    expect(mockedSend).toHaveBeenCalledOnce();
+    expect(mockedPublish).toHaveBeenCalledWith("email.newsletter", {
+      kind: "confirm",
+      email: "new@example.com",
+      token: "confirm-token",
+    });
     expect(mockedUpsert).not.toHaveBeenCalled();
   });
 
@@ -56,7 +54,7 @@ describe("subscribe", () => {
 
     expect(result).toEqual({ status: "already_subscribed" });
     expect(mockedCreateToken).not.toHaveBeenCalled();
-    expect(mockedSend).not.toHaveBeenCalled();
+    expect(mockedPublish).not.toHaveBeenCalled();
   });
 
   it("re-confirms a previously unsubscribed address", async () => {
@@ -67,19 +65,10 @@ describe("subscribe", () => {
     expect(result).toEqual({ status: "pending" });
     expect(mockedCreateToken).toHaveBeenCalledOnce();
   });
-
-  it("still reports pending when the confirmation email fails", async () => {
-    mockedFindByEmail.mockResolvedValue(null);
-    mockedSend.mockResolvedValueOnce({ error: { message: "smtp down" } } as never);
-
-    await expect(subscribe({ email: "reader@example.com" })).resolves.toEqual({
-      status: "pending",
-    });
-  });
 });
 
 describe("confirmSubscription", () => {
-  it("stores the subscriber and sends the welcome email for a valid token", async () => {
+  it("stores the subscriber and queues the welcome email for a valid token", async () => {
     mockedConsumeToken.mockResolvedValue(
       JSON.stringify({ email: "reader@example.com", source: "footer" })
     );
@@ -89,7 +78,10 @@ describe("confirmSubscription", () => {
     expect(result).toEqual({ ok: true });
     expect(mockedConsumeToken).toHaveBeenCalledWith("newsletter-confirm", "good-token");
     expect(mockedUpsert).toHaveBeenCalledWith("reader@example.com", "footer");
-    expect(mockedSend).toHaveBeenCalledOnce();
+    expect(mockedPublish).toHaveBeenCalledWith("email.newsletter", {
+      kind: "welcome",
+      email: "reader@example.com",
+    });
   });
 
   it("returns not-ok for an expired or already-used token", async () => {

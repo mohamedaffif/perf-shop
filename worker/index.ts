@@ -4,6 +4,10 @@ import { consumeQueue, publishEvent, QUEUES } from "@/lib/rabbitmq";
 import { resend } from "@/lib/resend";
 import { getEnv } from "@/lib/env";
 import { updateOrderStatus } from "@/domain/order";
+import {
+  sendNewsletterEmail,
+  type NewsletterEmailJob,
+} from "@/domain/newsletter/newsletter.emails";
 import type { OrderConfirmedEvent, StockLowEvent } from "@/domain/order/order.events";
 import OrderConfirmationEmail from "@/emails/order-confirmation";
 import AdminNewOrderEmail from "@/emails/admin-new-order";
@@ -74,6 +78,12 @@ async function handleStockLow(payload: unknown): Promise<void> {
   console.log(`[worker] low stock: ${event.productName} (${event.stockQuantity} left)`);
 }
 
+async function handleNewsletterEmail(payload: unknown): Promise<void> {
+  const job = payload as NewsletterEmailJob;
+  await sendNewsletterEmail(job);
+  console.log(`[worker] sent newsletter ${job.kind} email to ${job.email}`);
+}
+
 async function handlePaymentEvents(payload: unknown): Promise<void> {
   // Stub: no Pesapal webhook/IPN integration exists yet — this is where it plugs in once built.
   console.log("[worker] payment event received", payload);
@@ -86,6 +96,7 @@ async function main(): Promise<void> {
   await consumeQueue("invoice.generate", handleInvoiceGenerate);
   await consumeQueue("stock.low", handleStockLow);
   await consumeQueue("payment.events", handlePaymentEvents);
+  await consumeQueue("email.newsletter", handleNewsletterEmail);
 
   console.log(`[worker] listening on queues: ${QUEUES.join(", ")}`);
 }
