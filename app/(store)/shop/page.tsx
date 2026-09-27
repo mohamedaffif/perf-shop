@@ -9,7 +9,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { ProductCard } from "@/components/product/ProductCard";
-import { FilterSidebar } from "@/components/shop/FilterSidebar";
+import { ActiveFilterChips } from "@/components/shop/ActiveFilterChips";
+import { ClearFiltersButton } from "@/components/shop/ClearFiltersButton";
+import { ShopFilters } from "@/components/shop/ShopFilters";
 import { ShopPagination } from "@/components/shop/ShopPagination";
 import { Typography } from "@/components/ui/typography";
 import { Reveal } from "@/components/motion/Reveal";
@@ -52,9 +54,10 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       </Typography>
 
       <div className="flex flex-col gap-10 lg:flex-row">
-        <FilterSidebar brands={brands} />
+        <ShopFilters brands={brands} total={total} />
 
         <div className="flex-1">
+          <ActiveFilterChips brands={brands} />
           {items.length > 0 ? (
             <>
               <Reveal
@@ -74,9 +77,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
               />
             </>
           ) : (
-            <Typography variant="body" className="text-muted-foreground">
-              No fragrances match these filters.
-            </Typography>
+            <div className="flex flex-col items-start gap-4">
+              <Typography variant="body" className="text-muted-foreground">
+                No fragrances match these filters.
+              </Typography>
+              <ClearFiltersButton />
+            </div>
           )}
         </div>
       </div>

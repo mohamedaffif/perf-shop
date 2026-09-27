@@ -13,6 +13,7 @@
   /* Navigation */
   --spacing-navbar-y: 1.5rem; /* 24px */
   --spacing-navbar-gap: 2rem; /* 32px */
+  --spacing-navbar-h: 4rem; /* 64px — Navbar height; sticky bars offset by this */
 
   /* Cards */
   --spacing-card-padding: 1.5rem; /* 24px */
