@@ -6,6 +6,13 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required"),
   RESEND_FROM_EMAIL: z.email("RESEND_FROM_EMAIL must be a valid email address"),
   ADMIN_NOTIFICATION_EMAIL: z.email("ADMIN_NOTIFICATION_EMAIL must be a valid email address"),
+  // Sender for marketing (newsletter) mail, kept apart from transactional mail.
+  // Falls back to RESEND_FROM_EMAIL when unset.
+  NEWSLETTER_FROM_EMAIL: z.email("NEWSLETTER_FROM_EMAIL must be a valid email address").optional(),
+  // Signs newsletter unsubscribe links. Changing it breaks the links in already-sent emails.
+  NEWSLETTER_UNSUBSCRIBE_SECRET: z
+    .string()
+    .min(32, "NEWSLETTER_UNSUBSCRIBE_SECRET must be at least 32 characters"),
   NEXT_PUBLIC_APP_URL: z.url(
     "NEXT_PUBLIC_APP_URL must be a valid URL, e.g. https://deperfumeshop.com"
   ),

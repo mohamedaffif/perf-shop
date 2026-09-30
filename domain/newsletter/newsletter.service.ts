@@ -2,6 +2,7 @@ import { publishEvent } from "@/lib/rabbitmq";
 import { consumeTemporaryToken, createTemporaryToken } from "@/lib/tokens";
 import * as newsletterRepository from "./newsletter.repository";
 import type { NewsletterEmailJob } from "./newsletter.emails";
+import { verifyUnsubscribeToken } from "./newsletter.unsubscribe-token";
 import { subscribeSchema, subscriberFiltersSchema } from "./newsletter.validator";
 import type { PaginatedSubscribers, Subscriber } from "./newsletter.types";
 
@@ -52,9 +53,28 @@ export async function confirmSubscription(token: string): Promise<{ ok: boolean 
     return { ok: false };
   }
 
-  await newsletterRepository.upsert(email, source);
-  await queueNewsletterEmail({ kind: "welcome", email });
+  const { id } = await newsletterRepository.upsert(email, source);
+  await queueNewsletterEmail({ kind: "welcome", email, subscriberId: id });
 
+  return { ok: true };
+}
+
+const MAX_UNSUBSCRIBE_TOKEN_LENGTH = 128;
+
+/**
+ * Opts a subscriber out via a signed link from a newsletter email. Idempotent: a valid
+ * link for someone already unsubscribed still succeeds. Re-joining goes back through
+ * `subscribe`, which requires double opt-in again.
+ */
+export async function unsubscribe(token: string): Promise<{ ok: boolean }> {
+  if (!token || token.length > MAX_UNSUBSCRIBE_TOKEN_LENGTH) return { ok: false };
+
+  const subscriberId = verifyUnsubscribeToken(token);
+  if (!subscriberId || !(await newsletterRepository.existsById(subscriberId))) {
+    return { ok: false };
+  }
+
+  await newsletterRepository.markUnsubscribed(subscriberId);
   return { ok: true };
 }
 

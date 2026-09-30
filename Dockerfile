@@ -39,6 +39,7 @@ ENV DATABASE_URL="postgresql://user:password@localhost:5432/de_perfume_shop" \
     RESEND_API_KEY="re_ci_placeholder" \
     RESEND_FROM_EMAIL="ci@example.com" \
     ADMIN_NOTIFICATION_EMAIL="ci@example.com" \
+    NEWSLETTER_UNSUBSCRIBE_SECRET="ci-placeholder-newsletter-unsubscribe-secret" \
     PESAPAL_CONSUMER_KEY="ci-placeholder-key" \
     PESAPAL_CONSUMER_SECRET="ci-placeholder-secret" \
     PESAPAL_BASE_URL="https://cybqa.pesapal.com/pesapalv3"

@@ -21,19 +21,37 @@ export async function findByEmail(
 }
 
 /** Idempotent: re-subscribing an existing email is a no-op that clears any prior opt-out. */
-export async function upsert(email: string, source?: string): Promise<{ created: boolean }> {
+export async function upsert(
+  email: string,
+  source?: string
+): Promise<{ id: string; created: boolean }> {
   const existing = await prisma.newsletterSubscriber.findUnique({
     where: { email },
     select: { id: true },
   });
 
-  await prisma.newsletterSubscriber.upsert({
+  const { id } = await prisma.newsletterSubscriber.upsert({
     where: { email },
     create: { email, source },
     update: { unsubscribedAt: null },
+    select: { id: true },
   });
 
-  return { created: !existing };
+  return { id, created: !existing };
+}
+
+/** Whether a subscriber with this id exists (opted-out or not). */
+export async function existsById(id: string): Promise<boolean> {
+  const count = await prisma.newsletterSubscriber.count({ where: { id } });
+  return count > 0;
+}
+
+/** Idempotent: keeps the original opt-out time if the subscriber already unsubscribed. */
+export async function markUnsubscribed(id: string): Promise<void> {
+  await prisma.newsletterSubscriber.updateMany({
+    where: { id, unsubscribedAt: null },
+    data: { unsubscribedAt: new Date() },
+  });
 }
 
 function buildWhere(filters: ParsedSubscriberFilters): Prisma.NewsletterSubscriberWhereInput {

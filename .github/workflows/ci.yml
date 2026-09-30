@@ -14,6 +14,7 @@ env:
   RESEND_API_KEY: "re_ci_placeholder"
   RESEND_FROM_EMAIL: "ci@example.com"
   ADMIN_NOTIFICATION_EMAIL: "ci@example.com"
+  NEWSLETTER_UNSUBSCRIBE_SECRET: "ci-placeholder-newsletter-unsubscribe-secret"
   NEXT_PUBLIC_APP_URL: "http://localhost:3000"
   NEXT_PUBLIC_SHOP_LIVE: "false"
   NEXT_PUBLIC_OAUTH_ENABLED: "false"

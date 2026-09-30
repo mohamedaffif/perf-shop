@@ -13,6 +13,7 @@ export default defineConfig({
       RESEND_API_KEY: "re_xxxxxxxxx",
       RESEND_FROM_EMAIL: "ci@example.com",
       ADMIN_NOTIFICATION_EMAIL: "ci@example.com",
+      NEWSLETTER_UNSUBSCRIBE_SECRET: "test-newsletter-unsubscribe-secret-0123456789",
       NEXT_PUBLIC_APP_URL: "http://localhost:3000",
       NEXT_PUBLIC_SHOP_LIVE: "false",
       NEXT_PUBLIC_OAUTH_ENABLED: "false",

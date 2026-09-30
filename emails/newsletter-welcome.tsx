@@ -3,9 +3,13 @@ import { EmailShell } from "./components";
 
 export interface NewsletterWelcomeEmailProps {
   appUrl: string;
+  unsubscribeUrl?: string;
 }
 
-export default function NewsletterWelcomeEmail({ appUrl }: NewsletterWelcomeEmailProps) {
+export default function NewsletterWelcomeEmail({
+  appUrl,
+  unsubscribeUrl,
+}: NewsletterWelcomeEmailProps) {
   return (
     <EmailShell previewText="You're on the list — DE PERFUME SHOP" heading="You're on the list">
       <Text style={{ fontSize: "14px" }}>
@@ -21,10 +25,19 @@ export default function NewsletterWelcomeEmail({ appUrl }: NewsletterWelcomeEmai
           {appUrl.replace(/^https?:\/\//, "")}
         </a>
       </Text>
+      {unsubscribeUrl && (
+        <Text style={{ fontSize: "12px", color: "#888" }}>
+          Don&apos;t want these emails?{" "}
+          <a href={unsubscribeUrl} style={{ color: "#888" }}>
+            Unsubscribe
+          </a>
+        </Text>
+      )}
     </EmailShell>
   );
 }
 
 NewsletterWelcomeEmail.PreviewProps = {
   appUrl: "https://deperfumeshop.co.ke",
+  unsubscribeUrl: "https://deperfumeshop.co.ke/newsletter/unsubscribe?token=preview",
 } satisfies NewsletterWelcomeEmailProps;

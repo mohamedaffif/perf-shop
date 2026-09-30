@@ -20,6 +20,27 @@ the business, and subscribe to the newsletter. No payments, no Pesapal, no produ
 - `RESEND_FROM_EMAIL` = a verified address (e.g. `hello@deperfumeshop.co.ke`).
 - `ADMIN_NOTIFICATION_EMAIL` = the inbox that should receive contact-form messages.
 
+### Receiving email
+
+Cloudflare Email Routing handles incoming email for
+`deperfumeshop.co.ke`. All three addresses forward to
+the owner's verified Gmail inbox:
+
+- `hello@deperfumeshop.co.ke` — public customer contact
+- `orders@deperfumeshop.co.ke` — replies to automated emails
+- `info@deperfumeshop.co.ke` — general enquiries
+
+Resend handles outgoing transactional emails.
+
+Keep Resend's existing `send.deperfumeshop.co.ke`
+MX/SPF and DKIM records unchanged.
+
+Cloudflare Email Routing must remain enabled, and
+all three forwarding rules must remain active.
+
+Verify delivery by sending test messages to each
+address and replying to a newsletter email.
+
 ### DNS
 
 - `A` record for the apex domain → VPS public IP. (`www` CNAME → apex if wanted.)
@@ -42,6 +63,8 @@ Copy `.env.example` → `.env` and fill:
 | `NEXT_PUBLIC_OAUTH_ENABLED`                                       | `false`                                                                     |
 | `AUTH_SECRET`                                                     | `openssl rand -base64 33`                                                   |
 | `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `ADMIN_NOTIFICATION_EMAIL` | from Resend                                                                 |
+| `NEWSLETTER_FROM_EMAIL`                                           | `hello@deperfumeshop.co.ke` (newsletter sender, separate from orders@)      |
+| `NEWSLETTER_UNSUBSCRIBE_SECRET`                                   | `openssl rand -base64 48` — set once, never change (breaks old links)       |
 | `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`                         | the first admin login                                                       |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER`                                     | digits only, e.g. `2547...` (optional)                                      |
 | `CLOUDINARY_URL`                                                  | placeholder is fine until products go live                                  |

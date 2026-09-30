@@ -38,6 +38,29 @@ describe("sendNewsletterEmail", () => {
     );
   });
 
+  it("adds one-click List-Unsubscribe headers to the welcome email when the subscriber is known", async () => {
+    await sendNewsletterEmail({
+      kind: "welcome",
+      email: "reader@example.com",
+      subscriberId: "sub_1",
+    });
+
+    const { headers, from } = mockedSend.mock.calls[0][0];
+    expect(from).toBe("ci@example.com"); // NEWSLETTER_FROM_EMAIL unset → RESEND_FROM_EMAIL
+    expect(headers?.["List-Unsubscribe-Post"]).toBe("List-Unsubscribe=One-Click");
+    expect(headers?.["List-Unsubscribe"]).toMatch(
+      /^<http:\/\/localhost:3000\/api\/newsletter\/unsubscribe\?token=sub_1\.[\w-]+>, <mailto:hello@deperfumeshop\.co\.ke\?subject=unsubscribe>$/
+    );
+  });
+
+  it("sends no unsubscribe headers on the confirm email or on legacy welcome jobs", async () => {
+    await sendNewsletterEmail({ kind: "confirm", email: "reader@example.com", token: "t0k" });
+    await sendNewsletterEmail({ kind: "welcome", email: "reader@example.com" });
+
+    expect(mockedSend.mock.calls[0][0].headers).toBeUndefined();
+    expect(mockedSend.mock.calls[1][0].headers).toBeUndefined();
+  });
+
   it("throws when Resend reports an error, so the queue retries the job", async () => {
     mockedSend.mockResolvedValueOnce({ error: { message: "smtp down" } } as never);
 

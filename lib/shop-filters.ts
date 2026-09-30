@@ -77,7 +77,12 @@ export function buildShopFilterDefs(brands: Pick<Brand, "id" | "name">[]): ShopF
       allLabel: "All Prices",
       options: PRICE_BUCKETS.map((bucket) => ({ value: bucket.id, label: bucket.label })),
     },
-    { id: "concentration", label: "Concentration", allLabel: "All", options: CONCENTRATION_OPTIONS },
+    {
+      id: "concentration",
+      label: "Concentration",
+      allLabel: "All",
+      options: CONCENTRATION_OPTIONS,
+    },
     { id: "scentFamily", label: "Family", allLabel: "All", options: SCENT_FAMILY_OPTIONS },
     { id: "size", label: "Size", allLabel: "All Sizes", options: SIZE_OPTIONS },
     { id: "badge", label: "Badge", allLabel: "All", options: BADGE_OPTIONS },
